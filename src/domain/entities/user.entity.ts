@@ -10,8 +10,8 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column({ name: 'user_id', type: 'integer', default: 0, unique: true })
-  userId: number;
+  @Column({ name: 'user_bdm_id', type: 'integer', default: 0, unique: true })
+  userBdmId: number;
 
   @Column({ name: 'user_market_id', type: 'uuid', unique: true })
   userMarketId: string;
