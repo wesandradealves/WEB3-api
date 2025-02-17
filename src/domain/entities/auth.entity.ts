@@ -6,9 +6,9 @@ export class AuthEntity extends BaseEntity {
   @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
 
-  @Column({ name: 'user_market_id', type: 'uuid' })
-  userMarketId: string;
-
   @Column({ name: 'refresh_token', type: 'varchar' })
   refreshToken: string;
+
+  @Column({name: 'username', type: 'varchar'})
+  username: string;
 }
