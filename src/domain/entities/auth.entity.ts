@@ -8,4 +8,7 @@ export class AuthEntity extends BaseEntity {
 
   @Column({ name: 'refresh_token', type: 'varchar' })
   refreshToken: string;
+
+  @Column({name: 'username', type: 'varchar'})
+  username: string;
 }
