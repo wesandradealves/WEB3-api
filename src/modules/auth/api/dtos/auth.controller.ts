@@ -7,7 +7,6 @@ import { SignInRequestDto } from '../dtos/signIn.request.dto';
 import { ISignInRefreshTokenUseCase } from '@/domain/interfaces/use-cases/auth/signin.refresh.token.use-case';
 import { ISignInUserSendTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.send.two.fa.use-case';
 import { IVaidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
-import { SignInValidateTwoFaDto } from '../dtos/signIn.validate.twofa.dto';
 
 @ApiTags('auths')
 @Controller('auths')
@@ -46,7 +45,7 @@ export class AuthController {
 
   @Post('validate/2fa')
   @ApiOperation({ summary: 'Validate 2FA code' })
-  async validaTwofa(@Body() data: SignInValidateTwoFaDto) {
+  async validaTwofa(@Body() data: any) {
     return this.vaidateTwoFaUseCase.execute(data.username, data.twofa);
   }
 }
