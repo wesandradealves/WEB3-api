@@ -17,10 +17,16 @@ import { UserModule } from '../user/user.module';
 import { UserEntity } from '@/domain/entities/user.entity';
 import { ISignInRefreshTokenUseCase } from '@/domain/interfaces/use-cases/auth/signin.refresh.token.use-case';
 import { SignInRefreshTokenUseCase } from './use-cases/signIn.refresh.token.use-case';
+import { ISignInUserSendTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.send.two.fa.use-case';
+import { SignInSendTwoFaUseCase } from './use-cases/signin.user.send.two.fa.use-case';
+import { SESModule } from '@/infrastructure/providers/aws/ses/ses.module';
+import { AuthMfaEntity } from '@/domain/entities/auth.mfa.entity';
+import { IVaidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
+import { ValidaTwoFaUseCase } from './use-cases/validate.two.fa.use-case';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AuthEntity, UserEntity]),
+    TypeOrmModule.forFeature([AuthEntity, UserEntity, AuthMfaEntity ]),
     PassportModule,
     JwtModule.register({
       secret: process.env.TOKEN_JWT_SECRET,
@@ -29,7 +35,8 @@ import { SignInRefreshTokenUseCase } from './use-cases/signIn.refresh.token.use-
       },
     }),
     CognitoModule,
-    UserModule
+    UserModule,
+    SESModule
   ],
   controllers: [AuthController],
   providers: [
@@ -49,6 +56,15 @@ import { SignInRefreshTokenUseCase } from './use-cases/signIn.refresh.token.use-
       provide: ISignInRefreshTokenUseCase,
       useClass: SignInRefreshTokenUseCase,
     },
+    {
+      provide: ISignInUserSendTwoFaUseCase,
+      useClass: SignInSendTwoFaUseCase,
+    },
+    {
+      provide: IVaidateTwoFaUseCase,
+      useClass: ValidaTwoFaUseCase,
+    }
+
   ],
   exports: [JwtModule, IAuthRepository],
 })

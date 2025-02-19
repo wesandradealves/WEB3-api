@@ -12,10 +12,11 @@ export interface ISignInOperatorResponse {
 export interface IAuthRepository {
   signIn(data: ISignInOperatorRequest): Promise<ISignInOperatorResponse>;
   signOut(data: any): Promise<any>;
-  findUser(data: any): Promise<any>;
   signInRefresh(data: ISignInOperatorRequest, token: string): Promise<any>;
   storeAfterSignIn(data: any): Promise<any>;
   validate(id: string): Promise<any>;
+  signInSendTwoFa(data: ISignInOperatorRequest): Promise<ISignInOperatorResponse>;
+  validateTwoFa(userId: string, twoFa: number): Promise<ISignInOperatorResponse>; 
 }
 
 

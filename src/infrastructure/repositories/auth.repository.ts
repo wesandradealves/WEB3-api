@@ -1,7 +1,9 @@
 import { AuthEntity } from '@/domain/entities/auth.entity';
+import { AuthMfaEntity } from '@/domain/entities/auth.mfa.entity';
 import { UserEntity } from '@/domain/entities/user.entity';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
-import { IAuthRepository } from '@/domain/interfaces/repositories/auth.repository';
+import { ISESProvider } from '@/domain/interfaces/providers/ses.provider';
+import { IAuthRepository, ISignInOperatorRequest } from '@/domain/interfaces/repositories/auth.repository';
 import { SignInRequestDto } from '@/modules/auth/api/dtos/signIn.request.dto';
 import { SignInResponseDto } from '@/modules/auth/api/dtos/signIn.response.dto';
 import { TokenService } from '@/modules/auth/services/token.service';
@@ -15,39 +17,41 @@ export class AuthRepository implements IAuthRepository {
     @Inject(ICognitoProvider)
     private readonly cognito: ICognitoProvider,
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly user: Repository<UserEntity>,
     @InjectRepository(AuthEntity)
-    private readonly authRepository: Repository<AuthEntity>,
+    private readonly auth: Repository<AuthEntity>,
+    @InjectRepository(AuthMfaEntity)
+    private readonly authMFA: Repository<AuthMfaEntity>,
+    @Inject(ISESProvider)
+    private readonly sesProvider: ISESProvider,
     private readonly logger: Logger,
     private readonly token: TokenService,
   ) {
     this.logger = new Logger(AuthRepository.name);
   }
 
-
   async signIn(data: SignInRequestDto): Promise<SignInResponseDto> {
     this.logger.log(data);
-    let user = await this.userRepository.findOneBy({ email: data.username });
+    let user = await this.user.findOneBy({ email: data.username });
     if (!user) {
       this.logger.log('Parceiro não cadastrado.');
       throw new UnauthorizedException('Usuario não localizado.');
     }
-    try{
+    try {
       await this.cognito.signIn(data);
-      const signin =  await this.token.createTokenJwt({
+      const signin = await this.token.createTokenJwt({
         id: user.id,
         email: user.email,
         profile: user.profile,
       });
 
       await this.storeAfterSignIn({
-        username: user.email,
         userId: user.id,
         refreshToken: (await signin).refreshToken,
       });
       return signin;
 
-    }catch(error){
+    } catch (error) {
       throw new UnauthorizedException();
     }
   }
@@ -58,41 +62,86 @@ export class AuthRepository implements IAuthRepository {
     throw new Error('Method not implemented.');
   }
 
-  findUser(data: any): Promise<any> {
-    throw new Error('Method not implemented.');
-    return data
-  }
-
   async storeAfterSignIn(data: any): Promise<any> {
-    const existingRecord = await this.authRepository.findOne({ where: { userId: data.userId } });
+    const existingRecord = await this.auth.findOne({ where: { userId: data.userId } });
     if (existingRecord) {
-      await this.authRepository.update({ userId: data.userId }, data);
+      await this.auth.update({ userId: data.userId }, data);
     } else {
-      await this.authRepository.save(data);
+      await this.auth.save(data);
     }
   }
 
   async signInRefresh(data: any, token: string): Promise<any> {
-  // Utilizado para re-autenticar o usuário com o refresh token
-      try {
-        // Verifica se o refreshtoken existe na tabela de auths
-        const result = await this.authRepository.findOne({
-          where: { userId: data.sub, refreshToken: token },
-        });
+    try {
+      const result = await this.auth.findOne({
+        where: { userId: data.sub, refreshToken: token },
+      });
 
-        if (!result) {
-          throw new UnauthorizedException();
-        }
-
-        return result;
-      } catch (e) {}
-    }
-
-
-    async validate(id: string): Promise<void> {
-      const user = await this.userRepository.findOne({ where: { id } });
-      if (!user) {
-        throw new Error('Usuário não localizado.');
+      if (!result) {
+        throw new UnauthorizedException();
       }
+
+      return result;
+    } catch (e) { }
+    throw new Error()
+  }
+
+
+  async validate(id: string): Promise<void> {
+    const user = await this.user.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('Usuário não localizado.');
     }
+  }
+
+  async signInSendTwoFa(data: ISignInOperatorRequest): Promise<any> {
+    const user = await this.user.findOneBy({ email: data.username });
+    if (!user) {
+      throw new UnauthorizedException('Usuario não localizado.');
+    }
+    try {
+      await this.cognito.signIn(data);
+      
+      const twofaCode = this.create2faCode();
+      const existingRecord = await this.authMFA.findOne({ where: { userId: user.id } });
+      if (existingRecord) {
+        await this.authMFA.update({ userId: user.id }, { mfa: twofaCode.toString(), isValid: true });
+      } else {
+        await this.authMFA.save({ userId: user.id, mfa: twofaCode.toString(), isValid: true });
+      }
+
+      await this.sesProvider.dispatchEmail({
+        receiver: user.email,
+        template: process.env.SES_2FA_TEMPLATE,
+        templateData: { name: 'victor', random_2fa: twofaCode },
+      });
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async validateTwoFa(username: string, twoFa: number): Promise<any> {
+    const user = await this.user.findOneBy({ email: username });
+    if (!user) {
+      throw new Error();
+    }
+
+    const existingRecord = await this.authMFA.findOne({ where: { userId: user.id, mfa: twoFa.toString()} });
+    if (!existingRecord) {
+      throw new Error();
+    }
+    if (existingRecord.mfa !== twoFa.toString()) {
+      throw new UnauthorizedException('Código inválido.');
+    }
+
+    await this.authMFA.update({ userId: user.id }, { isValid: false});
+    return true;
+  }
+
+  private create2faCode() {
+    return Math.floor(10000 + Math.random() * 90000);
+  }
+
+
 }
