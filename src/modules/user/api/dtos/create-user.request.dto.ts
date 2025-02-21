@@ -1,11 +1,8 @@
 import { ProfileUserEnum } from '@/domain/commons/enum/profile.user.enum';
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { ICreateUser } from '@/domain/types/user';
+import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
 
-export class CreateUserRequestDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
+export class CreateUserRequestDto implements ICreateUser {
   @IsEmail()
   @IsNotEmpty()
   email: string;

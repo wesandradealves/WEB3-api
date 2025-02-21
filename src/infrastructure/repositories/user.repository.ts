@@ -1,6 +1,7 @@
 import { UserEntity } from "@/domain/entities/user.entity";
 import { IUserRepository } from "@/domain/interfaces/repositories/user.repository";
 import { ICreateUser, IViewUser, IUpdateUser } from "@/domain/types/user";
+import { ViewUserDto } from "@/modules/user/api/dtos/view.user.dto";
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, UpdateResult } from "typeorm";
@@ -14,7 +15,7 @@ export class UserRepository implements IUserRepository {
     private readonly userRepository: Repository<UserEntity>, 
   ) {}
   
-  async create(data: ICreateUser): Promise<UserEntity> {
+  async create(data: ICreateUser): Promise<ViewUserDto> {
     try {
       return this.userRepository.save(data);
     } catch (error) {

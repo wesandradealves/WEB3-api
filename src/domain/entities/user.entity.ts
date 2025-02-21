@@ -10,6 +10,12 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
+  @Column({ name: 'cpf_cnpj', type: 'varchar', length: 20, unique: true })
+  cpfCnpj: string;
+
+  @Column({ type: 'varchar', length: 20, unique: true })
+  passport: string;
+
   @Column({ name: 'user_bdm_id', type: 'integer', default: 0, unique: true })
   userBdmId: number;
 
