@@ -56,12 +56,6 @@ export class AuthRepository implements IAuthRepository {
     }
   }
 
-  async signOut(data: any): Promise<any> {
-    this.logger.log(data);
-
-    throw new Error('Method not implemented.');
-  }
-
   async storeAfterSignIn(data: any): Promise<any> {
     const existingRecord = await this.auth.findOne({ where: { userId: data.userId } });
     if (existingRecord) {
@@ -142,6 +136,4 @@ export class AuthRepository implements IAuthRepository {
   private create2faCode() {
     return Math.floor(10000 + Math.random() * 90000);
   }
-
-
 }
