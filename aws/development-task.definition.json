@@ -76,6 +76,22 @@
 				{
 					"name": "HTTP_TIMEOUT",
 					"value": "30000"
+				},
+				{
+					"name": "DATABASE_TYPE",
+					"value": "postgres"
+				},
+				{
+					"name": "DATABASE_HOST",
+					"value": "douradodbdev.cet6pltt6ywk.us-east-2.rds.amazonaws.com"
+				},
+				{
+					"name": "DATABASE_PORT",
+					"value": "5432"
+				},
+				{
+					"name": "DATABASE_NAME",
+					"value": "dourado-dashboard"
 				}
 			]
 		}
