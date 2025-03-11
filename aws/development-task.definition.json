@@ -1,0 +1,75 @@
+{
+	"family": "dourado-dashboard-tsk",
+	"networkMode": "awsvpc",
+	"requiresCompatibilities": [
+		"FARGATE"
+	],
+	"executionRoleArn": "arn:aws:iam::915863716341:role/ecs_task_execution_role-dev",
+	"cpu": "256",
+	"memory": "512",
+	"containerDefinitions": [
+		{
+			"name": "dourado-dashboard-cnt",
+			"image": "${image}",
+			"portMappings": [
+				{
+					"containerPort": 3000,
+					"hostPort": 3000
+				}
+			],
+			"memory": 512,
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "/ecs/dourado-dashboard-log",
+					"awslogs-region": "us-east-2",
+					"awslogs-stream-prefix": "dashboard"
+				}
+			},
+			"secrets": [
+				{
+					"name": "AWS_ACCESS_KEY_ID",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/dourado/secrets-flATtZ:AWS_ACCESS_KEY_ID::"
+				},
+				{
+					"name": "AWS_SECRET_ACCESS_KEY",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/dourado/secrets-flATtZ:AWS_SECRET_ACCESS_KEY::"
+				},
+				{
+					"name": "REFRESH_TOKEN_JWT_SECRET",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:REFRESH_TOKEN_JWT_SECRET::"
+				},
+				{
+					"name": "REFRESH_TOKEN_JWT_EXPIRES",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:REFRESH_TOKEN_JWT_EXPIRES::"
+				},
+				{
+					"name": "DATABASE_PASSWORD",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_PASSWORD::"
+				},
+				{
+					"name": "DATABASE_USERNAME",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_USERNAME::"
+				}
+			],
+			"environment": [
+				{
+					"name": "HTTP_PORT",
+					"value": "3000"
+				},
+				{
+					"name": "ENVIROMENT",
+					"value": "development"
+				},
+				{
+					"name": "AWS_REGION",
+					"value": "us-east-2"
+				},
+				{
+					"name": "HTTP_TIMEOUT",
+					"value": "30000"
+				}
+			]
+		}
+	]
+}
