@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { CognitoModule } from './infrastructure/providers/aws/cognito/cognito.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { ExtractModule } from './modules/extract/extract.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
     UserModule,
     SESModule,
     CognitoModule,
-    TransactionsModule
+    TransactionsModule,
+    ExtractModule
   ],
 })
 export class ApiModule {}

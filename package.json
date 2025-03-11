@@ -27,6 +27,7 @@
 		"migration:show": "yarn typeorm migration:show"
 	},
 	"dependencies": {
+		"@aws-sdk/client-cognito-identity-provider": "^3.744.0",
 		"@aws-sdk/client-ses": "^3.577.0",
 		"@nestjs/common": "^10.3.8",
 		"@nestjs/config": "^3.2.2",
@@ -34,12 +35,14 @@
 		"@nestjs/jwt": "^10.2.0",
 		"@nestjs/passport": "^10.0.3",
 		"@nestjs/platform-express": "^10.0.0",
+		"@nestjs/swagger": "^11.0.4",
 		"@nestjs/typeorm": "^10.0.2",
 		"axios": "^1.7.1",
 		"bcrypt": "^5.1.1",
 		"class-transform": "^0.7.0",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.1",
+		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.5",
 		"passport": "^0.7.0",
 		"passport-jwt": "^4.0.1",
@@ -47,7 +50,9 @@
 		"pg": "^8.11.5",
 		"reflect-metadata": "^0.1.13",
 		"rxjs": "^7.8.1",
-		"typeorm": "^0.3.20"
+		"swagger-ui-express": "^5.0.1",
+		"typeorm": "^0.3.20",
+		"yarn": "^1.22.22"
 	},
 	"devDependencies": {
 		"@nestjs/cli": "^10.0.0",
