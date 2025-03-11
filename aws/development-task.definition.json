@@ -37,11 +37,11 @@
 				},
 				{
 					"name": "TOKEN_JWT_SECRET",
-					"value": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:TOKEN_JWT_SECRET::"
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:TOKEN_JWT_SECRET::"
 				},
 				{
 					"name": "TOKEN_JWT_EXPIRES",
-					"value": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:TOKEN_JWT_EXPIRES::"
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:TOKEN_JWT_EXPIRES::"
 				},
 				{
 					"name": "REFRESH_TOKEN_JWT_SECRET",
