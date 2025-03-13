@@ -58,6 +58,14 @@
 				{
 					"name": "DATABASE_USERNAME",
 					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_USERNAME::"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID::"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID_SECRET::"
 				}
 			],
 			"environment": [
@@ -116,14 +124,6 @@
 				{
 					"name": "SES_SOURCE_ARN",
 					"value": "arn:aws:ses:us-east-2:915863716341:identity/dourado.cash"
-				},
-				{
-					"name": "AWS_COGNITO_CLIENT_ID",
-					"value": "41m2n49de1n1e4nqavkll143g4"
-				},
-				{
-					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
-					"value": "lq2dd3k14ni8329r65bnae56mk06t74p854ujudmmjnjlkk5dg7"
 				}
 			]
 		}

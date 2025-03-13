@@ -3,7 +3,10 @@ import { AuthMfaEntity } from '@/domain/entities/auth.mfa.entity';
 import { UserEntity } from '@/domain/entities/user.entity';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import { ISESProvider } from '@/domain/interfaces/providers/ses.provider';
-import { IAuthRepository, ISignInOperatorRequest } from '@/domain/interfaces/repositories/auth.repository';
+import {
+  IAuthRepository,
+  ISignInOperatorRequest,
+} from '@/domain/interfaces/repositories/auth.repository';
 import { SignInRequestDto } from '@/modules/auth/api/dtos/signIn.request.dto';
 import { SignInResponseDto } from '@/modules/auth/api/dtos/signIn.response.dto';
 import { TokenService } from '@/modules/auth/services/token.service';
@@ -31,27 +34,37 @@ export class AuthRepository implements IAuthRepository {
   }
 
   async signIn(data: SignInRequestDto): Promise<SignInResponseDto> {
-    this.logger.log(data);
-    let user = await this.user.findOneBy({ email: data.username });
-    if (!user) {
-      this.logger.log('Parceiro não cadastrado.');
-      throw new UnauthorizedException('Usuario não localizado.');
-    }
     try {
+      // Verifica se o usuário existe no banco do dashboard
+      let user = await this.user.findOneBy({ email: data.username });
+      if (!user) {
+        this.logger.log('Usuário não cadastrado.');
+        throw new UnauthorizedException();
+      }
+
+      // Autenticando no cognito
+      this.logger.log('Usuário não cadastrado no cognito.');
       await this.cognito.signIn(data);
+
+      // Gerando token e refresh token
+      this.logger.log('Erro ao criar o token.');
       const signin = await this.token.createTokenJwt({
         id: user.id,
         email: user.email,
         profile: user.profile,
       });
 
+      // Gravando dados de autenticação no banco
+      this.logger.log('Erro ao gravar os daos de login no banco.');
       await this.storeAfterSignIn({
         userId: user.id,
-        refreshToken: (await signin).refreshToken,
+        refreshToken: signin.refreshToken,
       });
-      return signin;
 
-    } catch (error) {
+      // Retorna os tokens
+      return signin;
+    } catch (e) {
+      this.logger.log(e);
       throw new UnauthorizedException();
     }
   }
@@ -76,10 +89,16 @@ export class AuthRepository implements IAuthRepository {
       }
 
       return result;
-    } catch (e) { }
-    throw new Error()
-  }
+    } catch (e) {
+      if (e instanceof UnauthorizedException) {
+        this.logger.log('Token ');
+        throw e;
+      }
 
+      this.logger.log('Erro ao validar o refresh token.', e);
+      throw e;
+    }
+  }
 
   async validate(id: string): Promise<void> {
     const user = await this.user.findOne({ where: { id } });
@@ -95,13 +114,20 @@ export class AuthRepository implements IAuthRepository {
     }
     try {
       await this.cognito.signIn(data);
-      
+
       const twofaCode = this.create2faCode();
       const existingRecord = await this.authMFA.findOne({ where: { userId: user.id } });
       if (existingRecord) {
-        await this.authMFA.update({ userId: user.id }, { mfa: twofaCode.toString(), isValid: true });
+        await this.authMFA.update(
+          { userId: user.id },
+          { mfa: twofaCode.toString(), isValid: true },
+        );
       } else {
-        await this.authMFA.save({ userId: user.id, mfa: twofaCode.toString(), isValid: true });
+        await this.authMFA.save({
+          userId: user.id,
+          mfa: twofaCode.toString(),
+          isValid: true,
+        });
       }
 
       await this.sesProvider.dispatchEmail({
@@ -109,7 +135,6 @@ export class AuthRepository implements IAuthRepository {
         template: process.env.SES_2FA_TEMPLATE,
         templateData: { name: 'customer', random_2fa: twofaCode },
       });
-
     } catch (error) {
       console.log(error);
     }
@@ -121,7 +146,9 @@ export class AuthRepository implements IAuthRepository {
       throw new Error();
     }
 
-    const existingRecord = await this.authMFA.findOne({ where: { userId: user.id, mfa: twoFa.toString()} });
+    const existingRecord = await this.authMFA.findOne({
+      where: { userId: user.id, mfa: twoFa.toString() },
+    });
     if (!existingRecord) {
       throw new Error();
     }
@@ -129,7 +156,7 @@ export class AuthRepository implements IAuthRepository {
       throw new UnauthorizedException('Código inválido.');
     }
 
-    await this.authMFA.update({ userId: user.id }, { isValid: false});
+    await this.authMFA.update({ userId: user.id }, { isValid: false });
     return true;
   }
 

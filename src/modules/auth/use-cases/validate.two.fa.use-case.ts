@@ -1,9 +1,9 @@
 import { IAuthRepository } from '@/domain/interfaces/repositories/auth.repository';
-import { IVaidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
+import { IValidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
-export class ValidaTwoFaUseCase implements IVaidateTwoFaUseCase {
+export class ValidaTwoFaUseCase implements IValidateTwoFaUseCase {
   constructor(
     @Inject(IAuthRepository)
     private readonly authRepository: IAuthRepository,
@@ -12,7 +12,7 @@ export class ValidaTwoFaUseCase implements IVaidateTwoFaUseCase {
     this.logger = new Logger(ValidaTwoFaUseCase.name);
   }
 
-  async execute(username: string,  twofa: number): Promise<any> {
+  async execute(username: string, twofa: number): Promise<any> {
     this.logger.log(username);
     return await this.authRepository.validateTwoFa(username, twofa);
   }
