@@ -9,7 +9,7 @@ import { ISignInUserSendTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/
 import { IVaidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
 import { SignInValidateTwoFaDto } from '../dtos/signIn.validate.twofa.dto';
 
-@ApiTags('auths')
+@ApiTags('autentication')
 @Controller('auths')
 export class AuthController {
   constructor(
