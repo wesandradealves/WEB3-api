@@ -6,6 +6,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ApiModule } from './api.module';
+import HttpExceptionFilter from './domain/commons/interceptors/http.exception';
 import { healthRoute } from './infrastructure/api-health/api-health.router';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -20,6 +21,8 @@ async function bootstrap() {
   app.useBodyParser('json', { limit: '10mb' });
   app.enableCors({ origin: '*' });
   app.setGlobalPrefix('api');
+
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
