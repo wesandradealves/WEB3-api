@@ -1,6 +1,5 @@
-
-export interface IVaidateTwoFaUseCase {
+export interface IValidateTwoFaUseCase {
   execute(username: string, twofa: number): Promise<any>;
 }
 
-export const IVaidateTwoFaUseCase = Symbol('IVaidateTwoFaUseCase');
+export const IValidateTwoFaUseCase = Symbol('IValidateTwoFaUseCase');

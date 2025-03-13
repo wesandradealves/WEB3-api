@@ -1,15 +1,15 @@
 // filepath: /home/victor/dourado/dourado-dashboard-backend/src/modules/auth/api/controller/auth.controller.ts
-import { ISignInUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.use-case';
-import { Body, Controller, Inject, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { RefreshJwtAuthGuard } from '../../jwt.auth.guard';
-import { SignInRequestDto } from '../dtos/signIn.request.dto';
 import { ISignInRefreshTokenUseCase } from '@/domain/interfaces/use-cases/auth/signin.refresh.token.use-case';
 import { ISignInUserSendTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.send.two.fa.use-case';
-import { IVaidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
+import { ISignInUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.use-case';
+import { IValidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
+import { Body, Controller, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { RefreshJwtAuthGuard } from '../../jwt.auth.guard';
+import { SignInRequestDto } from '../dtos/signIn.request.dto';
 import { SignInValidateTwoFaDto } from '../dtos/signIn.validate.twofa.dto';
 
-@ApiTags('autentication')
+@ApiTags('Authentication')
 @Controller('auths')
 export class AuthController {
   constructor(
@@ -19,8 +19,8 @@ export class AuthController {
     private readonly signInRefreshTokenUseCase: ISignInRefreshTokenUseCase,
     @Inject(ISignInUserSendTwoFaUseCase)
     private readonly signInUserSendTwoFaUseCase: ISignInUserSendTwoFaUseCase,
-    @Inject(IVaidateTwoFaUseCase)
-    private readonly vaidateTwoFaUseCase: IVaidateTwoFaUseCase,
+    @Inject(IValidateTwoFaUseCase)
+    private readonly vaidateTwoFaUseCase: IValidateTwoFaUseCase,
   ) {}
 
   @Post('signin')

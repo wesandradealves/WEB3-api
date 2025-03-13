@@ -1,4 +1,3 @@
-
 import { ISignInRequest } from '@/domain/interfaces/auth/auth.external';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import {
@@ -6,15 +5,15 @@ import {
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class CognitoProvider implements ICognitoProvider {
   private readonly cognito: CognitoIdentityProviderClient;
-  private bdmUserName: string;
-  private bdmPassword: string;
-  constructor(private readonly logger: Logger) {
+  private readonly clientId: string;
+  private readonly clientSecret: string;
+  constructor() {
     this.cognito = new CognitoIdentityProviderClient({
       region: process.env.AWS_REGION,
       credentials: {
@@ -22,17 +21,13 @@ export class CognitoProvider implements ICognitoProvider {
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
     });
-    this.bdmUserName = process.env.BDM_AUTH_USERNAME;
-    this.bdmPassword = process.env.BDM_AUTH_PASSWORD;
-    this.logger = new Logger(CognitoProvider.name);
+
+    this.clientId = process.env.AWS_COGNITO_CLIENT_ID;
+    this.clientSecret = process.env.AWS_COGNITO_CLIENT_ID_SECRET;
   }
 
   async signIn(data: ISignInRequest): Promise<any> {
-    const secretHash = await this.calculateSecretHash(
-      process.env.AWS_COGNITO_CLIENT_ID,
-      data.username,
-      process.env.AWS_COGNITO_CLIENT_ID_SECRET,
-    );
+    const secretHash = await this.calculateSecretHash(data.username);
 
     const command = new InitiateAuthCommand({
       AuthFlow: AuthFlowType.USER_PASSWORD_AUTH,
@@ -47,22 +42,9 @@ export class CognitoProvider implements ICognitoProvider {
     return await this.cognito.send(command);
   }
 
-  private async calculateSecretHash(clientId, username, clientSecret) {
-    const data = username + clientId;
-    const hmac = crypto.createHmac('sha256', clientSecret);
-    hmac.update(data);
+  private async calculateSecretHash(username: string) {
+    const hmac = crypto.createHmac('sha256', this.clientSecret);
+    hmac.update(`${username}${this.clientId}`);
     return hmac.digest('base64');
-  }
-
-  async signInBdm(): Promise<string> {
-    try {
-      const result = await this.signIn({
-        username: this.bdmUserName,
-        password: this.bdmPassword,
-      });
-      return result.AuthenticationResult.AccessToken;
-    } catch (error) {
-      this.logger.log(error);
-    }
   }
 }
