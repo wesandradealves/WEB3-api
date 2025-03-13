@@ -23,16 +23,17 @@ import { SESModule } from '@/infrastructure/providers/aws/ses/ses.module';
 import { AuthMfaEntity } from '@/domain/entities/auth.mfa.entity';
 import { IVaidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
 import { ValidaTwoFaUseCase } from './use-cases/validate.two.fa.use-case';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([AuthEntity, UserEntity, AuthMfaEntity ]),
     PassportModule,
-    JwtModule.register({
-      secret: process.env.TOKEN_JWT_SECRET,
-      signOptions: {
-        expiresIn: process.env.TOKEN_JWT_EXPIRES,
-      },
+    JwtModule.registerAsync({
+      useFactory: async (config: ConfigService) => ({
+        ...config.get('auth.tokenJwt'),
+      }),
+      inject: [ConfigService],
     }),
     CognitoModule,
     UserModule,

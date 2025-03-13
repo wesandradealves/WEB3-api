@@ -6,6 +6,7 @@ import { SESModule } from './infrastructure/providers/aws/ses/ses.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { CognitoModule } from './infrastructure/providers/aws/cognito/cognito.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CognitoModule } from './infrastructure/providers/aws/cognito/cognito.mo
     UserModule,
     SESModule,
     CognitoModule,
+    TransactionsModule
   ],
 })
 export class ApiModule {}
