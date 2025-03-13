@@ -92,7 +92,12 @@
 				{
 					"name": "DATABASE_NAME",
 					"value": "dourado-dashboard"
+				},
+				{
+					"name": "BDM_VERSION",
+					"value": "V26"
 				}
+
 			]
 		}
 	]

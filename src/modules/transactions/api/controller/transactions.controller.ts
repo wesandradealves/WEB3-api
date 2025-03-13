@@ -1,5 +1,5 @@
 import { IGetTransactionsByWalletIdUseCase } from "@/domain/interfaces/use-cases/transactions/get.transactions.by.wallet.id.use-case";
-import { Body, Controller, Get, Inject } from "@nestjs/common";
+import { Body, Controller, Inject, Post } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TransactionsResponseDto } from "../dtos/transactions.reponse.dto";
 
@@ -11,7 +11,7 @@ export class TransanctionsController {
     private readonly getTransactionsByWalletIdUseCase: IGetTransactionsByWalletIdUseCase,
   ) {}
 
-  @Get('get-transactions-by-wallet')
+  @Post('get-transactions-by-wallet')
   @ApiOperation({ summary: 'Get transactions by wallet id and username' })
   @ApiResponse({ status: 200, description: 'Transactions retrieved successfully.', type: TransactionsResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid input.' })

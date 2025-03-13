@@ -107,7 +107,7 @@ export class AuthRepository implements IAuthRepository {
       await this.sesProvider.dispatchEmail({
         receiver: user.email,
         template: process.env.SES_2FA_TEMPLATE,
-        templateData: { name: 'victor', random_2fa: twofaCode },
+        templateData: { name: 'customer', random_2fa: twofaCode },
       });
 
     } catch (error) {

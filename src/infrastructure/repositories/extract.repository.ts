@@ -6,22 +6,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpBdmProvider } from '../providers/http/http.bdm.provider';
 import { ExtractResponseDto } from '@/modules/extract/api/dto/extract.reponse.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ExtractRepository implements IExtractRepository {
+  private readonly bdmVersion: string;
   constructor(
     @InjectRepository(UserEntity)
     private readonly user: Repository<UserEntity>,
     @Inject(HttpBdmProvider)
     private readonly httpBdmProvider: HttpBdmProvider,
+    private readonly configService: ConfigService,
   ) {
+    this.bdmVersion = this.configService.get<string>('bdm.version');
   }
   async getExtractByWalletId(walletId: number, username: string, limit: number): Promise<ExtractResponseDto> {
     const data = walletId
     const user = await this.user.findOneBy({ email: username });
 
     const result = await this.httpBdmProvider.fetchData({
-      url: `/v25/history/app/${data}/all?after=0&limit=${limit}`,
+      url: `/${this.bdmVersion}/history/app/${data}/all?after=0&limit=${limit}`,
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',

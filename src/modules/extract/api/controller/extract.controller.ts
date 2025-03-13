@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Query } from "@nestjs/common";
+import { Body, Controller, Inject, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { IGetExtractByWalletIdUseCase } from "@/domain/interfaces/use-cases/extract/get.extract.by.wallet.id.use-case";
 import { ExtractResponseDto } from "../dto/extract.reponse.dto";
@@ -11,7 +11,7 @@ export class ExtractController {
     private readonly getExtractByWalletIdUseCase: IGetExtractByWalletIdUseCase,
   ) {}
 
-  @Get('get-extract-by-wallet-id')
+  @Post('get-extract-by-wallet-id')
   @ApiOperation({ summary: 'Get extract by wallet ID' })
   @ApiResponse({ status: 200, description: 'Successful response', type: ExtractResponseDto })
   @ApiBody({ schema: { 
