@@ -1,3 +1,4 @@
+// filepath: /home/victor/dourado/dourado-dashboard-backend/src/main.ts
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -7,6 +8,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ApiModule } from './api.module';
 import HttpExceptionFilter from './domain/commons/interceptors/http.exception';
 import { healthRoute } from './infrastructure/api-health/api-health.router';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const logger = new Logger('Application');
 
@@ -29,6 +31,15 @@ async function bootstrap() {
       disableErrorMessages: false,
     }),
   );
+
+  // Swagger configuration
+  const config = new DocumentBuilder()
+    .setTitle('Dourado Dashboard API')
+    .setDescription('API documentation for Dourado Dashboard')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT || 3000);
   logger.log(`Application started in port: ${process.env.PORT || 3000}`);
