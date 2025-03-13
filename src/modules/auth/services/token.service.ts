@@ -1,4 +1,3 @@
-
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SignInResponseDto } from '../api/dtos/signIn.response.dto';
@@ -18,18 +17,14 @@ export class TokenService {
     this.logger.log('Gerando token de autenticação.');
 
     this.token = this.jwtService.sign(
-      {
-        sub: user.id,
-        profile: user.profile,
-        email: user.email,
-      },
+      { sub: user.id, profile: user.profile, email: user.email },
       { expiresIn: process.env.TOKEN_JWT_EXPIRES },
     );
 
     this.refreshToken = this.jwtService.sign(
       { sub: user.id, email: user.email, profile: user.profile },
       {
-        expiresIn: '1d',
+        expiresIn: process.env.REFRESH_TOKEN_JWT_EXPIRES,
         secret: process.env.REFRESH_TOKEN_JWT_SECRET,
       },
     );
@@ -41,26 +36,14 @@ export class TokenService {
       refreshToken: this.refreshToken,
     };
   }
-  async createTokenJwtReAuth(
-    data: any,
-    token: string,
-  ): Promise<SignInResponseDto> {
+  async createTokenJwtReAuth(data: any, token: string): Promise<SignInResponseDto> {
     this.logger.log('Gerando token de autenticação com base no refresh token.');
 
     this.token = this.jwtService.sign(
-      {
-        sub: data.id,
-        profile: data.profile,
-        email: data.email,
-      },
+      { sub: data.id, profile: data.profile, email: data.email },
       { expiresIn: process.env.TOKEN_JWT_EXPIRES },
     );
 
-    return {
-      auth: true,
-      expires: 3600,
-      tokenJwt: this.token,
-      refreshToken: token,
-    };
+    return { auth: true, expires: 3600, tokenJwt: this.token, refreshToken: token };
   }
 }
