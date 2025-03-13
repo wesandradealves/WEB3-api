@@ -3,7 +3,7 @@ import { Body, Controller, Inject, Post } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TransactionsResponseDto } from "../dtos/transactions.reponse.dto";
 
-@ApiTags('transactions')
+@ApiTags('Transactions')
 @Controller('transactions')
 export class TransanctionsController {
   constructor(
