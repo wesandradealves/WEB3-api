@@ -42,6 +42,7 @@
 		"class-transform": "^0.7.0",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.1",
+		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.5",
 		"passport": "^0.7.0",
 		"passport-jwt": "^4.0.1",
@@ -49,7 +50,9 @@
 		"pg": "^8.11.5",
 		"reflect-metadata": "^0.1.13",
 		"rxjs": "^7.8.1",
-		"typeorm": "^0.3.20"
+		"swagger-ui-express": "^5.0.1",
+		"typeorm": "^0.3.20",
+		"yarn": "^1.22.22"
 	},
 	"devDependencies": {
 		"@nestjs/cli": "^10.0.0",
