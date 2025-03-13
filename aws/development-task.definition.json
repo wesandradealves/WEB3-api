@@ -96,6 +96,34 @@
 				{
 					"name": "BDM_VERSION",
 					"value": "V26"
+				},
+				{
+					"name": "BASE_URL_BDM",
+					"value": "https://opiihi8ab4.execute-api.us-east-2.amazonaws.com/v26"
+				},
+				{
+					"name": "BDM_API_KEY",
+					"value": "tbmwTjihCu8HYTOmycKbNzLup6o3iPWu3kXUFxM8YrM="
+				},
+				{
+					"name": "SES_2FA_TEMPLATE",
+					"value": "teste-template"
+				},
+				{
+					"name": "SES_EMAIL_FROM",
+					"value": "no-reply@dourado.cash"
+				},
+				{
+					"name": "SES_SOURCE_ARN",
+					"value": "arn:aws:ses:us-east-2:915863716341:identity/dourado.cash"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID",
+					"value": "41m2n49de1n1e4nqavkll143g4"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
+					"value": "lq2dd3k14ni8329r65bnae56mk06t74p854ujudmmjnjlkk5dg7"
 				}
 			]
 		}
