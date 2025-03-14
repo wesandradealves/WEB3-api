@@ -7,8 +7,6 @@ import {
   IAuthRepository,
   ISignInOperatorRequest,
 } from '@/domain/interfaces/repositories/auth.repository';
-import { SignInRequestDto } from '@/modules/auth/api/dtos/signIn.request.dto';
-import { SignInResponseDto } from '@/modules/auth/api/dtos/signIn.response.dto';
 import { TokenService } from '@/modules/auth/services/token.service';
 import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,42 +29,6 @@ export class AuthRepository implements IAuthRepository {
     private readonly token: TokenService,
   ) {
     this.logger = new Logger(AuthRepository.name);
-  }
-
-  async signIn(data: SignInRequestDto): Promise<SignInResponseDto> {
-    try {
-      // Verifica se o usuário existe no banco do dashboard
-      let user = await this.user.findOneBy({ email: data.username });
-      if (!user) {
-        this.logger.log('Usuário não cadastrado.');
-        throw new UnauthorizedException();
-      }
-
-      // Autenticando no cognito
-      this.logger.log('Usuário não cadastrado no cognito.');
-      await this.cognito.signIn(data);
-
-      // Gerando token e refresh token
-      this.logger.log('Erro ao criar o token.');
-      const signin = await this.token.createTokenJwt({
-        id: user.id,
-        email: user.email,
-        profile: user.profile,
-      });
-
-      // Gravando dados de autenticação no banco
-      this.logger.log('Erro ao gravar os daos de login no banco.');
-      await this.storeAfterSignIn({
-        userId: user.id,
-        refreshToken: signin.refreshToken,
-      });
-
-      // Retorna os tokens
-      return signin;
-    } catch (e) {
-      this.logger.log(e);
-      throw new UnauthorizedException();
-    }
   }
 
   async storeAfterSignIn(data: any): Promise<any> {
@@ -156,8 +118,23 @@ export class AuthRepository implements IAuthRepository {
       throw new UnauthorizedException('Código inválido.');
     }
 
+    // Gerando token e refresh token
+    this.logger.log('Erro ao criar o token.');
+    const signin = await this.token.createTokenJwt({
+      id: user.id,
+      email: user.email,
+      profile: user.profile,
+    });
+
+    // Gravando dados de autenticação no banco
+    this.logger.log('Erro ao gravar os daos de login no banco.');
+    await this.storeAfterSignIn({
+      userId: user.id,
+      refreshToken: signin.refreshToken,
+    });
+
     await this.authMFA.update({ userId: user.id }, { isValid: false });
-    return true;
+    return signin;
   }
 
   private create2faCode() {
