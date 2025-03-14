@@ -36,6 +36,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Dourado Dashboard API')
     .setDescription('API documentation for Dourado Dashboard')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

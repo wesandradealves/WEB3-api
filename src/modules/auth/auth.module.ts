@@ -10,7 +10,6 @@ import { UserEntity } from '@/domain/entities/user.entity';
 import { IAuthRepository } from '@/domain/interfaces/repositories/auth.repository';
 import { ISignInRefreshTokenUseCase } from '@/domain/interfaces/use-cases/auth/signin.refresh.token.use-case';
 import { ISignInUserSendTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.send.two.fa.use-case';
-import { ISignInUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.use-case';
 import { IValidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
 import { CognitoModule } from '@/infrastructure/providers/aws/cognito/cognito.module';
 import { SESModule } from '@/infrastructure/providers/aws/ses/ses.module';
@@ -22,7 +21,6 @@ import { JwtStrategy, RefreshJwtStrategy } from './jwt.auth.strategy';
 import { TokenService } from './services/token.service';
 import { SignInRefreshTokenUseCase } from './use-cases/signIn.refresh.token.use-case';
 import { SignInSendTwoFaUseCase } from './use-cases/signin.user.send.two.fa.use-case';
-import { SignInUseCase } from './use-cases/signin.user.use-case';
 import { ValidaTwoFaUseCase } from './use-cases/validate.two.fa.use-case';
 
 @Module({
@@ -48,10 +46,6 @@ import { ValidaTwoFaUseCase } from './use-cases/validate.two.fa.use-case';
     {
       provide: IAuthRepository,
       useClass: AuthRepository,
-    },
-    {
-      provide: ISignInUseCase,
-      useClass: SignInUseCase,
     },
     {
       provide: ISignInRefreshTokenUseCase,
