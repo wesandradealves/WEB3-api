@@ -4,8 +4,8 @@ import { ISignInUserSendTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/
 import { ISignInUseCase } from '@/domain/interfaces/use-cases/auth/signin.user.use-case';
 import { IValidateTwoFaUseCase } from '@/domain/interfaces/use-cases/auth/validate.two.fa.use-case';
 import { Body, Controller, Inject, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { RefreshJwtAuthGuard } from '../../jwt.auth.guard';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard, RefreshJwtAuthGuard } from '../../jwt.auth.guard';
 import { SignInRequestDto } from '../dtos/signIn.request.dto';
 import { SignInValidateTwoFaDto } from '../dtos/signIn.validate.twofa.dto';
 
@@ -31,6 +31,7 @@ export class AuthController {
   }
 
   @Post('signin/refresh-token/validate')
+  @ApiBearerAuth()
   @UseGuards(RefreshJwtAuthGuard)
   @ApiOperation({ summary: 'Validate refresh token' })
   async signInRefreshToken(@Request() data: any) {
@@ -40,12 +41,14 @@ export class AuthController {
   @Post('signin/send2fa')
   @ApiOperation({ summary: 'Send 2FA code' })
   @ApiBody({ type: SignInRequestDto })
+  @UseGuards(JwtAuthGuard)
   async signInSendTwoFa(@Body() data: SignInRequestDto) {
     return this.signInUserSendTwoFaUseCase.execute(data);
   }
 
   @Post('validate/2fa')
   @ApiOperation({ summary: 'Validate 2FA code' })
+  @UseGuards(JwtAuthGuard)
   async validaTwofa(@Body() data: SignInValidateTwoFaDto) {
     return this.vaidateTwoFaUseCase.execute(data.username, data.twofa);
   }
