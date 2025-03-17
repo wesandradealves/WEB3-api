@@ -5,6 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
+import { TransactionsDto } from "@/modules/transactions/api/dtos/transactions.dto";
 
 @Injectable()
 export class TransactionsRepository implements ItransactionsRepository {
@@ -19,12 +20,11 @@ export class TransactionsRepository implements ItransactionsRepository {
     this.bdmVersion = this.configService.get<string>('bdm.version');
    }
 
-  async getTransactionsByWalletId(walletId: number, username: string): Promise<any> {
-    const data = walletId
-    let user = await this.user.findOneBy({ email: username });
+  async getTransactionsByWalletId(data: TransactionsDto): Promise<any> {
+    let user = await this.user.findOneBy({ email: data.username });
 
     const result = await this.httpBdmProvider.fetchData({
-      url: `/${this.bdmVersion}/history/transactions-by-wallet/${data}`,
+      url: `/${this.bdmVersion}/history/transactions-by-wallet/${data.walletId}`,
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',

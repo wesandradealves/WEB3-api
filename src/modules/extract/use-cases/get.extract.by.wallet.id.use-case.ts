@@ -2,6 +2,7 @@ import { IExtractRepository } from "@/domain/interfaces/repositories/extract.rep
 import { IGetExtractByWalletIdUseCase } from "@/domain/interfaces/use-cases/extract/get.extract.by.wallet.id.use-case";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ExtractResponseDto } from "../api/dto/extract.reponse.dto";
+import { ExtractDto } from "../api/dto/extract.dto";
 
 @Injectable()
 export class GetExtractByWalletIdUseCase implements IGetExtractByWalletIdUseCase {
@@ -13,9 +14,9 @@ export class GetExtractByWalletIdUseCase implements IGetExtractByWalletIdUseCase
     this.logger = new Logger(GetExtractByWalletIdUseCase.name);
   }
 
-  async execute(walletId: number, username: string, limit: number): Promise<ExtractResponseDto> {
-    this.logger.log(walletId);
-    const result =  await this.extractRepository.getExtractByWalletId(walletId, username, limit);
+  async execute(data: ExtractDto): Promise<ExtractResponseDto> {
+    this.logger.log(data);
+    const result =  await this.extractRepository.getExtractByWalletId(data);
     return result
   }
 }

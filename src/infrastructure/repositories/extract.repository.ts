@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { HttpBdmProvider } from '../providers/http/http.bdm.provider';
 import { ExtractResponseDto } from '@/modules/extract/api/dto/extract.reponse.dto';
 import { ConfigService } from '@nestjs/config';
+import { ExtractDto } from '@/modules/extract/api/dto/extract.dto';
 
 @Injectable()
 export class ExtractRepository implements IExtractRepository {
@@ -20,12 +21,11 @@ export class ExtractRepository implements IExtractRepository {
   ) {
     this.bdmVersion = this.configService.get<string>('bdm.version');
   }
-  async getExtractByWalletId(walletId: number, username: string, limit: number): Promise<ExtractResponseDto> {
-    const data = walletId
-    const user = await this.user.findOneBy({ email: username });
+  async getExtractByWalletId(data: ExtractDto): Promise<ExtractResponseDto> {
+    const user = await this.user.findOneBy({ email: data.username });
 
     const result = await this.httpBdmProvider.fetchData({
-      url: `/${this.bdmVersion}/history/app/${data}/all?after=0&limit=${limit}`,
+      url: `/${this.bdmVersion}/history/app/${data.walletId}/all?after=0&limit=${data.limit}`,
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',

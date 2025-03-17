@@ -1,5 +1,7 @@
+import { IExtractDto } from "../dto/extract/extract.dto";
+
 export interface IExtractRepository {
-  getExtractByWalletId(walletId: number, username: string, limit: number): Promise<any>;
+  getExtractByWalletId(data: IExtractDto): Promise<any>;
 }
 
 

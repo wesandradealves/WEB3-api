@@ -25,7 +25,7 @@ const AppEnvs = () => ({
     tokenJwt: {
       secret: process.env.TOKEN_JWT_SECRET,
       signOptions: {
-        expiresIn: process.env.TOKEN_JWT_EXPIRES,
+        expiresIn: `${process.env.TOKEN_JWT_EXPIRES}s`,
       },
     },
   },
