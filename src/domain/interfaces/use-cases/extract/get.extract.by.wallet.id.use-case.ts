@@ -1,7 +1,8 @@
 import { ExtractResponseDto } from "@/modules/extract/api/dto/extract.reponse.dto";
+import { IExtractDto } from "../../dto/extract/extract.dto";
 
 export interface IGetExtractByWalletIdUseCase {
-  execute(walletId: number, username: string, limit: number): Promise<ExtractResponseDto>;
+  execute(data: IExtractDto): Promise<ExtractResponseDto>;
 }
 
 export const IGetExtractByWalletIdUseCase = Symbol('IGetExtractByWalletIdUseCase');

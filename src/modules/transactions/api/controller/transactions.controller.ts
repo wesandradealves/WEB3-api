@@ -1,8 +1,9 @@
 import { IGetTransactionsByWalletIdUseCase } from "@/domain/interfaces/use-cases/transactions/get.transactions.by.wallet.id.use-case";
-import { Body, Controller, Inject, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Inject, Query, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TransactionsResponseDto } from "../dtos/transactions.reponse.dto";
 import { JwtAuthGuard } from "@/modules/auth/jwt.auth.guard";
+import { TransactionsDto } from "../dtos/transactions.dto";
 
 @ApiTags('Transactions')
 @ApiBearerAuth()
@@ -13,25 +14,15 @@ export class TransanctionsController {
     private readonly getTransactionsByWalletIdUseCase: IGetTransactionsByWalletIdUseCase,
   ) {}
 
-  @Post('get-transactions-by-wallet')
+  @Get('by-wallet')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get transactions by wallet id and username' })
   @ApiResponse({ status: 200, description: 'Transactions retrieved successfully.', type: TransactionsResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   @ApiResponse({ status: 404, description: 'Transactions not found.' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        walletId: { type: 'number', example: 1 },
-        username: { type: 'string', example: 'john_doe@teste.com.br' },
-      },
-    },
-  })
   async getTransactionsByWalletId(
-    @Body('walletId') walletId: number,
-    @Body('username') username: string
+    @Query() data: TransactionsDto
   ): Promise<TransactionsResponseDto> {
-    return await this.getTransactionsByWalletIdUseCase.execute(walletId, username);
+    return await this.getTransactionsByWalletIdUseCase.execute(data);
   }
 }

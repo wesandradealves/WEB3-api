@@ -1,5 +1,7 @@
+import { ITransactionsDto } from "../dto/transactions/transactions.dto";
+
 export interface ItransactionsRepository {
-  getTransactionsByWalletId(walletId: number, username: string): Promise<any>;
+  getTransactionsByWalletId(data: ITransactionsDto): Promise<any>;
 }
 
 

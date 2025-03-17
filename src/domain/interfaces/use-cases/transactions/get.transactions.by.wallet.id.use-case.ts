@@ -1,6 +1,7 @@
+import { ITransactionsDto } from "../../dto/transactions/transactions.dto";
 
 export interface IGetTransactionsByWalletIdUseCase {
-  execute(walletId: number, username:string): Promise<any>;
+  execute(data: ITransactionsDto): Promise<any>;
 }
 
 export const IGetTransactionsByWalletIdUseCase = Symbol('IGetTransactionsByWalletIdUseCase');
