@@ -12,7 +12,7 @@ export const dataSourceDashBoard = {
   database: process.env.DATABASE_NAME,
   ssl: false,
   entities: ['dist/domain/entities/**/*.entity{.ts,.js}'],
-  synchronize: true,
+  synchronize: false,
 } as DataSourceOptions;
 
 // Utilizado para gerar e executar as migrations

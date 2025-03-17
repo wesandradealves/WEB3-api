@@ -16,12 +16,12 @@ export class UserController {
 
   @Post('register')
   register(@Body() data: CreateUserRequestDto): Promise<UserEntity> {
-    return this.createUserUseCase.create(data);
+    return this.createUserUseCase.execute(data);
   }
 
   @Patch('disable/:id')
   disableUser(@Param('id') id: string): Promise<any> {
-    return this.updateUserUseCase.disableUser(id);
+    return this.updateUserUseCase.execute(id);
   }
 
   @Patch('profile/:id')
@@ -29,11 +29,11 @@ export class UserController {
     @Param('id') id: string,
     @Body() data: ChangeUserProfileRequestDto
   ) {
-    return this.updateUserUseCase.updateUserProfile(id, data.profile);
+    return this.updateUserUseCase.execute(id, data.profile);
   }
 
   @Delete('delete/:id')
   deleteUser(@Param('id') id: string) {
-    return this.deleteUserUseCase.delete(id);
+    return this.deleteUserUseCase.execute(id);
   }
 }

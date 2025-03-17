@@ -8,6 +8,9 @@ import { UserEntity } from '@/domain/entities/user.entity';
 import { HttpModule } from '@/infrastructure/providers/http/http.module';
 import { DeleteUserUseCase } from './use-cases/delete.user.use-case';
 import { UpdateUserUseCase } from './use-cases/update.user.use-case';
+import { IUpdateUseCase } from '@/domain/interfaces/use-cases/user/update.user.use-case';
+import { IDeleteUserUseCase } from '@/domain/interfaces/use-cases/user/delete.user.use-case';
+import { ICreateUserUseCase } from '@/domain/interfaces/use-cases/user/create.user.use-case';
 
 @Module({
   imports: [
@@ -16,9 +19,9 @@ import { UpdateUserUseCase } from './use-cases/update.user.use-case';
   ],
   controllers: [UserController],
   providers: [
-    UpdateUserUseCase,
-    DeleteUserUseCase,
-    CreateUserUseCase,
+    { provide: IUpdateUseCase, useClass: UpdateUserUseCase },
+    { provide: IDeleteUserUseCase, useClass: DeleteUserUseCase },
+    { provide: ICreateUserUseCase, useClass: CreateUserUseCase },
     { provide: IUserRepository, useClass: UserRepository },
   ],
 })

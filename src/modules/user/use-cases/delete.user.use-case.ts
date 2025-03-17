@@ -1,4 +1,5 @@
 import { IUserRepository } from '@/domain/interfaces/repositories/user.repository';
+import { IDeleteUserUseCase } from '@/domain/interfaces/use-cases/user/delete.user.use-case';
 import { 
   BadRequestException, 
   Inject, 
@@ -9,18 +10,16 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class DeleteUserUseCase {
+export class DeleteUserUseCase implements IDeleteUserUseCase {
   private readonly logger = new Logger(DeleteUserUseCase.name);
   constructor(
     @Inject(IUserRepository)
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async delete(id: string): Promise<any> {
+  async execute(id: string): Promise<any> {
     try {
-      // ToDo Validar tipo de resposta esperado, no momento any, pois o retorno do delete é o mesmo do banco de dados com affected igual a 1 se deletado com sucesso.
-      const deleteUser = await this.userRepository.delete(id);
-      return deleteUser;
+      return this.userRepository.delete(id);
     } catch (error) {
       this.logger.error(`STATUS: ${error.status} | MESSAGE: ${error.message}`);
       this.handleDBExceptions(error);

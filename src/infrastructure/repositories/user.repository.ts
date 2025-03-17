@@ -17,7 +17,7 @@ export class UserRepository implements IUserRepository {
   
   async create(data: ICreateUser): Promise<ViewUserDto> {
     try {
-      return this.userRepository.save(data);
+      return await this.userRepository.save(data);
     } catch (error) {
       this.logger.error(`STATUS: ${error.status} | MESSAGE: ${error.message}`);
       this.handleDBExceptions(error);
@@ -25,7 +25,7 @@ export class UserRepository implements IUserRepository {
   }
   async update(id: string, data: IUpdateUser): Promise<UpdateResult> {
     try {
-      return this.userRepository.update({id}, data);
+      return await this.userRepository.update({id}, data);
     } catch (error) {
       this.logger.error(`STATUS: ${error.status} | MESSAGE: ${error.message}`);
       this.handleDBExceptions(error);
@@ -33,7 +33,7 @@ export class UserRepository implements IUserRepository {
   }
   async delete(id: string): Promise<any> {
     try {
-      return this.userRepository.softDelete(id);
+      return await this.userRepository.softDelete(id);
     } catch (error) {
       this.logger.error(`STATUS: ${error.status} | MESSAGE: ${error.message}`);
       this.handleDBExceptions(error);
