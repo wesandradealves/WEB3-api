@@ -1,24 +1,22 @@
-import { IGetTransactionsByWalletIdUseCase } from '@/domain/interfaces/use-cases/transactions/get.transactions.by.wallet.id.use-case';
-import { Logger, Module } from '@nestjs/common';
-import { GetTransactionsByWalletIdUseCase } from './use-cases/get.transactions.by.wallet.id.use-case';
-import { TransactionsRepository } from '@/infrastructure/repositories/transactions.repository';
-import { ItransactionsRepository } from '@/domain/interfaces/repositories/transactions.repository';
-import { TransanctionsController } from './api/controller/transactions.controller';
-import { HttpModule } from '@/infrastructure/providers/http/http.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '@/domain/entities/user.entity';
+import { ITransactionsExternal } from '@/domain/interfaces/external/transactions.external';
+import { IGetTransactionsByWalletIdUseCase } from '@/domain/interfaces/use-cases/transactions/get.transactions.by.wallet.id.use-case';
+import { TransactionsExternal } from '@/infrastructure/external/transactions.external';
+import { CognitoModule } from '@/infrastructure/providers/aws/cognito/cognito.module';
+import { HttpModule } from '@/infrastructure/providers/http/http.module';
+import { Logger, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TransanctionsController } from './api/controller/transactions.controller';
+import { GetTransactionsByWalletIdUseCase } from './use-cases/get.transactions.by.wallet.id.use-case';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserEntity]),
-    HttpModule,
-  ],
+  imports: [TypeOrmModule.forFeature([UserEntity]), HttpModule, CognitoModule],
   controllers: [TransanctionsController],
   providers: [
     Logger,
     {
-      provide: ItransactionsRepository,
-      useClass: TransactionsRepository,
+      provide: ITransactionsExternal,
+      useClass: TransactionsExternal,
     },
     {
       provide: IGetTransactionsByWalletIdUseCase,
@@ -26,4 +24,4 @@ import { UserEntity } from '@/domain/entities/user.entity';
     },
   ],
 })
-export class TransactionsModule { }
+export class TransactionsModule {}
