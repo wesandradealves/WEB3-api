@@ -36,6 +36,7 @@ export class AuthController {
     return this.signInUserSendTwoFaUseCase.execute(data);
   }
 
+  @HttpCode(200)
   @Post('signin/refresh-token/validate')
   @ApiBearerAuth()
   @UseGuards(RefreshJwtAuthGuard)
@@ -44,6 +45,7 @@ export class AuthController {
     return this.signInRefreshTokenUseCase.execute(data.user, data.user.token);
   }
 
+  @HttpCode(200)
   @Post('validate/2fa')
   @ApiOperation({ summary: 'Validate 2FA code' })
   async validaTwofa(@Body() data: SignInValidateTwoFaDto) {
