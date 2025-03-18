@@ -115,7 +115,7 @@
 				},
 				{
 					"name": "BASE_URL_BDM",
-					"value": "https://opiihi8ab4.execute-api.us-east-2.amazonaws.com/v26"
+					"value": "https://opiihi8ab4.execute-api.us-east-2.amazonaws.com"
 				},
 				{
 					"name": "BDM_API_KEY",
