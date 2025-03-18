@@ -20,7 +20,7 @@ export class AuthController {
     private readonly vaidateTwoFaUseCase: IValidateTwoFaUseCase,
   ) {}
 
-  @Post('signin/send2fa')
+  @Post('signin')
   @ApiOperation({ summary: 'Authenticate user and password and send 2FA code' })
   @ApiBody({ type: SignInRequestDto })
   async signInSendTwoFa(@Body() data: SignInRequestDto) {
@@ -34,7 +34,6 @@ export class AuthController {
   async signInRefreshToken(@Request() data: any) {
     return this.signInRefreshTokenUseCase.execute(data.user, data.user.token);
   }
-
 
   @Post('validate/2fa')
   @ApiOperation({ summary: 'Validate 2FA code' })
