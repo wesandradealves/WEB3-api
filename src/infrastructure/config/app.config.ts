@@ -29,10 +29,12 @@ const AppEnvs = () => ({
       },
     },
   },
-  bdm:{
+  bdm: {
     version: process.env.BDM_VERSION,
     url: process.env.BASE_URL_BDM,
-  }
+    username: process.env.BDM_AUTH_USERNAME,
+    password: process.env.BDM_AUTH_PASSWORD,
+  },
 });
 
 export type AppEnvsType = ReturnType<typeof AppEnvs>;
