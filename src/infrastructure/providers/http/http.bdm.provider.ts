@@ -1,17 +1,32 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 
 @Injectable()
 export class HttpBdmProvider {
   private httpClient: AxiosInstance;
 
-  constructor(private readonly logger: Logger) {
+  constructor(
+    private readonly logger: Logger,
+    private readonly configService: ConfigService,
+  ) {
     this.logger = new Logger(HttpBdmProvider.name);
 
     this.httpClient = axios.create({
-      baseURL: process.env.BASE_URL_BDM,
+      baseURL: `${this.configService.get('bdm.url')}/${this.configService.get('bdm.version')}`,
       timeout: +process.env.HTTP_TIMEOUT | 30000,
     });
+
     this.httpClient.interceptors.request.use(function (config) {
       config['metadata'] = { ...config['metadata'], startDate: new Date() };
       return config;
@@ -20,7 +35,8 @@ export class HttpBdmProvider {
       (response) => {
         const { config } = response;
         config['metadata'] = { ...config['metadata'], endDate: new Date() };
-        const duration = config['metadata'].endDate.getTime() - config['metadata'].startDate.getTime();
+        const duration =
+          config['metadata'].endDate.getTime() - config['metadata'].startDate.getTime();
         this.logger.log(`${config.method.toUpperCase()} ${config.url} ${duration}ms`);
         return response;
       },

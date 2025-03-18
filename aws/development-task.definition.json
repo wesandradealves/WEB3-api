@@ -60,6 +60,14 @@
 					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_USERNAME::"
 				},
 				{
+					"name": "BDM_AUTH_USERNAME",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:BDM_AUTH_USERNAME::"
+				},
+				{
+					"name": "BDM_AUTH_PASSWORD",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:BDM_AUTH_PASSWORD::"
+				},
+				{
 					"name": "AWS_COGNITO_CLIENT_ID",
 					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID::"
 				},
@@ -103,7 +111,7 @@
 				},
 				{
 					"name": "BDM_VERSION",
-					"value": "V26"
+					"value": "v26"
 				},
 				{
 					"name": "BASE_URL_BDM",
