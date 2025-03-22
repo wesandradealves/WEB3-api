@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { CognitoModule } from './infrastructure/providers/aws/cognito/cognito.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { ExtractModule } from './modules/extract/extract.module';
+import { TransferModule } from './modules/transfer/transfer.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { ExtractModule } from './modules/extract/extract.module';
     SESModule,
     CognitoModule,
     TransactionsModule,
-    ExtractModule
+    ExtractModule,
+    TransferModule
   ],
 })
 export class ApiModule {}
