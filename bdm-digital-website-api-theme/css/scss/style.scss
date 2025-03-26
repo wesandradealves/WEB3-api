@@ -1,0 +1,30 @@
+/*! 
+    Theme Name: BDM Digital Website API 
+    Theme URI: Backend e Rest Rsources para website BDM Digital
+    Author: Dourado Cash
+    Author URI: https://mercado.dourado.cash/
+    Version: 1.0
+    License: Dourado Cash
+    License URI: https://mercado.dourado.cash/
+    Text Domain: bdm-digital-website-api
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+@import 'breakpoints';
+@import 'colors';
+@import 'util';
+@import 'reset';
+@import 'objects';
+@import 'general';
+
+html, body {
+    background-color: black;
+}
+
+.custom-logo-link {
+    max-width: 640px;
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
