@@ -64,3 +64,12 @@ functions:
           bucket: development-dashboard-documents
           event: s3:ObjectCreated:*
           existing: true
+
+  transferAssets:
+    timeout: 30
+    memorySize: 512
+    handler: ./src/functions/transfer-assets/handler.handler
+    events:
+      - http:
+          method: get
+          path: /transfer-assets
