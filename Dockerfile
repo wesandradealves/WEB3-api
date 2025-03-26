@@ -47,12 +47,23 @@ RUN composer config --global allow-plugins.johnpbloch/wordpress-core-installer t
 # Install WordPress via Composer (this will install WordPress in the container's wp-content)
 RUN composer install
 
-# Copy Plugins in a single command
-COPY ./classic-editor ./acf-to-rest-api ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/
-
 # Ensure proper permissions on the plugin files
 RUN chown -R www-data:www-data /var/www/html/wp-content/plugins && \
     chmod -R 755 /var/www/html/wp-content/plugins
+
+# Ensure proper permissions on the theme files
+RUN chown -R www-data:www-data /var/www/html/wp-content/themes && \
+    chmod -R 755 /var/www/html/wp-content/themes
+
+# Copy Plugins in a single command
+COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
+COPY ./sass-to-css-compiler /var/www/html/wp-content/plugins/sass-to-css-compiler
+COPY ./acf-to-rest-api /var/www/html/wp-content/plugins/acf-to-rest-api
+COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
+COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
+
+# Copy Theme
+COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
 
 # Ensure proper permissions before deleting unwanted plugins
 RUN chmod -R 777 /var/www/html/wp-content/plugins && \
@@ -64,6 +75,11 @@ COPY .env /var/www/.env
 
 # Remove default WordPress files from the image
 RUN rm -rf /var/www/html/wordpress
+
+# Ensure the uploads directory exists and is writable
+RUN mkdir -p /var/www/html/wp-content/uploads && \
+    chown -R www-data:www-data /var/www/html/wp-content/uploads && \
+    chmod -R 775 /var/www/html/wp-content/uploads
 
 RUN composer update
 
