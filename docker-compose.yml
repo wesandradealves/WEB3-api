@@ -18,12 +18,15 @@ services:
       - /var/www/html
       - ./bdm-digital-website-api-theme:/var/www/html/wp-content/themes/bdm-digital-website-api-theme
       - ./classic-editor:/var/www/html/wp-content/plugins/classic-editor
+      - ./WP-SCSS-master:/var/www/html/wp-content/plugins/WP-SCSS-master
+      - ./wp-openapi:/var/www/html/wp-content/plugins/wp-openapi
       - ./sass-to-css-compiler:/var/www/html/wp-content/plugins/sass-to-css-compiler
       - ./acf-to-rest-api:/var/www/html/wp-content/plugins/acf-to-rest-api
       - ./advanced-custom-fields-pro:/var/www/html/wp-content/plugins/advanced-custom-fields-pro
       - ./wp-rest-api-controller:/var/www/html/wp-content/plugins/wp-rest-api-controller
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./wp-content:/var/www/html/wp-content    
+      - ./docs:/var/www/html/docs   
   mysql:
     image: mariadb:latest
     environment:
