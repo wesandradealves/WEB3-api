@@ -16,6 +16,7 @@ services:
       - mysql
     volumes:
       - /var/www/html  
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
   mysql:
     image: mariadb:latest
     environment:

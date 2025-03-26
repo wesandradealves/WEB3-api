@@ -47,19 +47,18 @@ RUN composer config --global allow-plugins.johnpbloch/wordpress-core-installer t
 # Install WordPress via Composer (this will install WordPress in the container's wp-content)
 RUN composer install
 
-# Copy Plugins
-COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
-COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
+# Copy Plugins in a single command
+COPY ./classic-editor ./acf-to-rest-api ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/
 
 # Ensure proper permissions on the plugin files
 RUN chown -R www-data:www-data /var/www/html/wp-content/plugins && \
     chmod -R 755 /var/www/html/wp-content/plugins
 
-# Ensure proper permissions before deleting
+# Ensure proper permissions before deleting unwanted plugins
 RUN chmod -R 777 /var/www/html/wp-content/plugins && \
     ls -lah /var/www/html/wp-content/plugins && \
     rm -rf /var/www/html/wp-content/plugins/hello.php /var/www/html/wp-content/plugins/hello-dolly /var/www/html/wp-content/plugins/akismet
-    
+
 # Copy the .env file into the container
 COPY .env /var/www/.env
 
@@ -70,4 +69,3 @@ RUN composer update
 
 # Expose port 80
 EXPOSE 80
-
