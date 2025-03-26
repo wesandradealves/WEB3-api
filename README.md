@@ -1,4 +1,4 @@
-# 🚀 WordPress REST API with Docker
+# 🚀 WordPress BDM Digital REST API with Docker
 
 This repository contains a **WordPress setup** with a custom API theme and required plugins, all managed using **Docker Compose**.
 
