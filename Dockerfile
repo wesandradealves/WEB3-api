@@ -47,7 +47,9 @@ RUN composer config --global allow-plugins.johnpbloch/wordpress-core-installer t
 # Install WordPress via Composer (this will install WordPress in the container's wp-content)
 RUN composer install
 
+# Copy Plugins
 COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
+COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
 
 # Ensure proper permissions on the plugin files
 RUN chown -R www-data:www-data /var/www/html/wp-content/plugins && \
