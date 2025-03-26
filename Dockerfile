@@ -88,5 +88,8 @@ RUN mkdir -p /var/www/html/wp-content/uploads && \
 
 RUN composer update
 
+# Add FS_METHOD to the wp-config.php
+RUN sleep 10 && echo "define('FS_METHOD', 'direct');" >> /var/www/html/wp-config.php
+
 # Expose port 80
 EXPOSE 80
