@@ -1,0 +1,233 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+.tools_page_wp-rest-api-controller-settings form .submit-buttons {
+  display: inline-block;
+  margin-top: 2em;
+}
+
+.tools_page_wp-rest-api-controller-settings form .submit-buttons input {
+  margin-right: 10px;
+  min-height: 30px;
+}
+
+.tools_page_wp-rest-api-controller-settings form .submit-buttons .delete-rest-api-cache-tipso {
+  border-bottom: none;
+}
+
+.endpoint-link[disabled="disabled"] {
+  opacity: 0.4;
+}
+
+.object-meta-data .rest-api-controller-meta-data-table th {
+  padding: 10px 10px 10px 0;
+  text-align: center;
+}
+
+.object-meta-data .rest-api-controller-meta-data-table td {
+  padding: 11px 10px;
+  padding-left: 0;
+  text-align: center;
+}
+
+.rest-api-controller-meta-data-table th.check-column {
+  padding: 18px 0 0 3px !important;
+}
+
+.edit-endpoint-secondary-btn {
+  height: 25px !important;
+  font-size: x-small !important;
+  margin-left: 5px !important;
+}
+
+/* Input field shown when editing object endpoint URLs */
+.tools_page_wp-rest-api-controller-settings .inline-input {
+  display: inline;
+  width: 150px;
+}
+
+/** Rest API Endpoint Updated Notice **/
+.rest-api-controller-warning-notice {
+  display: none;
+  padding: 8px 12px;
+  margin-top: 5px;
+  border-left: 4px solid #fdc546;
+  background: #fff;
+  box-shadow: 0 1px 1px 0 rgba(0 0 0 / 10%);
+}
+
+.rest-api-controller-warning-notice .dashicons-info {
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.object-meta-data {
+  margin-bottom: 1em;
+}
+
+.rest-api-endpoint-container {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.edit-rest-permalink-icon {
+  margin-right: 8px;
+}
+
+.object-meta-data.hidden-container,
+.rest-api-endpoint-container.hidden-container {
+  display: none;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 100px;
+  height: 20px;
+  margin: 12px auto;
+  margin-top: 0;
+  padding: 3px;
+  background-color: white;
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0 0 0 / 5%);
+  cursor: pointer;
+  background-image: linear-gradient(to bottom, #eee, white 25px);
+}
+
+.switch.small {
+  width: 85%;
+}
+
+.switch-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #eceeef;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(0 0 0 / 12%), inset 0 0 2px rgba(0 0 0 / 15%);
+  transition: 0.15s ease-out;
+  transition-property: opacity background;
+}
+
+.switch-label::before,
+.switch-label::after {
+  position: absolute;
+  top: 50%;
+  margin-top: -0.5em;
+  line-height: 1;
+  transition: inherit;
+  left: 0;
+}
+
+.switch-label::before {
+  content: attr(data-off);
+  color: #aaa;
+  width: 100%;
+  text-align: center;
+  text-shadow: 0 1px rgba(255 255 255 / 50%);
+}
+
+.switch-label::after {
+  content: attr(data-on);
+  color: white;
+  width: 100%;
+  text-align: center;
+  text-shadow: 0 1px rgba(0 0 0 / 2%);
+  opacity: 0;
+}
+
+.switch-input:checked ~ .switch-label {
+  background: #47a8d8;
+  box-shadow: inset 0 1px 2px rgba(0 0 0 / 15%), inset 0 0 3px rgba(0 0 0 / 2%);
+}
+
+.switch-input:checked ~ .switch-label::before {
+  opacity: 0;
+}
+
+.switch-input:checked ~ .switch-label::after {
+  opacity: 1;
+}
+
+.switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px rgba(0 0 0 / 2%);
+  background-image: linear-gradient(to bottom, white 40%, #f0f0f0);
+  transition: left 0.15s ease-out;
+}
+
+.switch-handle::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  box-shadow: inset 0 1px rgba(0 0 0 / 2%);
+  background-image: linear-gradient(to bottom, #eee, white);
+}
+
+.switch-input:checked ~ .switch-handle {
+  left: 85px;
+  box-shadow: -1px 1px 5px rgb(0 0 0 / 20%);
+}
+
+.switch-green > .switch-input:checked ~ .switch-label {
+  background: #4fb845;
+}
+
+.switch.small > .switch-input:checked ~ .switch-handle {
+  left: 80%;
+}
+
+/* Settings Page Tabs */
+ul#rest-controller-tabs-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li.rest-controller-tabs-list-item {
+  float: left;
+  background-color: #000;
+}
+
+li.rest-controller-tabs-list-item :hover {
+  background-color: #4fb845;
+}
+
+li.rest-controller-tabs-list-item a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+li.rest-controller-tabs-list-item.active,
+li.rest-controller-tabs-list-item.active :hover {
+  background-color: #4fb845;
+}
