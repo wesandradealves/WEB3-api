@@ -37,14 +37,21 @@ function prefix_add_footer_styles()
 }
 
 function prefix_add_header_styles()
-{
+{ 
+    wp_enqueue_script(
+        "swagger-ui",
+        "//cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js",
+        [],
+        false,
+        false
+    );
     wp_enqueue_script(
         "jquery",
         "//cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js",
         [],
         false,
         false
-    );
+    );   
     wp_enqueue_style(
         "bootstrap-grid",
         "//cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap-grid.min.css",
@@ -66,7 +73,15 @@ function prefix_add_header_styles()
         null,
         "all"
     );
+    wp_enqueue_style(
+        "swagger-ui",
+        "//cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css",
+        [],
+        null,
+        "all"
+    );
     wp_enqueue_style('style', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css'));
+    wp_enqueue_style('scss', get_template_directory_uri() . '/css/scss/style.scss', array(), filemtime(get_template_directory() . '/css/scss/style.scss'));
 }
 
 function disable_default_dashboard_widgets()
@@ -157,13 +172,10 @@ function ws_get_images_urls($object, $field_name, $request)
 }
 
 function create_homepage_on_activation() {
-    $homepage_title = 'Home';
-    $homepage = get_page_by_title($homepage_title);
-
-    if (!$homepage) {
+    if (!get_page_by_title('Home')) {
         // Create the home page
         $homepage_id = wp_insert_post([
-            'post_title'     => $homepage_title,
+            'post_title'     => 'Home',
             'post_content'   => 'Welcome to our website!',
             'post_status'    => 'publish',
             'post_type'      => 'page',
@@ -179,6 +191,21 @@ function create_homepage_on_activation() {
         flush_rewrite_rules();
     }
 
+    if (!get_page_by_path('swagger')) {
+        // Create the page
+        $page_data = array(
+            'post_title'   => 'Swagger',
+            'post_content' => '', // Empty content since the page template will render it
+            'post_status'  => 'publish',
+            'post_type'    => 'page',
+            'post_name'    => 'swagger', // Friendly URL
+            'page_template' => 'templates/swagger.php' // Path to the Swagger template
+        );
+        
+        // Insert the page
+        wp_insert_post($page_data);
+    }
+
     // Enable support for custom logo
     add_theme_support('custom-logo', array(
         'width'       => 200,  // Optional: default width
@@ -190,11 +217,13 @@ function create_homepage_on_activation() {
 }
 
 function remove_homepage_on_deactivation() {
-    $homepage_title = 'Home';
-    $homepage = get_page_by_title($homepage_title);
+    if (get_page_by_title('Home')) {
+        wp_delete_post(get_page_by_title('Home')->ID, true); // Permanently delete the page
+    }
 
-    if ($homepage) {
-        wp_delete_post($homepage->ID, true); // Permanently delete the page
+    if (get_page_by_path('swagger')) {
+        // Delete the page
+        wp_delete_post(get_page_by_path('swagger')->ID, true); // true to force delete, not move to trash
     }
 
     // Reset front page settings
