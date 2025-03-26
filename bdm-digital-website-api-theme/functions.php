@@ -81,6 +81,7 @@ function prefix_add_header_styles()
         "all"
     );
     wp_enqueue_style('style', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css'));
+    wp_enqueue_style('scss', get_template_directory_uri() . '/css/scss/style.scss', array(), filemtime(get_template_directory() . '/css/scss/style.scss'));
 }
 
 function disable_default_dashboard_widgets()
