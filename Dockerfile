@@ -62,6 +62,7 @@ COPY ./acf-to-rest-api /var/www/html/wp-content/plugins/acf-to-rest-api
 COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
 COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
 COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
+COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
 
 # Copy Theme
 COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
@@ -73,6 +74,9 @@ RUN chmod -R 777 /var/www/html/wp-content/plugins && \
 
 # Copy the .env file into the container
 COPY .env /var/www/.env
+
+# Copy Swagger UI
+COPY ./docs /var/www/html/docs
 
 # Remove default WordPress files from the image
 RUN rm -rf /var/www/html/wordpress

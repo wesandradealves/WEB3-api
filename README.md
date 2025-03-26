@@ -121,3 +121,22 @@ docker-compose restart mysql
 ```sh
 docker-compose exec wordpress chown -R www-data:www-data /var/www/html
 ```
+
+### **Swagger API Documentation**
+You can view the Swagger documentation for the WordPress REST API at the following URL:
+
+- Swagger Documentation: http://localhost:8000/swagger
+
+This will load the Swagger UI with the OpenAPI specification for the WordPress REST API.
+
+**Creating the Swagger Page Programmatically**
+
+Upon theme activation, a page will be created at the URL http://localhost:8000/swagger using the swagger.php template. The Swagger UI will be embedded on this page, showing the OpenAPI specification for your REST API.
+
+**How It Works:**
+
+- The Swagger UI is embedded within a page template (swagger.php) located in the theme's templates/swagger/ folder.
+
+- The page is created when the theme is activated and is removed when the theme is uninstalled.
+
+This makes it easy to access and view your API documentation directly from your WordPress site.

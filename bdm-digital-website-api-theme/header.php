@@ -7,7 +7,7 @@
 </head>
 
 <body <?php body_class('bg-black'); ?>>
-    <div id="wrap" class="d-flex justify-content-center align-items-center p-5 vh-100 w-100 overflow-hidden">
+    <div id="wrap" class="d-flex justify-content-center align-items-center p-5 vh-100 w-100">
     <!-- Skip Link for Accessibility -->
     <a href="#main-content" class="d-none">
         Skip to content
