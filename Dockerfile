@@ -61,6 +61,7 @@ COPY ./sass-to-css-compiler /var/www/html/wp-content/plugins/sass-to-css-compile
 COPY ./acf-to-rest-api /var/www/html/wp-content/plugins/acf-to-rest-api
 COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
 COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
+COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
 
 # Copy Theme
 COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
