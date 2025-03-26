@@ -1,0 +1,66 @@
+service: dashboar-file-processor-lambda
+frameworkVersion: '^3.0.0'
+
+useDotenv: true
+
+plugins:
+  - serverless-webpack
+  - serverless-localstack
+  - serverless-offline-sqs
+  - serverless-offline
+
+configValidationMode: warn
+
+package:
+  individually: true
+
+custom:
+  serverless-offline-sqs:
+    autoCreate: true
+    apiVersion: '2012-11-05'
+    endpoint: 'http://127.0.0.1:9324'
+    region: sa-east-1
+    accessKeyId: 'root'
+    secretAccessKey: 'root'
+    skipCacheInvalidation: false
+
+  localstack:
+    stages:
+      - local
+    host: http://localhost
+    edgePort: 4566
+
+  serverless-offline:
+    httpPort: 6870
+    lambdaPort: 3003
+    noPrependStageInUrl: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: sa-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:ListBucket
+          Resource:
+            - "arn:aws:s3:::development-dashboard-documents"
+            - "arn:aws:s3:::development-dashboard-documents/*"
+
+functions:
+  dashbooardFileProcessor:
+    timeout: 30
+    memorySize: 512
+    handler: ./src/functions/dashboard-file-processor/handler.handler
+    events:
+      - http:
+          method: get
+          path: /dashboard-file-processor
+      - s3:
+          bucket: development-dashboard-documents
+          event: s3:ObjectCreated:*
+          existing: true

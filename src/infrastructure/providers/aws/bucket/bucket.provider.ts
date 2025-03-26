@@ -31,9 +31,9 @@ export class BucketProvider implements IBucketProvider {
 
   async uploadFile(bucketName: string, filePath: string, fileContent: Buffer): Promise<any> {
     const params: PutObjectCommandInput = {
-      Bucket: bucketName, // Nome do bucket
-      Key: filePath, // Caminho do arquivo no bucket
-      Body: fileContent, // Conteúdo do arquivo
+      Bucket: bucketName,
+      Key: filePath,
+      Body: fileContent,
     };
   
     const command = new PutObjectCommand(params);
