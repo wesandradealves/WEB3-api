@@ -20,7 +20,7 @@ YOUR_REPO/ │── bdm-digital-website-api-theme/ # Custom WordPress Theme │
 
 ---
 
-## 🛠 Installation & Setup
+## Installation & Setup
 
 ### **Prerequisites**
 Before you begin, make sure you have the following installed:
