@@ -81,3 +81,43 @@ These plugins are pre-installed in the container:
 - ACF to REST API
 - Advanced Custom Fields PRO
 - WP REST API Controller
+
+### **Development Commands**
+
+**Rebuild the Containers**
+```sh
+docker-compose up -d --build
+```
+
+**Stop the Containers**
+```sh
+docker-compose down
+```
+
+**View Logs**
+```sh
+docker-compose logs -f
+```
+
+**Run WP-CLI Commands**
+```sh
+docker-compose exec wordpress wp plugin list
+```
+
+**Reset Everything (Delete Database)**
+```sh
+docker-compose down -v
+```
+
+### **Troubleshooting**
+
+**Database Connection Issues**
+```sh
+docker-compose ps
+docker-compose restart mysql
+```
+
+**Permission Issues**
+```sh
+docker-compose exec wordpress chown -R www-data:www-data /var/www/html
+```
