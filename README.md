@@ -1,5 +1,5 @@
 
-# BDM Digital Wordpress Plugin
+# BDM Digital Website API
 
 This repository contains a fully Dockerized WordPress application with Composer for managing dependencies. The application includes:
 - WordPress installed via Composer.
@@ -97,12 +97,6 @@ Use the credentials defined in the `.env` file for the database:
 
 ### 3. PhpMyAdmin
 - Accessible on [http://localhost:8081](http://localhost:8081).
-
----
-
-## Custom Plugin
-
-The custom plugin (`bdm-digital-payment-gateway`) is included in the `/bdm-digital-payment-gateway` folder. It is automatically copied into the WordPress plugins directory inside the container during the build process.
 
 ---
 
