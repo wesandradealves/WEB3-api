@@ -16,7 +16,20 @@ This repository contains a **WordPress setup** with a custom API theme and requi
 ---
 
 ## Project Structure
-YOUR_REPO/ │── bdm-digital-website-api-theme/ # Custom WordPress Theme │── classic-editor/ # Classic Editor Plugin │── sass-to-css-compiler/ # SASS Compiler Plugin │── acf-to-rest-api/ # ACF to REST API Plugin │── advanced-custom-fields-pro/ # Advanced Custom Fields Plugin │── wp-rest-api-controller/ # WP REST API Controller Plugin │── docker-compose.yml # Docker Compose Configuration │── Dockerfile # Custom WordPress Image │── composer.json # WordPress with Composer │── .env # Environment Variables │── uploads.ini # PHP Configuration │── wp-content/ # WordPress Content Directory
+
+```sh
+/
+│── bdm-digital-website-api-theme/     # Custom WordPress Theme
+│── classic-editor/                     # Classic Editor Plugin
+│── sass-to-css-compiler/               # SASS Compiler Plugin
+│── acf-to-rest-api/                    # ACF to REST API Plugin
+│── advanced-custom-fields-pro/         # Advanced Custom Fields Plugin
+│── wp-rest-api-controller/             # WP REST API Controller Plugin
+│── docker-compose.yml                   # Docker Compose Configuration
+│── Dockerfile                           # Custom WordPress Image
+│── composer.json                        # WordPress with Composer
+│── .env                                 # Environment Variables
+```
 
 ---
 
