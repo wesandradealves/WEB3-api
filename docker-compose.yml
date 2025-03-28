@@ -24,6 +24,7 @@ services:
       - ./acf-to-rest-api:/var/www/html/wp-content/plugins/acf-to-rest-api
       - ./advanced-custom-fields-pro:/var/www/html/wp-content/plugins/advanced-custom-fields-pro
       - ./wp-rest-api-controller:/var/www/html/wp-content/plugins/wp-rest-api-controller
+      - ./jwt-authentication-for-wp-rest-api:/var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./wp-content:/var/www/html/wp-content    
       - ./docs:/var/www/html/docs   
