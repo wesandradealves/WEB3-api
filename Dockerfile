@@ -63,6 +63,7 @@ COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-cust
 COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
 COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
 COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
+COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
 
 # Copy Theme
 COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
@@ -88,8 +89,17 @@ RUN mkdir -p /var/www/html/wp-content/uploads && \
 
 RUN composer update
 
-# Add FS_METHOD to the wp-config.php
-RUN sleep 10 && echo "define('FS_METHOD', 'direct');" >> /var/www/html/wp-config.php
+# Copy the script to the container
+COPY ./setup-wp-config.sh /usr/local/bin/setup-wp-config.sh
+
+# Ensure the script has Unix line endings
+RUN apt-get update && apt-get install -y dos2unix && dos2unix /usr/local/bin/setup-wp-config.sh
+
+# Ensure the script is executable
+RUN chmod +x /usr/local/bin/setup-wp-config.sh
+
+# Set the script as the ENTRYPOINT
+ENTRYPOINT ["/usr/local/bin/setup-wp-config.sh"]
 
 # Expose port 80
 EXPOSE 80
