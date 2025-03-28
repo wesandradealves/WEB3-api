@@ -101,5 +101,11 @@ RUN chmod +x /usr/local/bin/setup-wp-config.sh
 # Set the script as the ENTRYPOINT
 ENTRYPOINT ["/usr/local/bin/setup-wp-config.sh"]
 
+# Copiar o script de inicialização para o contêiner
+COPY ./init-db.sh /usr/local/bin/init-db.sh
+
+# Tornar o script executável
+RUN chmod +x /usr/local/bin/init-db.sh
+
 # Expose port 80
 EXPOSE 80
