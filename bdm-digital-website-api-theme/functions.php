@@ -117,6 +117,7 @@ function wpb_custom_new_menu()
 {
     register_nav_menu("main", __("Main"));
     register_nav_menu("footer", __("Footer"));
+    register_nav_menu("lateral", __("Lateral"));
 }
 
 function atg_menu_classes($classes, $item, $args)
@@ -173,14 +174,14 @@ function ws_get_images_urls($object, $field_name, $request)
 
 function create_homepage_on_activation() {
     if (!get_page_by_title('Home')) {
-        // Create the home page
         $homepage_id = wp_insert_post([
-            'post_title'     => 'Home',
-            'post_content'   => 'Welcome to our website!',
+            'post_title'     => 'Documentation',
+            'post_content'   => '',
             'post_status'    => 'publish',
             'post_type'      => 'page',
             'post_author'    => 1,
-            'post_name'      => 'home'
+            'post_name'      => 'home', 
+            'page_template' => 'templates/swagger.php' 
         ]);
 
         // Set the page as the homepage
@@ -189,21 +190,6 @@ function create_homepage_on_activation() {
 
         // Flush rewrite rules
         flush_rewrite_rules();
-    }
-
-    if (!get_page_by_path('swagger')) {
-        // Create the page
-        $page_data = array(
-            'post_title'   => 'Swagger',
-            'post_content' => '', // Empty content since the page template will render it
-            'post_status'  => 'publish',
-            'post_type'    => 'page',
-            'post_name'    => 'swagger', // Friendly URL
-            'page_template' => 'templates/swagger.php' // Path to the Swagger template
-        );
-        
-        // Insert the page
-        wp_insert_post($page_data);
     }
 
     // Enable support for custom logo
@@ -244,6 +230,64 @@ function theme_favicon() {
         echo '<link rel="icon" href="' . esc_url( $favicon_url ) . '" sizes="192x192" />' . "\n";
     }
 }
+
+function get_menu_by_slug($request) {
+    $menu_slug = $request->get_param('slug');
+    $menu = wp_get_nav_menu_object($menu_slug);
+
+    if (!$menu) {
+        return new WP_Error('menu_not_found', 'Menu not found', array('status' => 404));
+    }
+
+    $menu_items = wp_get_nav_menu_items($menu->term_id);
+
+    if (empty($menu_items)) {
+        return rest_ensure_response([]);
+    }
+
+    // Build a tree structure for the menu items
+    $menu_tree = [];
+    $items_by_id = [];
+
+    // Index items by their ID for easy lookup
+    foreach ($menu_items as $item) {
+        $item->children = [];
+        $item->acf = function_exists('get_fields') ? get_fields($item->ID) : null; // Add ACF fields
+        $items_by_id[$item->ID] = $item;
+    }
+
+    // Assign children to their parents
+    foreach ($menu_items as $item) {
+        if ($item->menu_item_parent == 0) {
+            $menu_tree[] = $item; // Top-level items
+        } else {
+            if (isset($items_by_id[$item->menu_item_parent])) {
+                $items_by_id[$item->menu_item_parent]->children[] = $item;
+            }
+        }
+    }
+
+    return rest_ensure_response($menu_tree);
+}
+
+function register_menu_slug_endpoint() {
+    register_rest_route('custom/v1', '/menus', array(
+        'methods' => 'GET',
+        'callback' => 'get_menu_by_slug',
+        'args' => array(
+            'slug' => array(
+                'required' => true,
+                'validate_callback' => function($param) {
+                    return is_string($param);
+                }
+            )
+        ),
+        'permission_callback' => '__return_true', 
+    ));
+}
+
+add_action('rest_api_init', 'register_menu_slug_endpoint');
+
 add_action('wp_head', 'theme_favicon');
 add_action('switch_theme', 'remove_homepage_on_deactivation');
 add_action('after_setup_theme', 'create_homepage_on_activation');

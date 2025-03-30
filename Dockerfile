@@ -64,6 +64,7 @@ COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
 COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
 COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
 COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
+COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
 
 # Copy Theme
 COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
