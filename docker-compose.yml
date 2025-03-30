@@ -18,6 +18,7 @@ services:
       - /var/www/html
       - ./bdm-digital-website-api-theme:/var/www/html/wp-content/themes/bdm-digital-website-api-theme
       - ./classic-editor:/var/www/html/wp-content/plugins/classic-editor
+      - ./wp-rest-cache:/var/www/html/wp-content/plugins/wp-rest-cache
       - ./WP-SCSS-master:/var/www/html/wp-content/plugins/WP-SCSS-master
       - ./wp-openapi:/var/www/html/wp-content/plugins/wp-openapi
       - ./sass-to-css-compiler:/var/www/html/wp-content/plugins/sass-to-css-compiler
