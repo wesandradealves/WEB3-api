@@ -103,13 +103,13 @@ function disable_default_dashboard_widgets()
 }
 
 if (function_exists("acf_add_options_page")) {
-    acf_add_options_page([
-        "page_title" => "Theme General Settings",
-        "menu_title" => "Theme Settings",
-        "menu_slug" => "theme-general-settings",
-        "capability" => "edit_posts",
-        "redirect" => true,
-    ]);
+    // acf_add_options_page([
+    //     "page_title" => "Theme General Settings",
+    //     "menu_title" => "Theme Settings",
+    //     "menu_slug" => "theme-general-settings",
+    //     "capability" => "edit_posts",
+    //     "redirect" => true,
+    // ]);
 }
 
 function wpb_custom_new_menu()
@@ -133,9 +133,40 @@ function add_menu_link_class($atts, $item, $args)
 
 function acf_to_rest_api($response, $post, $request)
 {
-    if (function_exists('get_fields') && isset($post->id)) {
-        $response->data['acf'] = get_fields($post->id);
+    if (function_exists('get_fields') && isset($post->ID)) {
+        $fields = get_fields($post->ID); // Get all ACF fields for the post
+        $field_groups = acf_get_field_groups(['post_id' => $post->ID]); // Get all field groups for the post
+
+        $grouped_fields = [];
+        $used_fields = []; // Track fields that have been grouped
+
+        foreach ($field_groups as $group) {
+            $group_name = $group['title']; // Field group name
+            $group_key = $group['key'];   // Field group key
+            $group_fields = [];
+
+            foreach ($fields as $key => $value) {
+                $field = get_field_object($key); // Get field object for each field
+                if ($field && isset($field['group']) && $field['group'] === $group_key) {
+                    $group_fields[$key] = $value; // Add field to the group if it matches
+                    $used_fields[] = $key; // Mark the field as used
+                }
+            }
+
+            if (!empty($group_fields)) {
+                $grouped_fields[$group_name] = $group_fields; // Add non-empty groups to the response
+            }
+        }
+
+        // Remove fields that have already been grouped
+        foreach ($used_fields as $used_field) {
+            unset($fields[$used_field]);
+        }
+
+        // Add grouped fields to the response
+        $response->data['acf'] = $grouped_fields;
     }
+
     return $response;
 }
 
@@ -345,6 +376,38 @@ function settings()
 
     return rest_ensure_response($response);
 }
+
+function customize_acf_wysiwyg_colors($init) {
+    $custom_colors = '
+        "000000", "Black",
+        "FFFFFF", "White",
+        "FFC700", "Yellow",
+    ';
+
+    $init['textcolor_map'] = '[' . $custom_colors . ']';
+    $init['textcolor_rows'] = 1; 
+
+    return $init;
+}
+
+function customize_acf_wysiwyg_toolbar($toolbars) {
+    $toolbars['Custom'] = array();
+    $toolbars['Custom'][1] = array(
+        'formatselect', 'bold', 'italic', 'underline', 'bullist', 'numlist', 'blockquote', 
+        'alignleft', 'aligncenter', 'alignright', 'link', 'unlink', 'forecolor', 'backcolor'
+    );
+
+    if (isset($toolbars['Full'])) {
+        $toolbars['Full'] = $toolbars['Custom'];
+    }
+
+    return $toolbars;
+}
+
+add_filter('tiny_mce_before_init', 'customize_acf_wysiwyg_colors');
+add_filter('acf/fields/wysiwyg/toolbars', 'customize_acf_wysiwyg_toolbar');
+
+add_filter('rest_prepare_post', 'acf_to_rest_api', 10, 3);
 
 add_action('rest_api_init', 'register_settings_endpoint');
 add_action('customize_register', 'settings_form');
