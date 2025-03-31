@@ -37,7 +37,7 @@ function prefix_add_footer_styles()
 }
 
 function prefix_add_header_styles()
-{ 
+{
     wp_enqueue_script(
         "swagger-ui",
         "//cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js",
@@ -51,7 +51,7 @@ function prefix_add_header_styles()
         [],
         false,
         false
-    );   
+    );
     wp_enqueue_style(
         "bootstrap-grid",
         "//cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap-grid.min.css",
@@ -81,7 +81,6 @@ function prefix_add_header_styles()
         "all"
     );
     wp_enqueue_style('style', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css'));
-    wp_enqueue_style('scss', get_template_directory_uri() . '/css/scss/style.scss', array(), filemtime(get_template_directory() . '/css/scss/style.scss'));
 }
 
 function disable_default_dashboard_widgets()
@@ -122,11 +121,6 @@ function wpb_custom_new_menu()
 
 function atg_menu_classes($classes, $item, $args)
 {
-    // if($args->theme_location == 'main') {
-    //     $classes[] = 'nav-item p-0 ps-5';
-    // } elseif($args->theme_location == 'footer') {
-    //     $classes[] = 'nav-item nav-col col-6 mb-5 mb-lg-0 pe-5';
-    // }
     $classes[] = "nav-item";
     return $classes;
 }
@@ -172,66 +166,62 @@ function ws_get_images_urls($object, $field_name, $request)
     );
 }
 
-function create_homepage_on_activation() {
+function create_homepage_on_activation()
+{
     if (!get_page_by_title('Home')) {
         $homepage_id = wp_insert_post([
-            'post_title'     => 'Documentation',
-            'post_content'   => '',
-            'post_status'    => 'publish',
-            'post_type'      => 'page',
-            'post_author'    => 1,
-            'post_name'      => 'home', 
-            'page_template' => 'templates/swagger.php' 
+            'post_title' => 'Documentation',
+            'post_content' => '',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_author' => 1,
+            'post_name' => 'home',
+            'page_template' => 'templates/swagger.php'
         ]);
 
-        // Set the page as the homepage
         update_option('show_on_front', 'page');
         update_option('page_on_front', $homepage_id);
 
-        // Flush rewrite rules
         flush_rewrite_rules();
     }
 
-    // Enable support for custom logo
     add_theme_support('custom-logo', array(
-        'width'       => 200,  // Optional: default width
-        'height'      => 100,  // Optional: default height
-        'flex-width'  => true, // Optional: allow flexible width
-        'flex-height' => true, // Optional: allow flexible height
+        'width' => 200, 
+        'height' => 100,  
+        'flex-width' => true,
+        'flex-height' => true,
     ));
     add_theme_support('title-tag');
 }
 
-function remove_homepage_on_deactivation() {
+function remove_homepage_on_deactivation()
+{
     if (get_page_by_title('Home')) {
-        wp_delete_post(get_page_by_title('Home')->ID, true); // Permanently delete the page
+        wp_delete_post(get_page_by_title('Home')->ID, true);
     }
 
     if (get_page_by_path('swagger')) {
-        // Delete the page
-        wp_delete_post(get_page_by_path('swagger')->ID, true); // true to force delete, not move to trash
+        wp_delete_post(get_page_by_path('swagger')->ID, true);
     }
 
-    // Reset front page settings
     delete_option('show_on_front');
     delete_option('page_on_front');
 
-    // Flush rewrite rules
     flush_rewrite_rules();
 }
 
-function theme_favicon() {
-    // Get the URL of the site icon set in the WordPress Customizer
-    $favicon_url = get_site_icon_url( 32 ); // You can specify the size (e.g., 32x32)
+function theme_favicon()
+{
+    $favicon_url = get_site_icon_url(32); 
 
-    // If a site icon is set, output the favicon link
-    if ( ! empty( $favicon_url ) ) {
-        echo '<link rel="icon" href="' . esc_url( $favicon_url ) . '" sizes="32x32" />' . "\n";
-        echo '<link rel="icon" href="' . esc_url( $favicon_url ) . '" sizes="192x192" />' . "\n";
+    if (!empty($favicon_url)) {
+        echo '<link rel="icon" href="' . esc_url($favicon_url) . '" sizes="32x32" />' . "\n";
+        echo '<link rel="icon" href="' . esc_url($favicon_url) . '" sizes="192x192" />' . "\n";
     }
 }
 
-function get_menu_by_slug($request) {
+function get_menu_by_slug($request)
+{
     $menu_slug = $request->get_param('slug');
     $menu = wp_get_nav_menu_object($menu_slug);
 
@@ -245,21 +235,18 @@ function get_menu_by_slug($request) {
         return rest_ensure_response([]);
     }
 
-    // Build a tree structure for the menu items
     $menu_tree = [];
     $items_by_id = [];
 
-    // Index items by their ID for easy lookup
     foreach ($menu_items as $item) {
         $item->children = [];
         $item->acf = function_exists('get_fields') ? get_fields($item->ID) : null; // Add ACF fields
         $items_by_id[$item->ID] = $item;
     }
 
-    // Assign children to their parents
     foreach ($menu_items as $item) {
         if ($item->menu_item_parent == 0) {
-            $menu_tree[] = $item; // Top-level items
+            $menu_tree[] = $item; 
         } else {
             if (isset($items_by_id[$item->menu_item_parent])) {
                 $items_by_id[$item->menu_item_parent]->children[] = $item;
@@ -270,24 +257,98 @@ function get_menu_by_slug($request) {
     return rest_ensure_response($menu_tree);
 }
 
-function register_menu_slug_endpoint() {
+function register_menu_slug_endpoint()
+{
     register_rest_route('custom/v1', '/menus', array(
         'methods' => 'GET',
         'callback' => 'get_menu_by_slug',
         'args' => array(
             'slug' => array(
                 'required' => true,
-                'validate_callback' => function($param) {
+                'validate_callback' => function ($param) {
                     return is_string($param);
                 }
             )
         ),
+        'permission_callback' => '__return_true',
+    ));
+}
+function settings_form($wp_customize)
+{
+    $wp_customize->add_section('social_networks_section', array(
+        'title' => __('Social Networks', 'theme_textdomain'),
+        // 'description' => __('Add your social network links here.', 'theme_textdomain'),
+        'priority' => 160, 
+    ));
+
+    $social_networks = ['Facebook', 'Twitter', 'Instagram', 'Linkedin', 'YouTube'];
+
+    foreach ($social_networks as $network) {
+        $setting_id = strtolower($network);
+
+        $wp_customize->add_setting($setting_id, array(
+            'default' => '',
+            'sanitize_callback' => 'esc_url_raw',
+        ));
+
+        $wp_customize->add_control($setting_id, array(
+            'label' => sprintf(__('%s URL', 'theme_textdomain'), $network),
+            'section' => 'social_networks_section',
+            'type' => 'url',
+        ));
+    }
+}
+
+function register_settings_endpoint()
+{
+    register_rest_route('custom/v1', '/settings', array(
+        'methods' => 'GET',
+        'callback' => 'settings',
         'permission_callback' => '__return_true', 
     ));
 }
 
-add_action('rest_api_init', 'register_menu_slug_endpoint');
+function settings()
+{
+    $response = array(
+        'social_networks' => array(
+            array(
+                'title' => 'Facebook',
+                'url' => get_theme_mod('facebook', ''),
+            ),
+            array(
+                'title' => 'Twitter',
+                'url' => get_theme_mod('twitter', ''),
+            ),
+            array(
+                'title' => 'Instagram',
+                'url' => get_theme_mod('instagram', ''),
+            ),
+            array(
+                'title' => 'LinkedIn',
+                'url' => get_theme_mod('linkedin', ''),
+            ),
+            array(
+                'title' => 'YouTube',
+                'url' => get_theme_mod('youtube', ''),
+            ),
+        ),
+        'custom_logo' => get_theme_mod('custom_logo') ? wp_get_attachment_image_src(get_theme_mod('custom_logo'), 'full')[0] : '',
+        'favicon'     => get_site_icon_url(),    
+        'blog_info'   => array(        
+            'name'        => get_bloginfo('name'),
+            'description' => get_bloginfo('description'),
+            'url'         => get_bloginfo('url'),
+            'admin_email' =>  get_bloginfo('admin_email'),
+        ),
+    );
 
+    return rest_ensure_response($response);
+}
+
+add_action('rest_api_init', 'register_settings_endpoint');
+add_action('customize_register', 'settings_form');
+add_action('rest_api_init', 'register_menu_slug_endpoint');
 add_action('wp_head', 'theme_favicon');
 add_action('switch_theme', 'remove_homepage_on_deactivation');
 add_action('after_setup_theme', 'create_homepage_on_activation');
@@ -301,4 +362,4 @@ add_action("get_footer", "prefix_add_footer_styles");
 add_action("init", "wpb_custom_new_menu");
 add_action("wp_enqueue_scripts", "prefix_add_header_styles");
 add_action("admin_menu", "remove_menus");
-add_action("admin_menu", "disable_default_dashboard_widgets"); ;
+add_action("admin_menu", "disable_default_dashboard_widgets");
