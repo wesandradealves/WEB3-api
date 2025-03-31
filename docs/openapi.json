@@ -1,11 +1,11 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "BDM Digital API API",
+        "title": "BDM Digital API",
         "description": "",
         "version": "6.7.2",
         "contact": {
-            "name": "BDM Digital API",
+            "name": "BDM Digital",
             "url": "http:\/\/localhost:8000",
             "email": "wesandradealves@gmail.com"
         }
@@ -9967,6 +9967,16 @@
                         }
                     }
                 ]
+            }
+        },
+        "\/custom\/v1\/settings": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "description": "<h2 id=\"callback\">Callback<\/h2>\r\n<div class='wp-openapi-callback-info-html'>\r\n<div class='wp-openapi-callback-info-html-label'>Function<\/div>\r\n<div class='wp-openapi-callback-info-html-value'>settings<\/div>\r\n\r\n<\/div>\r\n"
             }
         },
         "\/custom\/v1\/menus": {
