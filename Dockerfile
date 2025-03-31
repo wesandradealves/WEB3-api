@@ -57,10 +57,10 @@ RUN chown -R www-data:www-data /var/www/html/wp-content/themes && \
 
 # Copy Plugins in a single command
 COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
-COPY ./sass-to-css-compiler /var/www/html/wp-content/plugins/sass-to-css-compiler
+# COPY ./sass-to-css-compiler /var/www/html/wp-content/plugins/sass-to-css-compiler
 COPY ./acf-to-rest-api /var/www/html/wp-content/plugins/acf-to-rest-api
 COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
-COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
+# COPY ./WP-SCSS-master /var/www/html/wp-content/plugins/WP-SCSS-master
 COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
 COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
 COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
