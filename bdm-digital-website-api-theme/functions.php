@@ -1,8 +1,11 @@
 <?php
 
+// Renderizar estilos no admin
 function wp_before_admin_bar_render()
 {
 }
+
+// Remover menus do menu lateral
 
 function remove_menus()
 {
@@ -35,6 +38,8 @@ function prefix_add_footer_styles()
 {
     // wp_enqueue_script('commons', get_template_directory_uri() . "/assets/js/main.js", array(), filemtime(get_template_directory() . '/assets/js/main.js'), true);
 }
+
+// Carregar scripts uteis para uso no tema
 
 function prefix_add_header_styles()
 {
@@ -83,6 +88,8 @@ function prefix_add_header_styles()
     wp_enqueue_style('style', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css'));
 }
 
+// Desabilitar widget default do WP na UI principal do admin (dashboard)
+
 function disable_default_dashboard_widgets()
 {
     remove_meta_box("dashboard_right_now", "dashboard", "core");
@@ -102,6 +109,8 @@ function disable_default_dashboard_widgets()
     remove_meta_box("dashboard_secondary", "dashboard", "core");
 }
 
+// Option page para o acf (paginas customizadas no menu lateral)
+
 if (function_exists("acf_add_options_page")) {
     // acf_add_options_page([
     //     "page_title" => "Theme General Settings",
@@ -112,12 +121,16 @@ if (function_exists("acf_add_options_page")) {
     // ]);
 }
 
+// Registrar menus
+
 function wpb_custom_new_menu()
 {
     register_nav_menu("main", __("Main"));
     register_nav_menu("footer", __("Footer"));
     register_nav_menu("lateral", __("Lateral"));
 }
+
+// Classes para menu e link customizadas
 
 function atg_menu_classes($classes, $item, $args)
 {
@@ -130,6 +143,8 @@ function add_menu_link_class($atts, $item, $args)
     $atts["class"] = "nav-link";
     return $atts;
 }
+
+// Expor ACF fields na Rest API
 
 function acf_to_rest_api($response, $post, $request)
 {
@@ -170,6 +185,8 @@ function acf_to_rest_api($response, $post, $request)
     return $response;
 }
 
+// Supoerte a image field nativa / featured image na rest api
+
 function ws_register_images_field()
 {
     register_rest_field(
@@ -197,8 +214,11 @@ function ws_get_images_urls($object, $field_name, $request)
     );
 }
 
+// Executar ao ativar otema
+
 function create_homepage_on_activation()
 {
+    // Criar página home e incluir o template swagger
     if (!get_page_by_title('Home')) {
         $homepage_id = wp_insert_post([
             'post_title' => 'Documentation',
@@ -216,6 +236,8 @@ function create_homepage_on_activation()
         flush_rewrite_rules();
     }
 
+    // Adicionar suporte a tag title e custom logo
+
     add_theme_support('custom-logo', array(
         'width' => 200, 
         'height' => 100,  
@@ -225,14 +247,12 @@ function create_homepage_on_activation()
     add_theme_support('title-tag');
 }
 
+// Remoção da pãgina home/swagger ao desativar o tema
+
 function remove_homepage_on_deactivation()
 {
     if (get_page_by_title('Home')) {
         wp_delete_post(get_page_by_title('Home')->ID, true);
-    }
-
-    if (get_page_by_path('swagger')) {
-        wp_delete_post(get_page_by_path('swagger')->ID, true);
     }
 
     delete_option('show_on_front');
@@ -240,6 +260,9 @@ function remove_homepage_on_deactivation()
 
     flush_rewrite_rules();
 }
+
+
+// Adição de suporte ao favicon
 
 function theme_favicon()
 {
@@ -250,6 +273,8 @@ function theme_favicon()
         echo '<link rel="icon" href="' . esc_url($favicon_url) . '" sizes="192x192" />' . "\n";
     }
 }
+
+// Rest Services
 
 function get_menu_by_slug($request)
 {
@@ -304,6 +329,8 @@ function register_menu_slug_endpoint()
         'permission_callback' => '__return_true',
     ));
 }
+
+// Fields no Form de Settings
 function settings_form($wp_customize)
 {
     $wp_customize->add_section('social_networks_section', array(
@@ -377,6 +404,8 @@ function settings()
     return rest_ensure_response($response);
 }
 
+// Adição de cores para o editor de texto
+
 function customize_acf_wysiwyg_colors($init) {
     $custom_colors = '
         "000000", "Black",
@@ -403,6 +432,8 @@ function customize_acf_wysiwyg_toolbar($toolbars) {
 
     return $toolbars;
 }
+
+// #
 
 add_filter('tiny_mce_before_init', 'customize_acf_wysiwyg_colors');
 add_filter('acf/fields/wysiwyg/toolbars', 'customize_acf_wysiwyg_toolbar');
@@ -449,13 +480,37 @@ function my_acf_blocks_init() {
                 'title'       => __('Hero'),
                 'description' => __('Hero Component'),
                 'category'    => 'rest-api',
-                'icon'        => 'admin-comments',
-                'keywords'    => ['hero', 'banner', 'acf', 'rest'],
+                'icon'        => '',
+                'keywords'    => ['hero', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
                 ],
-            ]
+            ],
+            (object) [
+                'name'        => 'section',
+                'title'       => __('Media Section'),
+                'description' => __('Section Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['section', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ],
+            // (object) [
+            //     'name'        => 'boxes',
+            //     'title'       => __('Boxes Section'),
+            //     'description' => __('Section Boxes Component'),
+            //     'category'    => 'rest-api',
+            //     'icon'        => '',
+            //     'keywords'    => ['section', 'acf', 'rest'],
+            //     'supports'    => [
+            //         'align' => true,
+            //         'jsx'   => true, 
+            //     ],
+            // ]
         ];
 
         foreach ($blocks as $block) {
@@ -474,6 +529,7 @@ function my_acf_blocks_init() {
 }
 add_action('acf/init', 'my_acf_blocks_init');
 
+// Rest Services
 
 function expose_gutenberg_blocks_to_rest($response, $post, $request) {
     if (empty($post->post_content)) {
