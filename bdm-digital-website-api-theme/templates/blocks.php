@@ -1,0 +1,1 @@
+<pre style="background-color: navy; color: green; padding: 35px; overflow: auto; max-height: 500px;"><?php var_dump(get_fields()); ?></pre>
