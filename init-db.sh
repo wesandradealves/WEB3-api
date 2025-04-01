@@ -11,7 +11,7 @@ TABLE_COUNT=$(mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -e "SELECT COUN
 
 if [ "$TABLE_COUNT" -eq 0 ]; then
   echo "O banco de dados está vazio. Importando o arquivo SQL..."
-  mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < /docker-entrypoint-initdb.d/wordpress.sql
+  mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < /docker-entrypoint-initdb.d/wordpress_db.sql
 else
   echo "O banco de dados já contém tabelas. Nenhuma importação necessária."
 fi

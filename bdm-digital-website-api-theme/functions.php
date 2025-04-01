@@ -33,7 +33,7 @@ function remove_menus()
 
 function prefix_add_footer_styles()
 {
-    wp_enqueue_script('commons', get_template_directory_uri() . "/js/main.js", array(), filemtime(get_template_directory() . '/js/main.js'), true);
+    // wp_enqueue_script('commons', get_template_directory_uri() . "/assets/js/main.js", array(), filemtime(get_template_directory() . '/assets/js/main.js'), true);
 }
 
 function prefix_add_header_styles()
@@ -406,9 +406,7 @@ function customize_acf_wysiwyg_toolbar($toolbars) {
 
 add_filter('tiny_mce_before_init', 'customize_acf_wysiwyg_colors');
 add_filter('acf/fields/wysiwyg/toolbars', 'customize_acf_wysiwyg_toolbar');
-
 add_filter('rest_prepare_post', 'acf_to_rest_api', 10, 3);
-
 add_action('rest_api_init', 'register_settings_endpoint');
 add_action('customize_register', 'settings_form');
 add_action('rest_api_init', 'register_menu_slug_endpoint');
@@ -426,3 +424,90 @@ add_action("init", "wpb_custom_new_menu");
 add_action("wp_enqueue_scripts", "prefix_add_header_styles");
 add_action("admin_menu", "remove_menus");
 add_action("admin_menu", "disable_default_dashboard_widgets");
+
+// Blocks
+
+function my_custom_block_category($categories, $post) {
+    return array_merge(
+        array(
+            array(
+                'slug'  => 'rest-api',
+                'title' => __('Rest API', 'bdm-digital-website-api-theme'),
+                'icon'  => null,
+            ),
+        ),
+        $categories
+    );
+}
+add_filter('block_categories_all', 'my_custom_block_category', 10, 2);
+
+function my_acf_blocks_init() {
+    if( function_exists('acf_register_block_type') ) {
+        $blocks = [
+            (object) [
+                'name'        => 'hero',
+                'title'       => __('Hero'),
+                'description' => __('Hero Component'),
+                // 'template'    => get_template_directory() . '/blocks/hero/hero.php',
+                'category'    => 'rest-api',
+                'icon'        => 'admin-comments',
+                'keywords'    => ['hero', 'banner', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ]
+        ];
+
+        foreach ($blocks as $block) {
+            acf_register_block_type(array(
+                'name'              => $block->name,
+                'title'             => $block->title,
+                'description'       => $block->description,
+                'render_template'   => get_template_directory() . '/blocks/'.$block->name.'/'.$block->name.'.php',
+                'category'          => $block->category,
+                'icon'              => $block->icon,
+                'keywords'          => $block->keywords,
+                'supports'          => $block->supports,
+            ));
+        }
+    }
+}
+add_action('acf/init', 'my_acf_blocks_init');
+
+
+function expose_gutenberg_blocks_to_rest($response, $post, $request) {
+    if (empty($post->post_content)) {
+        return $response;
+    }
+
+    $blocks = parse_blocks($post->post_content);
+    $structured_blocks = [];
+
+    foreach ($blocks as $index => $block) {
+        if (!isset($block['blockName'])) {
+            continue; 
+        }
+
+        $attrs = isset($block['attrs']) ? $block['attrs'] : [];
+
+        if (strpos($block['blockName'], 'acf/') === 0) {
+            $acf_fields = get_fields($post->ID);
+            $attrs['acf'] = $acf_fields ?: [];
+        }
+
+        $structured_blocks[] = [
+            'id'            => $index + 1,
+            'type'          => $block['blockName'],
+            'machine_name'          => str_replace('acf/', '', $block['blockName']),
+            'attrs'         => $attrs, 
+            'innerContent'  => $block['innerContent'] ?? [],
+        ];
+    }
+
+    $response->data['acf_blocks'] = $structured_blocks;
+
+    return $response;
+}
+
+add_filter('rest_prepare_page', 'expose_gutenberg_blocks_to_rest', 10, 3);
