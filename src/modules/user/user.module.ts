@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { UserController } from './api/controller/user.controller';
 import { CreateUserUseCase } from './use-cases/create.user.use-case';
 import { IUserRepository } from '@/domain/interfaces/repositories/user.repository';
@@ -15,14 +15,28 @@ import { ICreateUserUseCase } from '@/domain/interfaces/use-cases/user/create.us
 @Module({
   imports: [
     HttpModule,
+    
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [UserController],
   providers: [
-    { provide: IUpdateUseCase, useClass: UpdateUserUseCase },
-    { provide: IDeleteUserUseCase, useClass: DeleteUserUseCase },
-    { provide: ICreateUserUseCase, useClass: CreateUserUseCase },
-    { provide: IUserRepository, useClass: UserRepository },
+    Logger,
+    { 
+      provide: IUpdateUseCase,
+      useClass: UpdateUserUseCase
+    },
+    { 
+      provide: IDeleteUserUseCase, 
+      useClass: DeleteUserUseCase 
+    },
+    { 
+      provide: ICreateUserUseCase,
+      useClass: CreateUserUseCase 
+    },
+    { 
+      provide: IUserRepository,
+      useClass: UserRepository
+    },
   ],
 })
 export class UserModule {}
