@@ -499,18 +499,18 @@ function my_acf_blocks_init() {
                     'jsx'   => true, 
                 ],
             ],
-            // (object) [
-            //     'name'        => 'boxes',
-            //     'title'       => __('Boxes Section'),
-            //     'description' => __('Section Boxes Component'),
-            //     'category'    => 'rest-api',
-            //     'icon'        => '',
-            //     'keywords'    => ['section', 'acf', 'rest'],
-            //     'supports'    => [
-            //         'align' => true,
-            //         'jsx'   => true, 
-            //     ],
-            // ]
+            (object) [
+                'name'        => 'boxes',
+                'title'       => __('Boxes Section'),
+                'description' => __('Section Boxes Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['section', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ]
         ];
 
         foreach ($blocks as $block) {
