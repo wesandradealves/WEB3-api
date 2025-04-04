@@ -591,6 +591,55 @@
         "show_in_rest": 1
     },
     {
+        "key": "group_67f03eedca0e1",
+        "title": "Media Scroll",
+        "fields": [
+            {
+                "key": "field_67f03ef95451e",
+                "label": "",
+                "name": "",
+                "aria-label": "",
+                "type": "clone",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "clone": [
+                    "field_67ec239c36e58",
+                    "field_67ec257c36e64",
+                    "field_67ec259a36e65",
+                    "field_67ec269fe814b"
+                ],
+                "display": "seamless",
+                "layout": "block",
+                "prefix_label": 0,
+                "prefix_name": 0
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "block",
+                    "operator": "==",
+                    "value": "acf\/mediascroll"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
         "key": "group_67ec239c4e73f",
         "title": "Section",
         "fields": [
@@ -638,8 +687,8 @@
             },
             {
                 "key": "field_67ec257c36e64",
-                "label": "Subtitle",
-                "name": "helper",
+                "label": "Subtitulo",
+                "name": "subtitle",
                 "aria-label": "",
                 "type": "wysiwyg",
                 "instructions": "",
