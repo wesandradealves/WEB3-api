@@ -1,2 +1,2 @@
 <pre
-    style="background-color: navy; color: green; padding: 35px; overflow: auto; max-height: 500px;"><?php var_dump(get_fields()); ?></pre>
+    style="background-color: #f0f0f0; color: black; padding: 35px; overflow: auto; max-height: 500px; overflow: auto; border-radius: 16px; box-shadow: 0 1px 0 0 rgba(0,0,0,.133)"><?php var_dump(get_fields()); ?></pre>

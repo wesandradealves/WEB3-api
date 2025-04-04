@@ -510,6 +510,18 @@ function my_acf_blocks_init() {
                     'align' => true,
                     'jsx'   => true, 
                 ],
+            ],
+            (object) [
+                'name'        => 'mediascroll',
+                'title'       => __('Media Scroll'),
+                'description' => __('Media Scroll Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['media', 'media scroll', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
             ]
         ];
 
