@@ -1,13 +1,13 @@
-import { ISendCsvToTransferUseCase } from '@/domain/interfaces/use-cases/transfer/send-csv-to-transfer.use-case';
+import { ISendCsvUseCase } from '@/domain/interfaces/use-cases/update-file/send.csv.use-case';
 import { JwtAuthGuard } from '@/modules/auth/jwt.auth.guard';
 import { Controller, Inject, Post, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('transfer')
-export class TransferController {
+@Controller('upload')
+export class UploadController {
   constructor(
-    @Inject(ISendCsvToTransferUseCase)
-    private readonly sendCsvToTransferUseCase: ISendCsvToTransferUseCase,
+    @Inject(ISendCsvUseCase)
+    private readonly sendCsvToTransferUseCase: ISendCsvUseCase,
   ) {}
 
   @Post('send-csv')  

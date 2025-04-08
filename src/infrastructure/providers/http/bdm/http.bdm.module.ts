@@ -16,4 +16,4 @@ import { HttpBdmProvider } from './http.bdm.provider';
   ],
   exports: [HttpBdmProvider, IAuthExetrnal],
 })
-export class HttpModule {}
+export class HttpBdmModule {}

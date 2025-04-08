@@ -2,7 +2,7 @@ import { IDashboardFileProcessorRepository } from "@/domain/repositories/dashboa
 import { Controller, Get, Inject } from "@nestjs/common";
 
 @Controller('dashboard')
-export class CardController {
+export class DashboardFileProcessorController {
   constructor(
     @Inject(IDashboardFileProcessorRepository)
     private readonly dashboardFileProcessorRepository: IDashboardFileProcessorRepository,

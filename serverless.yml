@@ -7,6 +7,7 @@ plugins:
   - serverless-webpack
   - serverless-localstack
   - serverless-offline-sqs
+  # - serverless-offline-s3 
   - serverless-offline
 
 configValidationMode: warn
@@ -16,13 +17,22 @@ package:
 
 custom:
   serverless-offline-sqs:
-    autoCreate: true
     apiVersion: '2012-11-05'
-    endpoint: 'http://127.0.0.1:9324'
-    region: sa-east-1
+    endpoint: 'http://127.0.0.1:4566'
+    region: us-east-2
     accessKeyId: 'root'
     secretAccessKey: 'root'
-    skipCacheInvalidation: false
+  
+
+  # serverless-offline-s3:
+  #   autoCreate: true
+  #   endpoint: 'https://s3.us-east-2.amazonaws.com'
+  #   region: us-east-2
+  #   accessKeyId: '${env:AWS_ACCESS_KEY_ID}'
+  #   secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY} 
+  #   buckets:
+  #     - name: development-dashboard-documents
+  
 
   localstack:
     stages:
@@ -38,7 +48,8 @@ custom:
 provider:
   name: aws
   runtime: nodejs18.x
-  region: sa-east-1
+  region: us-east-2
+  stage: ${opt:stage, 'dev'}
   iam:
     role:
       statements:
@@ -68,8 +79,29 @@ functions:
   transferAssets:
     timeout: 30
     memorySize: 512
-    handler: ./src/functions/transfer-assets/handler.handler
+    handler: ./src/functions/dashboard-transfer-assets/handler.handler
     events:
       - http:
-          method: get
+          method: post
           path: /transfer-assets
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DashboardTransferProcessingQueue
+              - Arn
+          batchSize: 1
+    environment:
+      AWS_COGNITO_CLIENT_ID: ${env:AWS_COGNITO_CLIENT_ID}
+      AWS_COGNITO_CLIENT_ID_SECRET: ${env:AWS_COGNITO_CLIENT_ID_SECRET}
+      BLOCKCHAIN_API_URL: ${env:BLOCKCHAIN_API_URL}
+      BLOCKCHAIN_API_KEY_HASH: ${env:BLOCKCHAIN_API_KEY_HASH}
+
+
+resources:
+  Resources:
+    # Fila SQS para enviar as transações do POS para o escritor
+    DashboardTransferProcessingQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${file(./src/common/serverless/sqs/index.js):build.DashboardTransferProcessingQueueFifo}
+        FifoQueue: true

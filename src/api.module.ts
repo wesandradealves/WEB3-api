@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { CognitoModule } from './infrastructure/providers/aws/cognito/cognito.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { ExtractModule } from './modules/extract/extract.module';
+import { UploadFileModule } from './modules/upload-file/upload.file.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { TransferModule } from './modules/transfer/transfer.module';
     CognitoModule,
     TransactionsModule,
     ExtractModule,
+    UploadFileModule,
     TransferModule
   ],
 })

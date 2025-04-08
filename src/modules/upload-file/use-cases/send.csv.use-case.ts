@@ -1,14 +1,14 @@
 import { UpdateFiles } from '@/domain/entities/update-files.entity';
 import { IBucketProvider } from '@/domain/interfaces/providers/bucket.provider';
-import { ISendCsvToTransferUseCase } from '@/domain/interfaces/use-cases/transfer/send-csv-to-transfer.use-case';
+import { ISendCsvUseCase } from '@/domain/interfaces/use-cases/update-file/send.csv.use-case';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class SendCsvToTransferUseCase implements ISendCsvToTransferUseCase {
+export class SendCsvUseCase implements ISendCsvUseCase {
   private readonly bucket: string;
-  private readonly logger = new Logger(SendCsvToTransferUseCase.name); // Logger instanciado com o nome da classe
+  private readonly logger = new Logger(SendCsvUseCase.name); // Logger instanciado com o nome da classe
 
   constructor(
     @Inject(IBucketProvider)
