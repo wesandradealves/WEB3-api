@@ -66,7 +66,7 @@ export class SqsProvider implements ISQSProvider {
     return {
       QueueUrl: queueUrl,
       MaxNumberOfMessages: 10,
-      VisibilityTimeout: 20,
+      VisibilityTimeout: 300,
       WaitTimeSeconds: 10,
       MessageAttributeNames: ['All'],
     };

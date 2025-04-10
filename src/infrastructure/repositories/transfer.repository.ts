@@ -7,6 +7,8 @@ import { SqsProvider } from "../providers/aws/sqs/sqs.provider";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.external";
+import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
+import { SQSDeleteParams, SQSMessage, TransferPayload, TransferQueueItem, TransferResult } from "@/domain/interfaces/functions/process.transfer.interface";
 
 
 @Injectable()
@@ -41,6 +43,7 @@ export class TransferRepository implements ITransferAssetRepository{
         notFoundIds = ids.filter(id => !foundIds.includes(id.toString()));
 
         const objectToQueue = userReciptData.map(item => ({
+          transferId: item.id,
           asset: item.asset,
           recipetName: item.name,
           recipetWallet: item.wallet,
@@ -65,10 +68,11 @@ export class TransferRepository implements ITransferAssetRepository{
     }
   }
 
-  async processTransfer(message: any): Promise<any> {
+  async processTransfer(message: SQSMessage): Promise<TransferResult> {
     try {
-      const body = JSON.parse(message.Records[0].body);
-      const totalAssetAmount = body.reduce((sum: any, item: any) => sum + Number(item.amount), 0);
+      const body = JSON.parse(message.Records[0].body) as TransferQueueItem[];
+      const totalAssetAmount = body.reduce((sum: number, item: TransferQueueItem) => 
+        sum + Number(item.amount), 0);
       const result = await this.blockchainExternal.getBDMBalance(body[0].senderDefaultWalletAddress);
   
       if (result.balance < totalAssetAmount) {
@@ -79,7 +83,7 @@ export class TransferRepository implements ITransferAssetRepository{
         const recipetBdmUserDatabyWalletId = await this.bdmExternal.getBdmUserDataByEmail(item.recipetEmail);
         const recipetWalletData = await this.bdmExternal.findDefaultWalletByUserId(recipetBdmUserDatabyWalletId.id);
   
-        const transferPayload = {
+        const transferPayload: TransferPayload = {
           wallet_id: item.senderWalletId,
           destination_user_id: Number(item.recipetWallet),
           destination_wallet_id: recipetWalletData.id,
@@ -87,17 +91,24 @@ export class TransferRepository implements ITransferAssetRepository{
           destination_company_id: 1,
           company_id: 1,
           asset: item.asset
-        }
+        };
         
-        await this.bdmExternal.transferAsset(transferPayload);
+        try {
+          await this.bdmExternal.transferAsset(transferPayload);
+          await this.dashboardTransferList.update({ id: item.transferId }, { status: TransferStatusEnum.COMPLETED });
+        } catch(err) {
+          await this.dashboardTransferList.update({ id: item.transferId }, { status: TransferStatusEnum.FAILED });
+          return { status: 400, message: 'Erro ao transferir ativos' };
+        }
       }
       
-      const deleteMessage = {
+      const deleteMessage: SQSDeleteParams = {
         ReceiptHandle: message.Records[0].receiptHandle,
         MessageId: message.Records[0].messageId
       };
-      
+            
       await this.sqsProvider.deleteMessage(this.awsSqsUrl, deleteMessage);
+      
       return { status: 200, message: 'Mensagens processadas com sucesso' };
     } catch (error) {
       console.error("Error in processTransfer method:", error);

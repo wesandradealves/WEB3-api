@@ -1,5 +1,7 @@
+import { SQSMessage } from "../../functions/process.transfer.interface";
+
 export interface ITransferAssetUseCase{
-  execute(content: any): Promise<any>;
+  execute(content: SQSMessage): Promise<any>;
 }
 
 
