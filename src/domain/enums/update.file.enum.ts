@@ -1,0 +1,5 @@
+export enum UpdateFileEnum {
+  UPLOADED = 'UPLOADED',
+  PROCESSING = 'PROCESSING',
+  PROCESSED = 'PROCESSED',
+}

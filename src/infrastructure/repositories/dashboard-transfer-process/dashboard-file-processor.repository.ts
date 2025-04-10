@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import * as csvParser from "csv-parser";
 import { S3External } from "@/infrastructure/external/s3.external";
 import { DashboardTransferList } from "@/domain/entities/dashboard-transfer-list.entity";
+import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
 
 
 @Injectable()
@@ -30,16 +31,15 @@ export class DashboardFileProcessor implements IDashboardFileProcessorRepository
   
         const data = await this.parseCsv(fileStream);
   
-        // Adiciona o update_file_id ao data e mapeia para o formato esperado pelo banco
         const enrichedData = data.map((item) => ({
           asset: item.asset,
           name: item.name,
           wallet: item.wallet,
-          amount: parseFloat(item.amount), // Converte para número, se necessário
+          amount: parseFloat(item.amount),
           email: item.email,
           obs: item.obs,
-          status: item.status || 'pending', // Define um valor padrão, se necessário
-          updateFileId: file.id, // Adiciona o ID do arquivo como chave
+          status: TransferStatusEnum.PENDING,
+          updateFileId: file.id,
         }));
   
         console.log(`[FileProcessor] - Processed data with IDs:`, enrichedData);

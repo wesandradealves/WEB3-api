@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   BlockchainEnum,
@@ -23,6 +23,7 @@ import { base58Encode } from '@waves/ts-lib-crypto';
 import { IBlockchainExternal, IBroadcastTransactionRequest, IBroadcastTransactionResponse, ICheckStatusPaymentRequest, ICheckStatusPaymentResponse, ICreateAssetTransferTransactionRequest, ICreateAssetTransferTransactionResponse, ISendTransferRequest, ISendTransferResponse } from '@/domain/interfaces/external/blockchain.external';
 import { HttpBlockchainProvider } from '../providers/http/blockchain/http.blockchain.provider';
 
+@Injectable()
 export class BlockchainExternal implements IBlockchainExternal {
   private readonly FEE: number = 1;
   constructor(
@@ -128,6 +129,13 @@ export class BlockchainExternal implements IBlockchainExternal {
 
   async getBDMBalance(address: string,): Promise<any> {
     try {
+      if (!this.httpClient) {
+        this.logger.error('httpClient is undefined in BlockchainExternal');
+        throw new Error('HTTP client not available');
+      }
+      
+      this.logger.log(`Calling getBDMBalance for address: ${address}`);
+      
       const response = await this.httpClient.request<any>({
         url: `/addresses/effectiveBalance/${address}`,
         method: 'GET',
@@ -138,6 +146,7 @@ export class BlockchainExternal implements IBlockchainExternal {
   
       return response;
     } catch (error) {
+      this.logger.error(`Error in getBDMBalance: ${error.message}`, error.stack);
       throw error;
     }
   }

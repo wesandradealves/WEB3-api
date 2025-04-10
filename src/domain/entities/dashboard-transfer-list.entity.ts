@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from './commons/base.entity';
 import { UpdateFiles } from './update-files.entity';
+import { TransferStatusEnum } from '../enums/transfer.status.enum';
 
 @Entity('dashboard_transfer_list')
 export class DashboardTransferList extends BaseEntity {
@@ -29,6 +30,10 @@ export class DashboardTransferList extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   obs: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ 
+    type: "enum",
+    enum: TransferStatusEnum,
+    default: TransferStatusEnum.PENDING,
+  })
   status: string;
 }

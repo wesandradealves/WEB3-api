@@ -1,4 +1,5 @@
 import { UpdateFiles } from '@/domain/entities/update-files.entity';
+import { UpdateFileEnum } from '@/domain/enums/update.file.enum';
 import { IBucketProvider } from '@/domain/interfaces/providers/bucket.provider';
 import { ISendCsvUseCase } from '@/domain/interfaces/use-cases/update-file/send.csv.use-case';
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -54,7 +55,7 @@ export class SendCsvUseCase implements ISendCsvUseCase {
       // Salvando link no banco update-files
       const updateFile = this.updateFiles.create({
         link: `https://${this.bucket}.s3.amazonaws.com/${path}`,
-        status: 'uploaded',
+        status: UpdateFileEnum.UPLOADED,
         user_id: userId,
         hash: hash,
       });

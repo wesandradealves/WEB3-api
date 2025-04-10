@@ -48,6 +48,8 @@ export interface IBdmExternal {
   getBdmUserData(id: any): Promise<IViewBdmUserData>;
   getBdmUserDataByEmail(email: string): Promise<IViewBdmUserData>;
   getBdmUserDataByWalletId(walletId: string): Promise<IViewBdmUserData>;
+  findWalletById(walletId: number): Promise<IViewWallet>;
+  transferAsset(body: any): Promise<any>;
 }
 
 export const IBdmExternal = Symbol('IBdmExternal');

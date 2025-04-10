@@ -112,7 +112,7 @@ export class SqsProvider implements ISQSProvider {
       const result = await this.sqsClient.send(
         new DeleteMessageCommand({
           QueueUrl: queueUrl,
-          ReceiptHandle: `${message?.ReceiptHandle}`,
+          ReceiptHandle: `${message.ReceiptHandle}`,
         }),
       );
       if (

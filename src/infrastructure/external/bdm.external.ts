@@ -99,6 +99,7 @@ export class BdmExternal implements IBdmExternal {
       throw error;
     }
   }
+
   async getBdmUserDataByEmail(email: string): Promise<IViewBdmUserData> {
     const attachment = `${email}:`;
     Logger.log(`${attachment}Buscando dados do usuário BDM pelo email`, 'getBdmUserDataByEmail');
@@ -163,6 +164,60 @@ export class BdmExternal implements IBdmExternal {
     } catch (error) {
       Logger.error(attachment + error.message, error.stack, 'getBdbDefaultWalletByEmail');
       error.message = 'Erro ao buscar a carteira padrão do usuario:' + error.message
+      throw error;
+    }
+  }
+  
+  async findWalletById(walletId: number): Promise<IViewWallet> {
+    this.logger.log('Buscando wallet BDM');
+    try {
+      const cognitoResponse = await this.cognito.signInBdmFullResponse();
+
+      this.logger.debug(`Token JWT obtained: ${cognitoResponse.AccessToken.substring(0, 20)}...`);
+
+      const response = await this.httpBdmClient.fetchData({
+        url: `/wallets/pos/${walletId}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'bdm-api-key': this.BDM_API_KEY,
+          Authorization : `Bearer ${cognitoResponse.AccessToken}`,
+          payload: `custom:id:${cognitoResponse['custom:id']}]`,
+        },
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error(`Erro ao buscar wallet do BDM`);
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  async transferAsset(body: any): Promise<IViewWallet> {
+    this.logger.log('Transferindo assets no BDM');
+    try {
+      const cognitoResponse = await this.cognito.signInBdmFullResponse();
+  
+      this.logger.debug(`Token JWT obtained: ${cognitoResponse.AccessToken.substring(0, 20)}...`);
+      this.logger.debug(`Request body: ${JSON.stringify(body)}`);
+  
+      const response = await this.httpBdmClient.fetchData({
+        url: `operations/BDM/transfer`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'bdm-api-key': this.BDM_API_KEY,
+          Authorization : `Bearer ${cognitoResponse.AccessToken}`,
+          payload: `custom:id:${cognitoResponse['custom:id']}]`,
+        },
+        data: body
+      });
+  
+      return response;
+    } catch (error) {
+      this.logger.error(`Erro ao transferir assets: ${error.message}`);
+      this.logger.error(error.stack);
       throw error;
     }
   }

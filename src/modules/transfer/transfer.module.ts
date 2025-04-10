@@ -15,17 +15,20 @@ import { UserEntity } from "@/domain/entities/user.entity";
 import { BlockchainExternal } from "@/infrastructure/external/blockchain.external";
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.external";
+import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain/http.blockchain.module";
 
 @Module({
   imports: [
      TypeOrmModule.forFeature([UpdateFiles, DashboardTransferList, UserEntity]),
      CognitoModule,
      HttpBdmModule,
+     HttpBlochChainModule
   ],
   controllers: [TrasferController],
   providers: [
       Logger,
       SqsProvider,
+      TransferRepository,
         {
           provide: ITransferAssetRepository,
           useClass: TransferRepository,
@@ -44,6 +47,6 @@ import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.ext
         },
       ],
       
-  exports: [],
+    exports: [],
 })
 export class TransferModule {}

@@ -19,9 +19,12 @@ import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.ext
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { ITransferAssetUseCase } from "@/domain/interfaces/use-cases/transfer/transfer.asset.user-case";
 import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain/http.blockchain.module";
+import { ConfigModule } from "@nestjs/config";
+import AppEnvs from "@/infrastructure/config/app.config";
 
 @Module({
   imports: [
+    ConfigModule.forRoot({isGlobal: true, load: [AppEnvs]}),
     DataBaseModule,
     TypeOrmModule.forFeature([UpdateFiles, DashboardTransferList, UserEntity]),
     HttpBdmModule,
