@@ -28,6 +28,18 @@ export class TransferRepository implements ITransferAssetRepository{
     this.awsSqsUrl = process.env.AWS_SQS_TRANSFER_URL;
   }
 
+  async getListAvailableTransfers(email: string, status: TransferStatusEnum): Promise<any> {
+    try {
+      const response = await this.dashboardTransferList.find({
+        where: { email, status },
+      });
+      return response;
+    } catch (error) {
+      console.error("Error in getListAvailableTransfers method:", error);
+      throw error;
+    }
+  }
+
   async transfer(ids: string[], user: any ): Promise<any> {
     try {
       //dados de quem envia

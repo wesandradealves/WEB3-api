@@ -18,6 +18,9 @@ import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.ext
 import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain/http.blockchain.module";
 import { JwtAuthGuard } from "../auth/jwt.auth.guard";
 import { AdminGuard } from "./admin.guard";
+import { IGetListAvailableTransferUseCase } from "@/domain/interfaces/use-cases/transfer/get.list.available.transfer.use-case";
+import { GetListAvailableTransfersUseCase } from "./use-cases/get.list.available.transfers.use-case";
+
 
 @Module({
   imports: [
@@ -49,6 +52,10 @@ import { AdminGuard } from "./admin.guard";
           provide: IBlockchainExternal,
           useClass: BlockchainExternal,
         },
+        {
+          provide: IGetListAvailableTransferUseCase,
+          useClass: GetListAvailableTransfersUseCase,
+        }
       ],
       
     exports: [],
