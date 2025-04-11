@@ -7,7 +7,6 @@ plugins:
   - serverless-webpack
   - serverless-localstack
   - serverless-offline-sqs
-  # - serverless-offline-s3 
   - serverless-offline
 
 configValidationMode: warn
@@ -23,17 +22,6 @@ custom:
     accessKeyId: 'root'
     secretAccessKey: 'root'
   
-
-  # serverless-offline-s3:
-  #   autoCreate: true
-  #   endpoint: 'https://s3.us-east-2.amazonaws.com'
-  #   region: us-east-2
-  #   accessKeyId: '${env:AWS_ACCESS_KEY_ID}'
-  #   secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY} 
-  #   buckets:
-  #     - name: development-dashboard-documents
-  
-
   localstack:
     stages:
       - local
@@ -50,6 +38,24 @@ provider:
   runtime: nodejs18.x
   region: us-east-2
   stage: ${opt:stage, 'dev'}
+  environment:
+    ENVIRONMENT: ${env:ENVIRONMENT}
+    HTTP_PORT: ${env:HTTP_PORT}
+    AWS_REGION: ${env:AWS_REGION}
+    DATABASE_TYPE: ${env:DATABASE_TYPE}
+    DATABASE_HOST: ${env:DATABASE_HOST}
+    DATABASE_PORT: ${env:DATABASE_PORT}
+    DATABASE_NAME: ${env:DATABASE_NAME}
+    DATABASE_USERNAME: ${env:DATABASE_USERNAME}
+    DATABASE_PASSWORD: ${env:DATABASE_PASSWORD}
+    TOKEN_JWT_SECRET: ${env:TOKEN_JWT_SECRET}
+    TOKEN_JWT_EXPIRES: ${env:TOKEN_JWT_EXPIRES}
+    REFRESH_TOKEN_JWT_SECRET: ${env:REFRESH_TOKEN_JWT_SECRET}
+    REFRESH_TOKEN_JWT_EXPIRES: ${env:REFRESH_TOKEN_JWT_EXPIRES}
+    AWS_SQS_TRANSFER_URL: ${env:AWS_SQS_TRANSFER_URL}
+    AWS_S3_BUCKET_NAME: ${env:AWS_S3_BUCKET_NAME}
+    BUCKET_NAME: ${env:BUCKET_NAME}
+  
   iam:
     role:
       statements:
@@ -61,6 +67,14 @@ provider:
           Resource:
             - "arn:aws:s3:::development-dashboard-documents"
             - "arn:aws:s3:::development-dashboard-documents/*"
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource:
+            - Fn::GetAtt: [DashboardTransferProcessingQueue, Arn]
 
 functions:
   dashbooardFileProcessor:
@@ -75,6 +89,11 @@ functions:
           bucket: development-dashboard-documents
           event: s3:ObjectCreated:*
           existing: true
+    environment:
+      HTTP_TIMEOUT: ${env:HTTP_TIMEOUT}
+      SES_SOURCE_ARN: ${env:SES_SOURCE_ARN}
+      SES_EMAIL_FROM: ${env:SES_EMAIL_FROM}
+      SES_2FA_TEMPLATE: ${env:SES_2FA_TEMPLATE}
 
   transferAssets:
     timeout: 30
@@ -95,12 +114,15 @@ functions:
       AWS_COGNITO_CLIENT_ID_SECRET: ${env:AWS_COGNITO_CLIENT_ID_SECRET}
       BLOCKCHAIN_API_URL: ${env:BLOCKCHAIN_API_URL}
       BLOCKCHAIN_API_KEY_HASH: ${env:BLOCKCHAIN_API_KEY_HASH}
-      BDM_API_KEY: ${env:BDM_API_KEY} 
-
+      BDM_API_KEY: ${env:BDM_API_KEY}
+      BASE_URL_BDM: ${env:BASE_URL_BDM}
+      BDM_VERSION: ${env:BDM_VERSION}
+      BDM_AUTH_USERNAME: ${env:BDM_AUTH_USERNAME}
+      BDM_AUTH_PASSWORD: ${env:BDM_AUTH_PASSWORD}
+      HTTP_TIMEOUT: ${env:HTTP_TIMEOUT}
 
 resources:
   Resources:
-    # Fila SQS para enviar as transações do POS para o escritor
     DashboardTransferProcessingQueue:
       Type: AWS::SQS::Queue
       Properties:

@@ -7,6 +7,7 @@ import * as csvParser from "csv-parser";
 import { S3External } from "@/infrastructure/external/s3.external";
 import { DashboardTransferList } from "@/domain/entities/dashboard-transfer-list.entity";
 import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
+import { UpdateFileEnum } from "@/domain/enums/update.file.enum";
 
 
 @Injectable()
@@ -20,8 +21,7 @@ export class DashboardFileProcessor implements IDashboardFileProcessorRepository
   ) {}
 
   async fileProcessor(): Promise<any> {
-    // Busca os arquivos com status 'uploaded'
-    const results = await this.updateFiles.find({ where: { status: 'uploaded' } });
+    const results = await this.updateFiles.find({ where: { status: UpdateFileEnum.UPLOADED } });
   
     for (const file of results) {
       try {
@@ -44,7 +44,6 @@ export class DashboardFileProcessor implements IDashboardFileProcessorRepository
   
         console.log(`[FileProcessor] - Processed data with IDs:`, enrichedData);
   
-        // Verifica se os registros já existem na tabela
         for (const record of enrichedData) {
           const exists = await this.DashboardTransferList.findOne({
             where: {
@@ -54,13 +53,11 @@ export class DashboardFileProcessor implements IDashboardFileProcessorRepository
               amount: record.amount,
               email: record.email,
               obs: record.obs,
-              status: record.status,
               updateFileId: record.updateFileId,
             },
           });
   
           if (!exists) {
-            // Insere apenas se o registro não existir
             await this.DashboardTransferList.save(record);
           } else {
             console.log(`[FileProcessor] - Skipping duplicate record:`, record);

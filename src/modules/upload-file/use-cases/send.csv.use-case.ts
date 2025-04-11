@@ -27,7 +27,6 @@ export class SendCsvUseCase implements ISendCsvUseCase {
     const hash = this.generateHash(file.buffer);
 
     try {
-      // Verifica se o buffer é válido
       if (!Buffer.isBuffer(file.buffer)) {
         throw new Error('File buffer is not a valid Buffer');
       }
