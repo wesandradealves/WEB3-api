@@ -19,7 +19,7 @@ services:
       - ./bdm-digital-website-api-theme:/var/www/html/wp-content/themes/bdm-digital-website-api-theme
       - ./classic-editor:/var/www/html/wp-content/plugins/classic-editor
       - ./wp-rest-cache:/var/www/html/wp-content/plugins/wp-rest-cache
-      - ./lazy-blocks:/var/www/html/wp-content/plugins/lazy-blocks
+      - ./quick-featured-images:/var/www/html/wp-content/plugins/quick-featured-images
       - ./wp-openapi:/var/www/html/wp-content/plugins/wp-openapi
       - ./acf-to-rest-api:/var/www/html/wp-content/plugins/acf-to-rest-api
       - ./advanced-custom-fields-pro:/var/www/html/wp-content/plugins/advanced-custom-fields-pro

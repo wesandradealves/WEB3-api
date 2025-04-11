@@ -522,6 +522,18 @@ function my_acf_blocks_init() {
                     'align' => true,
                     'jsx'   => true, 
                 ],
+            ],
+            (object) [
+                'name'        => 'sectionswitcher',
+                'title'       => __('Section switcher'),
+                'description' => __('Section switcher Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['media', 'section switcher', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
             ]
         ];
 
@@ -540,6 +552,80 @@ function my_acf_blocks_init() {
     }
 }
 add_action('acf/init', 'my_acf_blocks_init');
+
+// Colunas personalizadas para o admin
+
+// Adicionar uma nova coluna para o campo customizado "rating"
+function add_rating_column($columns) {
+    $columns['rating'] = __('Rating', 'textdomain');
+    return $columns;
+}
+add_filter('manage_edit-opnioes_columns', 'add_rating_column');
+
+// Preencher a coluna "rating" com os valores do custom field
+function fill_rating_column($column, $post_id) {
+    if ($column === 'rating') {
+        $rating = get_post_meta($post_id, 'rating', true);
+        echo $rating ? esc_html($rating) : __('No rating', 'textdomain');
+    }
+}
+add_action('manage_opnioes_posts_custom_column', 'fill_rating_column', 10, 2);
+
+// Tornar a coluna "rating" ordenável
+function make_rating_column_sortable($columns) {
+    $columns['rating'] = 'rating';
+    return $columns;
+}
+add_filter('manage_edit-opnioes_sortable_columns', 'make_rating_column_sortable');
+
+// Ajustar a query para ordenar pela coluna "rating"
+function sort_by_rating_column($query) {
+    if (!is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if ($query->get('orderby') === 'rating') {
+        $query->set('meta_key', 'rating');
+        $query->set('orderby', 'meta_value_num'); // Ordenar como número
+    }
+}
+add_action('pre_get_posts', 'sort_by_rating_column');
+
+// Adicionar uma nova coluna para o campo customizado "readTime"
+function add_readtime_column($columns) {
+    $columns['readTime'] = __('Read Time', 'textdomain');
+    return $columns;
+}
+add_filter('manage_edit-midia_columns', 'add_readtime_column');
+
+// Preencher a coluna "readTime" com os valores do custom field
+function fill_readtime_column($column, $post_id) {
+    if ($column === 'readTime') {
+        $readTime = get_post_meta($post_id, 'readTime', true);
+        echo $readTime ? esc_html($readTime) : __('No read time', 'textdomain');
+    }
+}
+add_action('manage_midia_posts_custom_column', 'fill_readtime_column', 10, 2);
+
+// Tornar a coluna "readTime" ordenável
+function make_readtime_column_sortable($columns) {
+    $columns['readTime'] = 'readTime';
+    return $columns;
+}
+add_filter('manage_edit-midia_sortable_columns', 'make_readtime_column_sortable');
+
+// Ajustar a query para ordenar pela coluna "readTime"
+function sort_by_readtime_column($query) {
+    if (!is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if ($query->get('orderby') === 'readTime') {
+        $query->set('meta_key', 'readTime');
+        $query->set('orderby', 'meta_value'); // Ordenar como string
+    }
+}
+add_action('pre_get_posts', 'sort_by_readtime_column');
 
 // Rest Services
 
