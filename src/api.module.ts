@@ -10,6 +10,8 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
 import { ExtractModule } from './modules/extract/extract.module';
 import { UploadFileModule } from './modules/upload-file/upload.file.module';
 import { TransferModule } from './modules/transfer/transfer.module';
+import { QuotationModule } from './modules/quotations/quotations.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { TransferModule } from './modules/transfer/transfer.module';
     DataBaseModule,
     AuthModule,
     UserModule,
+    WalletModule,
     SESModule,
+    QuotationModule,
     CognitoModule,
     TransactionsModule,
     ExtractModule,
