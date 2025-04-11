@@ -16,5 +16,20 @@ echo "define('JWT_AUTH_SECRET_KEY', '$(openssl rand -base64 64)');" >> /var/www/
 echo "define('JWT_AUTH_CORS_ENABLE', true);" >> /var/www/html/wp-config.php
 echo "define('FS_METHOD', 'direct');" >> /var/www/html/wp-config.php
 
+# 🕒 Aguardar MySQL estar pronto
+echo "⏳ Aguardando MySQL estar pronto..."
+until mysqladmin ping -h"$WORDPRESS_DB_HOST" --silent; do
+  sleep 5
+done
+echo "✅ MySQL está pronto!"
+
+# 🧪 Executar script de inicialização do banco de dados
+if [ -f /usr/local/bin/init-db.sh ]; then
+  echo "🗄️ Executando init-db.sh..."
+  /bin/bash /usr/local/bin/init-db.sh
+else
+  echo "⚠️ init-db.sh não encontrado."
+fi
+
 # Iniciar o servidor Apache
 exec apache2-foreground
