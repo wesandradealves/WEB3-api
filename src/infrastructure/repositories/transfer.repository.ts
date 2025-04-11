@@ -7,6 +7,7 @@ import { SqsProvider } from "../providers/aws/sqs/sqs.provider";
 import { UserEntity } from "@/domain/entities/user.entity";
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.external";
+import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
 
 
 @Injectable()
@@ -24,6 +25,18 @@ export class TransferRepository implements ITransferAssetRepository{
     private readonly blockchainExternal: IBlockchainExternal,
   ) {
     this.awsSqsUrl = process.env.AWS_SQS_TRANSFER_URL;
+  }
+
+  async getListAvailableTransfers(email: string, status: TransferStatusEnum): Promise<any> {
+    try {
+      const response = await this.dashboardTransferList.find({
+        where: { email, status },
+      });
+      return response;
+    } catch (error) {
+      console.error("Error in getListAvailableTransfers method:", error);
+      throw error;
+    }
   }
 
   async transfer(ids: string[], user: any ): Promise<any> {

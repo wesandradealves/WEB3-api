@@ -16,6 +16,9 @@ import { BlockchainExternal } from "@/infrastructure/external/blockchain.externa
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.external";
 import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain/http.blockchain.module";
+import { IGetListAvailableTransferUseCase } from "@/domain/interfaces/use-cases/transfer/get.list.available.transfer.use-case";
+import { GetListAvailableTransfersUseCase } from "./use-cases/get.list.available.transfers.use-case";
+
 
 @Module({
   imports: [
@@ -45,6 +48,10 @@ import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain
           provide: IBlockchainExternal,
           useClass: BlockchainExternal,
         },
+        {
+          provide: IGetListAvailableTransferUseCase,
+          useClass: GetListAvailableTransfersUseCase,
+        }
       ],
       
     exports: [],
