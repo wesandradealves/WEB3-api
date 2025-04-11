@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     nodejs \
     npm \
+    dos2unix \
     && docker-php-ext-configure gd \
     && docker-php-ext-install gd zip soap \
     && rm -rf /var/lib/apt/lists/*
@@ -63,7 +64,7 @@ COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-contr
 COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
 COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
 COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
-COPY ./lazy-blocks /var/www/html/wp-content/plugins/lazy-blocks
+COPY ./quick-featured-images /var/www/html/wp-content/plugins/quick-featured-images
 
 # Copy Theme
 COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
@@ -89,17 +90,19 @@ RUN mkdir -p /var/www/html/wp-content/uploads && \
 
 RUN composer update
 
-# Copy the script to the container
+# SQL inicial
+COPY ./dumps/wordpress_db.sql /docker-entrypoint-initdb.d/
+RUN chmod 644 /docker-entrypoint-initdb.d/wordpress_db.sql
+
+# Arquivos de configuração
 COPY ./setup-wp-config.sh /usr/local/bin/setup-wp-config.sh
+RUN dos2unix /usr/local/bin/setup-wp-config.sh && chmod +x /usr/local/bin/setup-wp-config.sh
 
-# Ensure the script has Unix line endings
-RUN apt-get update && apt-get install -y dos2unix && dos2unix /usr/local/bin/setup-wp-config.sh
+COPY ./init-db.sh /usr/local/bin/init-db.sh
+RUN dos2unix /usr/local/bin/init-db.sh && chmod +x /usr/local/bin/init-db.sh
 
-# Ensure the script is executable
-RUN chmod +x /usr/local/bin/setup-wp-config.sh
-
-# Set the script as the ENTRYPOINT
-ENTRYPOINT ["/usr/local/bin/setup-wp-config.sh"]
+# Instalar o cliente MySQL
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
 
 # Copiar o script de inicialização para o contêiner
 COPY ./init-db.sh /usr/local/bin/init-db.sh
@@ -109,3 +112,6 @@ RUN chmod +x /usr/local/bin/init-db.sh
 
 # Expose port 80
 EXPOSE 80
+
+# Entrypoint final
+ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/setup-wp-config.sh && docker-entrypoint.sh apache2-foreground"]
