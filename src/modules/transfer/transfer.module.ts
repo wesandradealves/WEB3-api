@@ -16,6 +16,8 @@ import { BlockchainExternal } from "@/infrastructure/external/blockchain.externa
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.external";
 import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain/http.blockchain.module";
+import { JwtAuthGuard } from "../auth/jwt.auth.guard";
+import { AdminGuard } from "./admin.guard";
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { HttpBlochChainModule } from "@/infrastructure/providers/http/blockchain
   ],
   controllers: [TrasferController],
   providers: [
+      JwtAuthGuard,
+      AdminGuard,
       Logger,
       SqsProvider,
       TransferRepository,

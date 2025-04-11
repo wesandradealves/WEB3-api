@@ -1,7 +1,7 @@
 import { ITransferUseCase } from "@/domain/interfaces/use-cases/transfer/transfer.user-case";
-import { JwtAuthGuard } from "@/modules/auth/jwt.auth.guard";
 import { Body, Controller, Inject, Post, Request, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { AdminGuard } from "../admin.guard";
 
 @ApiTags('Transfer')
 @ApiBearerAuth()
@@ -13,7 +13,7 @@ export class TrasferController {
   ) {}
 
   @Post('create')  
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminGuard)
   @ApiOperation({ 
     summary: 'Create asset transfer',
     description: 'Transfers assets to one or more recipients' 
