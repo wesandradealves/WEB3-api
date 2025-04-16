@@ -65,6 +65,7 @@ COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
 COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
 COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
 COPY ./quick-featured-images /var/www/html/wp-content/plugins/quick-featured-images
+COPY ./bdm-firebase-bff /var/www/html/wp-content/plugins/bdm-firebase-bff
 
 # Copy Theme
 COPY ./bdm-digital-website-api-theme /var/www/html/wp-content/themes/bdm-digital-website-api-theme
@@ -85,8 +86,12 @@ RUN rm -rf /var/www/html/wordpress
 
 # Ensure the uploads directory exists and is writable
 RUN mkdir -p /var/www/html/wp-content/uploads && \
+    chown -R www-data:www-data /var/www/html  && \
+    chmod -R 755 /var/www/html  && \
     chown -R www-data:www-data /var/www/html/wp-content/uploads && \
-    chmod -R 775 /var/www/html/wp-content/uploads
+    chmod -R 775 /var/www/html/wp-content/uploads && \
+    chmod -R 775 wp-content && \
+    chmod -R 775 wp-admin
 
 RUN composer update
 
@@ -112,6 +117,10 @@ RUN chmod +x /usr/local/bin/init-db.sh
 
 # Expose port 80
 EXPOSE 80
+
+# Navegar até o diretório do plugin e rodar o Composer
+WORKDIR /var/www/html/wp-content/plugins/bdm-firebase-bff
+RUN composer install
 
 # Entrypoint final
 ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/setup-wp-config.sh && docker-entrypoint.sh apache2-foreground"]

@@ -1,0 +1,4 @@
+<Files "firebase_credentials.json">
+  Order allow,deny
+  Deny from all
+</Files>

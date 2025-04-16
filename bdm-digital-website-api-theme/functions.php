@@ -218,8 +218,15 @@ function ws_get_images_urls($object, $field_name, $request)
 
 function create_homepage_on_activation()
 {
-    // Criar página home e incluir o template swagger
-    if (!get_page_by_title('Home')) {
+    // Usar WP_Query para verificar se a página com o título "Home" já existe
+    $query = new WP_Query([
+        'post_type'   => 'page',
+        'post_status' => 'publish',
+        'title'       => 'Home', // Procurando pelo título 'Home'
+        'posts_per_page' => 1,  // Limita a busca a um resultado
+    ]);
+
+    if (!$query->have_posts()) {
         $homepage_id = wp_insert_post([
             'post_title' => 'Documentation',
             'post_content' => '',
@@ -251,8 +258,18 @@ function create_homepage_on_activation()
 
 function remove_homepage_on_deactivation()
 {
-    if (get_page_by_title('Home')) {
-        wp_delete_post(get_page_by_title('Home')->ID, true);
+    $query = new WP_Query([
+        'post_type'   => 'page',
+        'post_status' => 'publish',
+        'title'       => 'Home', 
+        'posts_per_page' => 1, 
+    ]);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            wp_delete_post(get_the_ID(), true);
+        }
     }
 
     delete_option('show_on_front');
