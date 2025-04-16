@@ -35,3 +35,13 @@ if [ "$TABLE_COUNT" -eq 0 ]; then
 else
   echo "Banco de dados já contém tabelas. Pulando importação."
 fi
+
+# Verifica se o WP-CLI está instalado e atualiza os permalinks
+if command -v wp &> /dev/null; then
+  echo "Atualizando os permalinks..."
+  wp option update permalink_structure '/arquivos/%post_id%' --allow-root
+  wp option update permalink_structure '/%postname%/' --allow-root
+  wp rewrite flush --allow-root
+else
+  echo "WP-CLI não encontrado. Não foi possível atualizar os permalinks."
+fi

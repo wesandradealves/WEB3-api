@@ -4,6 +4,7 @@
     "type": "project",
     "require": {
         "php": "^8.2",
+        "google/analytics-data": "^0.22.2",
         "johnpbloch/wordpress": "*"
     },
     "repositories": [
