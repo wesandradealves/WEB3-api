@@ -3,6 +3,17 @@
 // Renderizar estilos no admin
 function wp_before_admin_bar_render()
 {
+    echo '
+
+        <style type="text/css">
+
+            .editor-editor-interface.edit-post-layout.is-mode-visual.interface-interface-skeleton.has-footer .interface-interface-skeleton__body {
+                // opacity: .1
+            }
+
+        </style>
+
+    ';
 }
 
 // Remover menus do menu lateral
@@ -473,6 +484,7 @@ add_action("init", "wpb_custom_new_menu");
 add_action("wp_enqueue_scripts", "prefix_add_header_styles");
 add_action("admin_menu", "remove_menus");
 add_action("admin_menu", "disable_default_dashboard_widgets");
+add_action('wp_before_admin_bar_render', 'wp_before_admin_bar_render');
 
 // Blocks
 
@@ -560,6 +572,18 @@ function my_acf_blocks_init() {
                 'category'    => 'rest-api',
                 'icon'        => '',
                 'keywords'    => ['media', 'cards motion', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ],
+            (object) [
+                'name'        => 'firebasegametrics',
+                'title'       => __('Firebase GA Metrics'),
+                'description' => __('Firebase GA Metrics Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['media', 'firebase', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
