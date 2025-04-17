@@ -27,6 +27,7 @@
 		"migration:show": "yarn typeorm migration:show"
 	},
 	"dependencies": {
+		"@aws-sdk/client-cognito-identity-provider": "^3.787.0",
 		"@aws-sdk/client-ses": "^3.577.0",
 		"@nestjs/common": "^10.3.8",
 		"@nestjs/config": "^3.2.2",

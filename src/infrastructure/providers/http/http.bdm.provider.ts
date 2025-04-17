@@ -1,5 +1,15 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import {
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 
 @Injectable()
 export class HttpBdmProvider {
@@ -20,7 +30,8 @@ export class HttpBdmProvider {
       (response) => {
         const { config } = response;
         config['metadata'] = { ...config['metadata'], endDate: new Date() };
-        const duration = config['metadata'].endDate.getTime() - config['metadata'].startDate.getTime();
+        const duration =
+          config['metadata'].endDate.getTime() - config['metadata'].startDate.getTime();
         this.logger.log(`${config.method.toUpperCase()} ${config.url} ${duration}ms`);
         return response;
       },
