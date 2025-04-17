@@ -3,7 +3,7 @@
     "info": {
         "title": "BDM Digital   API",
         "description": "",
-        "version": "6.7.2",
+        "version": "6.8",
         "contact": {
             "name": "BDM Digital  ",
             "url": "http:\/\/localhost:8000",
@@ -18,6 +18,10 @@
     "tags": [
         {
             "name": "oembed\/1.0",
+            "description": ""
+        },
+        {
+            "name": "bdm\/v1",
             "description": ""
         },
         {
@@ -10493,6 +10497,50 @@
                             "inactive",
                             "active"
                         ]
+                    },
+                    "default_template_types": {
+                        "description": "Uma lista padr\u00e3o de tipos de modelo.",
+                        "type": "array",
+                        "readonly": true,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "slug": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "default_template_part_areas": {
+                        "description": "Uma lista de valores de \u00e1rea permitidos para partes de modelo.",
+                        "type": "array",
+                        "readonly": true,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "area": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "icon": {
+                                    "type": "string"
+                                },
+                                "area_tag": {
+                                    "type": "string"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -10995,7 +11043,7 @@
                         ]
                     },
                     "humanized_updated": {
-                        "description": "A data em que o bloco foi atualizado pela \u00faltima vez, em formato bastante leg\u00edvel para humanos.",
+                        "description": "A data em que o bloco foi atualizado pela \u00faltima vez, em formato leg\u00edvel para humanos.",
                         "type": "string",
                         "context": [
                             "view"
@@ -11565,6 +11613,46 @@
                         }
                     }
                 ]
+            }
+        },
+        "\/bdm\/v1": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "description": "<h2 id=\"callback\">Callback<\/h2>\r\n<div class='wp-openapi-callback-info-html'>\r\n<div class='wp-openapi-callback-info-html-label'>Class<\/div>\r\n<div class='wp-openapi-callback-info-html-value'>WP_REST_Server<\/div>\r\n<div class='wp-openapi-callback-info-html-label'>Method<\/div>\r\n<div class='wp-openapi-callback-info-html-value'>get_namespace_index<\/div>\r\n\r\n<\/div>\r\n",
+                "parameters": [
+                    {
+                        "name": "namespace",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "default": "bdm\/v1"
+                        }
+                    },
+                    {
+                        "name": "context",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "schema": {
+                            "default": "view"
+                        }
+                    }
+                ]
+            }
+        },
+        "\/bdm\/v1\/analytics": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "description": "<h2 id=\"callback\">Callback<\/h2>\r\n<div class='wp-openapi-callback-info-html'>\r\n<div class='wp-openapi-callback-info-html-label'>Class<\/div>\r\n<div class='wp-openapi-callback-info-html-value'>BDM\\FirebaseBFF\\Rest\\AnalyticsEndpoint<\/div>\r\n<div class='wp-openapi-callback-info-html-label'>Method<\/div>\r\n<div class='wp-openapi-callback-info-html-value'>handle<\/div>\r\n\r\n<div class='wp-openapi-callback-info-html-label'>Filepath<\/div>\r\n<div class='wp-openapi-callback-info-html-value'>\/bdm-firebase-bff\/src\/Rest\/AnalyticsEndpoint.php<\/div>\r\n<\/div>\r\n"
             }
         },
         "\/jwt-auth\/v1": {
@@ -12257,6 +12345,13 @@
                         "name": "sticky",
                         "in": "query",
                         "description": "Limitar resultados de itens que sejam fixos.",
+                        "required": false,
+                        "schema": {}
+                    },
+                    {
+                        "name": "ignore_sticky",
+                        "in": "query",
+                        "description": "Se deve ou n\u00e3o ignorar os artigos fixos.",
                         "required": false,
                         "schema": {}
                     },
@@ -36414,6 +36509,24 @@
                                     "acf-field-group": "acf-field-group",
                                     "acf-field": "acf-field"
                                 }
+                            }
+                        }
+                    },
+                    {
+                        "name": "search_columns",
+                        "in": "query",
+                        "description": "Array de nomes de colunas para serem pesquisadas.",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "enum": [
+                                    "email",
+                                    "name",
+                                    "id",
+                                    "username",
+                                    "slug"
+                                ],
+                                "type": "string"
                             }
                         }
                     }
