@@ -241,6 +241,35 @@
                                 "parent_repeater": "field_67ed7ea2aea34"
                             },
                             {
+                                "key": "field_68001492423b7",
+                                "label": "Alinhamento da Imagem",
+                                "name": "imagealign",
+                                "aria-label": "",
+                                "type": "select",
+                                "instructions": "",
+                                "required": 0,
+                                "conditional_logic": 0,
+                                "wrapper": {
+                                    "width": "",
+                                    "class": "",
+                                    "id": ""
+                                },
+                                "choices": {
+                                    "me-auto": "Esquerda",
+                                    "ms-auto": "Direita",
+                                    "m-auto": "Centro"
+                                },
+                                "default_value": "me-auto",
+                                "return_format": "value",
+                                "multiple": 0,
+                                "allow_null": 0,
+                                "allow_in_bindings": 1,
+                                "ui": 0,
+                                "ajax": 0,
+                                "placeholder": "",
+                                "parent_repeater": "field_67ed7ea2aea34"
+                            },
+                            {
                                 "key": "field_67ed7fc6aea3e",
                                 "label": "Gap",
                                 "name": "gap",
@@ -380,6 +409,66 @@
                     "param": "block",
                     "operator": "==",
                     "value": "acf\/boxes"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
+        "key": "group_67fff214eff93",
+        "title": "Cards Motion",
+        "fields": [
+            {
+                "key": "field_67fff21d2e327",
+                "label": "",
+                "name": "",
+                "aria-label": "",
+                "type": "clone",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "clone": [
+                    "field_67fffe01d797e",
+                    "field_67ec239c36e58",
+                    "field_67ec257c36e64",
+                    "field_67ec23f136e5a",
+                    "field_67ec23ff36e5b",
+                    "field_67ec244b36e5c",
+                    "field_67ec245e36e5d",
+                    "field_67ec247c36e5e",
+                    "field_67ec24ac36e5f",
+                    "field_67ec24c436e60",
+                    "field_67ec24d236e61",
+                    "field_67ec259a36e65",
+                    "field_67ec260d36e67",
+                    "field_67eab81c13321",
+                    "field_67ed7ea2aea34"
+                ],
+                "display": "seamless",
+                "layout": "block",
+                "prefix_label": 0,
+                "prefix_name": 0
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "block",
+                    "operator": "==",
+                    "value": "acf\/cardsmotion"
                 }
             ]
         ],
@@ -750,6 +839,27 @@
         "title": "Section",
         "fields": [
             {
+                "key": "field_67fffe01d797e",
+                "label": "Helper",
+                "name": "helper",
+                "aria-label": "",
+                "type": "wysiwyg",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "default_value": "",
+                "allow_in_bindings": 0,
+                "tabs": "all",
+                "toolbar": "full",
+                "media_upload": 1,
+                "delay": 0
+            },
+            {
                 "key": "field_67ec239c36e58",
                 "label": "Titulo",
                 "name": "title",
@@ -771,9 +881,9 @@
                 "delay": 0
             },
             {
-                "key": "field_67ec23ab36e59",
-                "label": "Texto",
-                "name": "text",
+                "key": "field_67ec257c36e64",
+                "label": "Subtitulo",
+                "name": "subtitle",
                 "aria-label": "",
                 "type": "wysiwyg",
                 "instructions": "",
@@ -792,9 +902,9 @@
                 "delay": 0
             },
             {
-                "key": "field_67ec257c36e64",
-                "label": "Subtitulo",
-                "name": "subtitle",
+                "key": "field_67ec23ab36e59",
+                "label": "Texto",
+                "name": "text",
                 "aria-label": "",
                 "type": "wysiwyg",
                 "instructions": "",
@@ -1081,8 +1191,8 @@
                 "label": "Gap",
                 "name": "gap",
                 "aria-label": "",
-                "type": "number",
-                "instructions": "",
+                "type": "text",
+                "instructions": "Usar valores numéricos ou custom seguindo a documentaçao do Tailwind.css. (ex: pt-[240px] ou pt-20, assim como outras propriedades como m, p, px, py, pe, ps, etc.)",
                 "required": 0,
                 "conditional_logic": 0,
                 "wrapper": {
@@ -1091,11 +1201,9 @@
                     "id": ""
                 },
                 "default_value": "",
-                "min": 0,
-                "max": "",
+                "maxlength": "",
                 "allow_in_bindings": 1,
                 "placeholder": "",
-                "step": "",
                 "prepend": "",
                 "append": ""
             },
