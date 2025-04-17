@@ -118,9 +118,5 @@ RUN chmod +x /usr/local/bin/init-db.sh
 # Expose port 80
 EXPOSE 80
 
-# Navegar até o diretório do plugin e rodar o Composer
-WORKDIR /var/www/html/wp-content/plugins/bdm-firebase-bff
-RUN composer install
-
 # Entrypoint final
 ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/setup-wp-config.sh && docker-entrypoint.sh apache2-foreground"]
