@@ -36,8 +36,19 @@ else
   echo "Banco de dados já contém tabelas. Pulando importação."
 fi
 
+# Rodar composer install no plugin bdm-firebase-bff
+echo "Rodando composer install em bdm-firebase-bff..."
+cd /var/www/html/wp-content/plugins/bdm-firebase-bff
+
+if [ -f composer.json ]; then
+  composer install --no-interaction --prefer-dist --optimize-autoloader
+else
+  echo "composer.json não encontrado em bdm-firebase-bff. Pulando..."
+fi
+
 # Verifica se o WP-CLI está instalado e atualiza os permalinks
 if command -v wp &> /dev/null; then
+  cd /var/www/html/
   echo "Atualizando os permalinks..."
   wp option update permalink_structure '/arquivos/%post_id%' --allow-root
   wp option update permalink_structure '/%postname%/' --allow-root
@@ -45,3 +56,4 @@ if command -v wp &> /dev/null; then
 else
   echo "WP-CLI não encontrado. Não foi possível atualizar os permalinks."
 fi
+
