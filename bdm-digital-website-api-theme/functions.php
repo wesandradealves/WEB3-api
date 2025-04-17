@@ -428,6 +428,7 @@ function customize_acf_wysiwyg_colors($init) {
         "000000", "Black",
         "FFFFFF", "White",
         "FFC700", "Yellow",
+        "A0A1A8", "Gray",
     ';
 
     $init['textcolor_map'] = '[' . $custom_colors . ']';
@@ -547,6 +548,18 @@ function my_acf_blocks_init() {
                 'category'    => 'rest-api',
                 'icon'        => '',
                 'keywords'    => ['media', 'section switcher', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ],
+            (object) [
+                'name'        => 'cardsmotion',
+                'title'       => __('Cards Motion'),
+                'description' => __('Cards Motion Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['media', 'cards motion', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
