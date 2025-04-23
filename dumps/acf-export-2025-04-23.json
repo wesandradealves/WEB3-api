@@ -483,6 +483,180 @@
         "show_in_rest": 0
     },
     {
+        "key": "group_6807b81d381c0",
+        "title": "Clientes",
+        "fields": [
+            {
+                "key": "field_6807b82420c8c",
+                "label": "",
+                "name": "",
+                "aria-label": "",
+                "type": "clone",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "clone": [
+                    "field_67eab81c13321",
+                    "field_67ec239c36e58",
+                    "field_67ec24c436e60",
+                    "field_67ec24d236e61",
+                    "field_67ec259a36e65",
+                    "field_67ec260d36e67"
+                ],
+                "display": "seamless",
+                "layout": "block",
+                "prefix_label": 0,
+                "prefix_name": 0
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "block",
+                    "operator": "==",
+                    "value": "acf\/clients"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
+        "key": "group_680902305751d",
+        "title": "Content Box",
+        "fields": [
+            {
+                "key": "field_6809023a8168b",
+                "label": "",
+                "name": "",
+                "aria-label": "",
+                "type": "clone",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "clone": [
+                    "field_67eab81c13321",
+                    "field_67ec239c36e58",
+                    "field_67ec23ab36e59",
+                    "field_67ec24c436e60",
+                    "field_67ec24d236e61",
+                    "field_67ed7f63aea38",
+                    "field_67ed7f40aea37"
+                ],
+                "display": "seamless",
+                "layout": "block",
+                "prefix_label": 0,
+                "prefix_name": 0
+            },
+            {
+                "key": "field_680902968168c",
+                "label": "Reverse",
+                "name": "reverse",
+                "aria-label": "",
+                "type": "true_false",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "message": "",
+                "default_value": 0,
+                "allow_in_bindings": 0,
+                "ui": 0,
+                "ui_on_text": "",
+                "ui_off_text": ""
+            },
+            {
+                "key": "field_6809031281690",
+                "label": "CTA",
+                "name": "cta",
+                "aria-label": "",
+                "type": "repeater",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "layout": "table",
+                "pagination": 0,
+                "min": 0,
+                "max": 0,
+                "collapsed": "",
+                "button_label": "Adicionar linha",
+                "rows_per_page": 20,
+                "sub_fields": [
+                    {
+                        "key": "field_6809031c81691",
+                        "label": "",
+                        "name": "",
+                        "aria-label": "",
+                        "type": "clone",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "clone": [
+                            "field_67eab7bf1331c",
+                            "field_68013076b7ba7",
+                            "field_67ed7efaaea36",
+                            "field_67e9b2079fb6f"
+                        ],
+                        "display": "seamless",
+                        "layout": "block",
+                        "prefix_label": 0,
+                        "prefix_name": 0,
+                        "parent_repeater": "field_6809031281690"
+                    }
+                ]
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "block",
+                    "operator": "==",
+                    "value": "acf\/contentbox"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
         "key": "group_68012deb28bad",
         "title": "Firebase GA Metrics",
         "fields": [
@@ -1561,6 +1735,95 @@
         "active": true,
         "description": "",
         "show_in_rest": 0
+    },
+    {
+        "key": "post_type_6807b866d427f",
+        "title": "Clientes",
+        "menu_order": 0,
+        "active": true,
+        "post_type": "cliente",
+        "advanced_configuration": true,
+        "import_source": "",
+        "import_date": "",
+        "labels": {
+            "name": "Clientes",
+            "singular_name": "Cliente",
+            "menu_name": "Clientes",
+            "all_items": "Todos os Clientes",
+            "edit_item": "Editar Cliente",
+            "view_item": "Ver Cliente",
+            "view_items": "Ver Clientes",
+            "add_new_item": "Adicionar novo Cliente",
+            "add_new": "Adicionar novo Cliente",
+            "new_item": "Novo Cliente",
+            "parent_item_colon": "Cliente ascendente:",
+            "search_items": "Pesquisar Clientes",
+            "not_found": "Não foi possível encontrar clientes",
+            "not_found_in_trash": "Não foi possível encontrar clientes na lixeira",
+            "archives": "Arquivos de Cliente",
+            "attributes": "Atributos de Cliente",
+            "featured_image": "",
+            "set_featured_image": "",
+            "remove_featured_image": "",
+            "use_featured_image": "",
+            "insert_into_item": "Inserir no cliente",
+            "uploaded_to_this_item": "Enviado para este cliente",
+            "filter_items_list": "Filtrar lista de clientes",
+            "filter_by_date": "Filtrar clientes por data",
+            "items_list_navigation": "Navegação na lista de Clientes",
+            "items_list": "Lista de Clientes",
+            "item_published": "Cliente publicado.",
+            "item_published_privately": "Cliente publicado de forma privada.",
+            "item_reverted_to_draft": "Cliente revertido para rascunho.",
+            "item_scheduled": "Cliente agendado.",
+            "item_updated": "Cliente atualizado.",
+            "item_link": "Link de Cliente",
+            "item_link_description": "Um link para um cliente."
+        },
+        "description": "",
+        "public": true,
+        "hierarchical": false,
+        "exclude_from_search": false,
+        "publicly_queryable": true,
+        "show_ui": true,
+        "show_in_menu": true,
+        "admin_menu_parent": "",
+        "show_in_admin_bar": true,
+        "show_in_nav_menus": true,
+        "show_in_rest": true,
+        "rest_base": "clientes",
+        "rest_namespace": "wp\/v2",
+        "rest_controller_class": "WP_REST_Posts_Controller",
+        "menu_position": -1,
+        "menu_icon": {
+            "type": "dashicons",
+            "value": "dashicons-businessperson"
+        },
+        "rename_capabilities": false,
+        "singular_capability_name": "post",
+        "plural_capability_name": "posts",
+        "supports": [
+            "title",
+            "thumbnail",
+            "custom-fields"
+        ],
+        "taxonomies": [
+            "post_tag"
+        ],
+        "has_archive": false,
+        "has_archive_slug": "",
+        "rewrite": {
+            "permalink_rewrite": "post_type_key",
+            "with_front": "1",
+            "feeds": "0",
+            "pages": "1"
+        },
+        "query_var": "post_type_key",
+        "query_var_name": "",
+        "can_export": true,
+        "delete_with_user": false,
+        "register_meta_box_cb": "",
+        "enter_title_here": ""
     },
     {
         "key": "post_type_67f5728e39e49",
