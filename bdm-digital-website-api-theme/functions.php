@@ -535,7 +535,7 @@ function my_acf_blocks_init() {
                 'description' => __('Section Boxes Component'),
                 'category'    => 'rest-api',
                 'icon'        => '',
-                'keywords'    => ['section', 'acf', 'rest'],
+                'keywords'    => ['section', 'boxes', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
@@ -547,7 +547,7 @@ function my_acf_blocks_init() {
                 'description' => __('Media Scroll Component'),
                 'category'    => 'rest-api',
                 'icon'        => '',
-                'keywords'    => ['media', 'media scroll', 'acf', 'rest'],
+                'keywords'    => ['media scroll', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
@@ -559,7 +559,7 @@ function my_acf_blocks_init() {
                 'description' => __('Section switcher Component'),
                 'category'    => 'rest-api',
                 'icon'        => '',
-                'keywords'    => ['media', 'section switcher', 'acf', 'rest'],
+                'keywords'    => ['section switcher', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
@@ -571,7 +571,7 @@ function my_acf_blocks_init() {
                 'description' => __('Cards Motion Component'),
                 'category'    => 'rest-api',
                 'icon'        => '',
-                'keywords'    => ['media', 'cards motion', 'acf', 'rest'],
+                'keywords'    => ['cards motion', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
@@ -583,7 +583,31 @@ function my_acf_blocks_init() {
                 'description' => __('Firebase GA Metrics Component'),
                 'category'    => 'rest-api',
                 'icon'        => '',
-                'keywords'    => ['media', 'firebase', 'acf', 'rest'],
+                'keywords'    => ['firebase', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ],
+            (object) [
+                'name'        => 'clients',
+                'title'       => __('Clients'),
+                'description' => __('Clients Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['clients', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ],
+            (object) [
+                'name'        => 'contentbox',
+                'title'       => __('Content Box'),
+                'description' => __('Content Box Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['content box', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
