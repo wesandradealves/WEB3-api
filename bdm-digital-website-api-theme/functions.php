@@ -612,6 +612,18 @@ function my_acf_blocks_init() {
                     'align' => true,
                     'jsx'   => true, 
                 ],
+            ],
+            (object) [
+                'name'        => 'slider',
+                'title'       => __('Slider'),
+                'description' => __('Slider Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['slider', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
             ]
         ];
 
