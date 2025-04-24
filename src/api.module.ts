@@ -5,6 +5,7 @@ import { DataBaseModule } from './infrastructure/database/database.module';
 import { SESModule } from './infrastructure/providers/aws/ses/ses.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { AdjunctModule } from './modules/adjunct/adjunct.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserModule } from './modules/user/user.module';
     AuthModule,
     UserModule,
     SESModule,
+    AdjunctModule,
   ],
 })
 export class ApiModule {}

@@ -19,7 +19,7 @@ export class HttpBdmProvider {
     this.logger = new Logger(HttpBdmProvider.name);
 
     this.httpClient = axios.create({
-      baseURL: process.env.BASE_URL_BDM,
+      baseURL: `${process.env.BASE_URL_BDM}/${process.env.BDM_VERSION}`,
       timeout: +process.env.HTTP_TIMEOUT | 30000,
     });
     this.httpClient.interceptors.request.use(function (config) {
@@ -44,6 +44,7 @@ export class HttpBdmProvider {
 
   async fetchData<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
+      console.log(config.baseURL);
       const response: AxiosResponse<T> = await this.httpClient.request<T>(config);
       return response.data;
     } catch (error) {
