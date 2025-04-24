@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from './commons/base.entity';
-import { UserEntity } from './user.entity'; // agora pode descomentar
+import { UserEntity } from './user.entity';
 
 @Entity('adjuncts')
 export class AdjunctEntity extends BaseEntity {
