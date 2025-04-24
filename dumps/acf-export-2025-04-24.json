@@ -1737,6 +1737,103 @@
         "show_in_rest": 0
     },
     {
+        "key": "group_680a62214af48",
+        "title": "Slider",
+        "fields": [
+            {
+                "key": "field_680a6289c9634",
+                "label": "",
+                "name": "",
+                "aria-label": "",
+                "type": "clone",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "clone": [
+                    "field_67ec24c436e60",
+                    "field_67ec24d236e61"
+                ],
+                "display": "seamless",
+                "layout": "block",
+                "prefix_label": 0,
+                "prefix_name": 0
+            },
+            {
+                "key": "field_680a6221c9630",
+                "label": "Slider",
+                "name": "slider",
+                "aria-label": "",
+                "type": "repeater",
+                "instructions": "",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "layout": "table",
+                "pagination": 0,
+                "min": 0,
+                "max": 0,
+                "collapsed": "",
+                "button_label": "Adicionar linha",
+                "rows_per_page": 20,
+                "sub_fields": [
+                    {
+                        "key": "field_680a622bc9632",
+                        "label": "",
+                        "name": "",
+                        "aria-label": "",
+                        "type": "clone",
+                        "instructions": "",
+                        "required": 0,
+                        "conditional_logic": 0,
+                        "wrapper": {
+                            "width": "",
+                            "class": "",
+                            "id": ""
+                        },
+                        "clone": [
+                            "field_67ec239c36e58",
+                            "field_67ec257c36e64",
+                            "field_67ec23ab36e59",
+                            "field_67eab81c13321"
+                        ],
+                        "display": "seamless",
+                        "layout": "block",
+                        "prefix_label": 0,
+                        "prefix_name": 0,
+                        "parent_repeater": "field_680a6221c9630"
+                    }
+                ]
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "block",
+                    "operator": "==",
+                    "value": "acf\/slider"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": "",
+        "show_in_rest": 0
+    },
+    {
         "key": "post_type_6807b866d427f",
         "title": "Clientes",
         "menu_order": 0,
