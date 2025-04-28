@@ -2,9 +2,9 @@ import {
   IBdmExternal,
   IViewBdmUserData,
 } from '@/domain/interfaces/external/bdm.external';
-import { ICognitoProvider } from '@/domain/interfaces/providers/cognito.provider';
 import { Inject, Logger } from '@nestjs/common';
 import { HttpBdmProvider } from '../providers/http/http.bdm.provider';
+import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 
 export class BdmExternal implements IBdmExternal {
   constructor(
@@ -19,8 +19,10 @@ export class BdmExternal implements IBdmExternal {
       `${attachment}Buscando dados do usuário BDM pelo email`,
       'getBdmUserDataByEmail',
     );
+
     try {
       const cognitoResponse = await this.cognito.signInBdmFullResponse();
+
       const response = await this.httpBdmClient.fetchData({
         url: `/users/by-email/${email}`,
         method: 'GET',

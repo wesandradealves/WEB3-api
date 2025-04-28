@@ -33,5 +33,5 @@ export class UserEntity extends BaseEntity {
   isActive: boolean;
 
   @OneToMany(() => AdjunctEntity, (adjunct) => adjunct.representative)
-  adjuncts: AdjunctEntity[];
+  adjuncts?: AdjunctEntity[];
 }

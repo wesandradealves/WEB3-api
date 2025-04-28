@@ -25,4 +25,7 @@ export class AdjunctEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, (e) => e.adjuncts, { nullable: false })
   @JoinColumn({ name: 'representative_id', referencedColumnName: 'id' })
   representative: UserEntity;
+
+  @Column({ name: 'representative_id', type: 'uuid' })
+  representativeId: string;
 }

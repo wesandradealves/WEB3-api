@@ -1,19 +1,28 @@
 import { ISignInRequest } from '@/domain/interfaces/auth/auth.external';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import {
+  BdmIdToken,
+  SignInBdmFullResponseResult,
+} from '@/domain/types/cognito/cognito.type';
+import {
   AuthFlowType,
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class CognitoProvider implements ICognitoProvider {
   private readonly cognito: CognitoIdentityProviderClient;
   private readonly clientId: string;
   private readonly clientSecret: string;
-  constructor() {
+  private readonly bdmUsername: string;
+  private readonly bdmPassword: string;
+
+  constructor(private readonly configService: ConfigService) {
     this.cognito = new CognitoIdentityProviderClient({
       region: process.env.AWS_REGION,
       credentials: {
@@ -24,6 +33,33 @@ export class CognitoProvider implements ICognitoProvider {
 
     this.clientId = process.env.AWS_COGNITO_CLIENT_ID;
     this.clientSecret = process.env.AWS_COGNITO_CLIENT_ID_SECRET;
+    this.bdmUsername = this.configService.get<string>('bdm.username');
+    this.bdmPassword = this.configService.get<string>('bdm.password');
+  }
+
+  async signInBdmFullResponse(): Promise<SignInBdmFullResponseResult> {
+    try {
+      Logger.log('Sign in BDM Cognito', 'signInBdmFullResponse');
+      const cognitoResponse = await this.signIn({
+        username: this.bdmUsername,
+        password: this.bdmPassword,
+      });
+      const idTokenInfo = jwt.decode(
+        cognitoResponse.AuthenticationResult.IdToken,
+      ) as BdmIdToken;
+
+      Logger.debug(
+        `idTokenInfo \n${JSON.stringify(idTokenInfo)}`,
+        'signInBdmFullResponse',
+      );
+      return {
+        ...idTokenInfo,
+        AccessToken: cognitoResponse.AuthenticationResult.AccessToken,
+      };
+    } catch (error) {
+      Logger.error(error, error.stack, 'signInBdmFullResponse');
+      throw error;
+    }
   }
 
   async signIn(data: ISignInRequest): Promise<any> {

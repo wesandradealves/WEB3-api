@@ -6,6 +6,7 @@ import { ICreateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/cre
 
 @Injectable()
 export class CreateAdjunctUseCase implements ICreateAdjunctUseCase {
+  logger: any;
   constructor(
     @Inject(IBdmExternal)
     private readonly bdm: IBdmExternal,
@@ -16,15 +17,19 @@ export class CreateAdjunctUseCase implements ICreateAdjunctUseCase {
 
   async execute(dto: CreateAdjunctDto) {
     const bdmData = await this.bdm.getBdmUserDataByEmail(dto.email);
-
-    return this.adjunctRepo.create({
-      name: bdmData.name,
-      surname: dto.surname,
-      email: bdmData.email,
-      phone: bdmData.phone,
-      userBdmId: bdmData.id,
-      representativeId: dto.representativeId,
-      isActive: true,
-    });
+    console.log(bdmData);
+    try {
+      return this.adjunctRepo.create({
+        name: bdmData.name,
+        surname: dto.surname,
+        email: bdmData.email,
+        phone: bdmData.phone,
+        userBdmId: bdmData.id,
+        representativeId: dto.representativeId,
+        isActive: true,
+      });
+    } catch (error) {
+      this.logger.error(`STATUS: ${error.status} | MESSAGE: ${error.message}`);
+    }
   }
 }
