@@ -1,4 +1,4 @@
-import { ICognitoProvider } from '@/domain/interfaces/providers/cognito.provider';
+import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { CognitoProvider } from './cognito.provider';

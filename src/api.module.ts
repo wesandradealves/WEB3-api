@@ -6,6 +6,11 @@ import { SESModule } from './infrastructure/providers/aws/ses/ses.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { AdjunctModule } from './modules/adjunct/adjunct.module';
+import { CognitoModule } from './infrastructure/providers/aws/cognito/cognito.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
+import { ExtractModule } from './modules/extract/extract.module';
+import { QuotationModule } from './modules/quotations/quotations.module';
+import { WalletModule } from './modules/wallet/wallet.module';
 
 @Module({
   imports: [
@@ -13,8 +18,13 @@ import { AdjunctModule } from './modules/adjunct/adjunct.module';
     DataBaseModule,
     AuthModule,
     UserModule,
+    WalletModule,
     SESModule,
     AdjunctModule,
+    QuotationModule,
+    CognitoModule,
+    TransactionsModule,
+    ExtractModule
   ],
 })
 export class ApiModule {}

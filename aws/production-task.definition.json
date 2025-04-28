@@ -1,0 +1,139 @@
+{
+	"family": "dourado-dashboard-tsk",
+	"networkMode": "awsvpc",
+	"requiresCompatibilities": [
+		"FARGATE"
+	],
+	"executionRoleArn": "arn:aws:iam::915863716341:role/ecs_task_execution_role-dev",
+	"cpu": "256",
+	"memory": "512",
+	"containerDefinitions": [
+		{
+			"name": "dourado-dashboard-cnt",
+			"image": "${image}",
+			"portMappings": [
+				{
+					"containerPort": 3000,
+					"hostPort": 3000
+				}
+			],
+			"memory": 512,
+			"logConfiguration": {
+				"logDriver": "awslogs",
+				"options": {
+					"awslogs-group": "/ecs/dourado-dashboard-log",
+					"awslogs-region": "sa-east-1",
+					"awslogs-stream-prefix": "dashboard"
+				}
+			},
+			"secrets": [
+				{
+					"name": "AWS_ACCESS_KEY_ID",
+					"valueFrom": "arn:aws:secretsmanager:sa-east-1:915863716341:secret:development/dourado/secrets-flATtZ:AWS_ACCESS_KEY_ID::"
+				},
+				{
+					"name": "AWS_SECRET_ACCESS_KEY",
+					"valueFrom": "arn:aws:secretsmanager:sa-east-1:915863716341:secret:development/dourado/secrets-flATtZ:AWS_SECRET_ACCESS_KEY::"
+				},
+				{
+					"name": "TOKEN_JWT_SECRET",
+					"value": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:TOKEN_JWT_SECRET::"
+				},
+				{
+					"name": "TOKEN_JWT_EXPIRES",
+					"value": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:TOKEN_JWT_EXPIRES::"
+				},
+				{
+					"name": "REFRESH_TOKEN_JWT_SECRET",
+					"valueFrom": "arn:aws:secretsmanager:sa-east-1:915863716341:secret:dourado/dashboard/secrets-cpI8qe:REFRESH_TOKEN_JWT_SECRET::"
+				},
+				{
+					"name": "REFRESH_TOKEN_JWT_EXPIRES",
+					"valueFrom": "arn:aws:secretsmanager:sa-east-1:915863716341:secret:dourado/dashboard/secrets-cpI8qe:REFRESH_TOKEN_JWT_EXPIRES::"
+				},
+				{
+					"name": "DATABASE_PASSWORD",
+					"valueFrom": "arn:aws:secretsmanager:sa-east-1:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_PASSWORD::"
+				},
+				{
+					"name": "DATABASE_USERNAME",
+					"valueFrom": "arn:aws:secretsmanager:sa-east-1:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_USERNAME::"
+				},
+				{
+					"name": "DATABASE_USERNAME",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:DATABASE_USERNAME::"
+				},
+				{
+					"name": "BDM_AUTH_USERNAME",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:dourado/dashboard/secrets-cpI8qe:BDM_AUTH_USERNAME::"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID::"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID_SECRET::"
+				}
+			],
+			"environment": [
+				{
+					"name": "HTTP_PORT",
+					"value": "3000"
+				},
+				{
+					"name": "ENVIROMENT",
+					"value": "production"
+				},
+				{
+					"name": "AWS_REGION",
+					"value": "sa-east-1"
+				},
+				{
+					"name": "HTTP_TIMEOUT",
+					"value": "30000"
+				},
+				{
+					"name": "DATABASE_TYPE",
+					"value": "postgres"
+				},
+				{
+					"name": "DATABASE_HOST",
+					"value": "douradodbdev.cet6pltt6ywk.us-east-2.rds.amazonaws.com"
+				},
+				{
+					"name": "DATABASE_PORT",
+					"value": "5432"
+				},
+				{
+					"name": "DATABASE_NAME",
+					"value": "dourado-dashboard"
+				},
+				{
+					"name": "BDM_VERSION",
+					"value": "v26"
+				},
+				{
+					"name": "BASE_URL_BDM",
+					"value": "https://opiihi8ab4.execute-api.us-east-2.amazonaws.com"
+				},
+				{
+					"name": "BDM_API_KEY",
+					"value": "tbmwTjihCu8HYTOmycKbNzLup6o3iPWu3kXUFxM8YrM="
+				},
+				{
+					"name": "SES_2FA_TEMPLATE",
+					"value": "teste-template"
+				},
+				{
+					"name": "SES_EMAIL_FROM",
+					"value": "no-reply@dourado.cash"
+				},
+				{
+					"name": "SES_SOURCE_ARN",
+					"value": "arn:aws:ses:us-east-2:915863716341:identity/dourado.cash"
+				}
+			]
+		}
+	]
+}

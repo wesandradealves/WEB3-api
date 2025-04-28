@@ -25,9 +25,15 @@ const AppEnvs = () => ({
     tokenJwt: {
       secret: process.env.TOKEN_JWT_SECRET,
       signOptions: {
-        expiresIn: process.env.TOKEN_JWT_EXPIRES,
+        expiresIn: `${process.env.TOKEN_JWT_EXPIRES}s`,
       },
     },
+  },
+  bdm: {
+    version: process.env.BDM_VERSION,
+    url: process.env.BASE_URL_BDM,
+    username: process.env.BDM_AUTH_USERNAME,
+    password: process.env.BDM_AUTH_PASSWORD,
   },
 });
 

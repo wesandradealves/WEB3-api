@@ -1,9 +1,12 @@
+import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import {
   HttpException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -14,14 +17,25 @@ import axios, {
 @Injectable()
 export class HttpBdmProvider {
   private httpClient: AxiosInstance;
+  private username: string;
+  private password: string;
 
-  constructor(private readonly logger: Logger) {
+  constructor(
+    @Inject(ICognitoProvider)
+    private readonly cognitoProvider: ICognitoProvider,
+    private readonly logger: Logger,
+    private readonly configService: ConfigService,
+  ) {
     this.logger = new Logger(HttpBdmProvider.name);
 
+    this.username = this.configService.get('bdm.username');
+    this.password = this.configService.get('bdm.password');
+
     this.httpClient = axios.create({
-      baseURL: `${process.env.BASE_URL_BDM}/${process.env.BDM_VERSION}`,
+      baseURL: `${this.configService.get('bdm.url')}/${this.configService.get('bdm.version')}`,
       timeout: +process.env.HTTP_TIMEOUT | 30000,
     });
+
     this.httpClient.interceptors.request.use(function (config) {
       config['metadata'] = { ...config['metadata'], startDate: new Date() };
       return config;
@@ -44,7 +58,9 @@ export class HttpBdmProvider {
 
   async fetchData<T = any>(config: AxiosRequestConfig): Promise<T> {
     try {
-      console.log(config.baseURL);
+      // Autenticação no cognito antes de realizar a requisição
+      await this.authenticate();
+
       const response: AxiosResponse<T> = await this.httpClient.request<T>(config);
       return response.data;
     } catch (error) {
@@ -62,5 +78,24 @@ export class HttpBdmProvider {
       this.logger.error('Erro ao buscar dados.');
       throw new InternalServerErrorException();
     }
+  }
+
+  private async authenticate(): Promise<void> {
+    try {
+      const token = await this.getAuthToken();
+      this.httpClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } catch (error) {
+      this.logger.error('Erro ao autenticar.', error);
+      throw new InternalServerErrorException('Falha na autenticação com a bdm.');
+    }
+  }
+
+  private async getAuthToken(): Promise<Record<string, any>> {
+    const { AuthenticationResult } = await this.cognitoProvider.signIn({
+      username: this.username,
+      password: this.password,
+    });
+
+    return AuthenticationResult.AccessToken;
   }
 }
