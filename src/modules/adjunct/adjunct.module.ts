@@ -6,17 +6,17 @@ import { HttpModule } from '@/infrastructure/providers/http/http.module';
 import { AdjunctRepository } from '@/infrastructure/repositories/adjunct.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdjunctController } from './api/controller/adjunct.controller';
-import { CreateAdjunctUseCase } from './use-cases/create-adjunct.use-case';
-import { FindOneAdjunctUseCase } from './use-cases/find-one-adjunct.use-case';
-import { ListAllAdjunctsUseCase } from './use-cases/list-all-adjunct.use-case';
-import { UpdateAdjunctUseCase } from './use-cases/update-adjunct.use-case';
+import { CreateAdjunctUseCase } from './use-cases/create.adjunct.use-case';
+import { FindOneAdjunctUseCase } from './use-cases/find.one.adjunct.use-case';
+import { ListAllAdjunctsUseCase } from './use-cases/list.all.adjunct.use-case';
+import { UpdateAdjunctUseCase } from './use-cases/update.adjunct.use-case';
 import { Module } from '@nestjs/common';
-import { GetBdmUserByEmailUseCase } from './use-cases/get-bdm-user-by-email.use-case';
-import { ICreateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/create-adjunct.use-case';
-import { IFindOneAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/find-one-adjunct.use-case';
-import { IGetBdmUserByEmailUseCase } from '@/domain/interfaces/use-cases/adjunct/get-bdm-user-by-email.use-case';
-import { IListAllAdjunctsUseCase } from '@/domain/interfaces/use-cases/adjunct/list-all-adjunct.use-case';
-import { IUpdateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/update-adjunct.use-case';
+import { GetBdmUserByEmailUseCase } from './use-cases/get.bdm.user.by.email.use-case';
+import { ICreateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/create.adjunct.use-case';
+import { IFindOneAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/find.one.adjunct.use-case';
+import { IGetBdmUserByEmailUseCase } from '@/domain/interfaces/use-cases/adjunct/get.bdm.user.by.email.use-case';
+import { IListAllAdjunctsUseCase } from '@/domain/interfaces/use-cases/adjunct/list.all.adjunct.use-case';
+import { IUpdateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/update.adjunct.use-case';
 import { CognitoModule } from '@/infrastructure/providers/aws/cognito/cognito.module';
 
 @Module({

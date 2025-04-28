@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IAdjunctRepository } from '@/domain/interfaces/repositories/adjunct.repository';
-import { IListAllAdjunctsUseCase } from '@/domain/interfaces/use-cases/adjunct/list-all-adjunct.use-case';
+import { IListAllAdjunctsUseCase } from '@/domain/interfaces/use-cases/adjunct/list.all.adjunct.use-case';
 import { AdjunctEntity } from '@/domain/entities/adjunct.entity';
 
 @Injectable()

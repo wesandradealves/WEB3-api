@@ -8,7 +8,7 @@ export class AdjunctEntity extends BaseEntity {
   name: string;
 
   @Column({ type: 'varchar', length: 100 })
-  nickname: string;
+  surname: string;
 
   @Column({ type: 'varchar', length: 20 })
   phone: string;

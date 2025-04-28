@@ -1,11 +1,11 @@
 import { Controller, Get, Query, Post, Body, Param, Patch, Inject } from '@nestjs/common';
-import { CreateAdjunctDto } from '../dtos/create-adjunct.dto';
-import { UpdateAdjunctDto } from '../dtos/update-adjunct.dto';
-import { ICreateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/create-adjunct.use-case';
-import { IListAllAdjunctsUseCase } from '@/domain/interfaces/use-cases/adjunct/list-all-adjunct.use-case';
-import { IFindOneAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/find-one-adjunct.use-case';
-import { IUpdateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/update-adjunct.use-case';
-import { IGetBdmUserByEmailUseCase } from '@/domain/interfaces/use-cases/adjunct/get-bdm-user-by-email.use-case';
+import { CreateAdjunctDto } from '../dtos/create.adjunct.dto';
+import { UpdateAdjunctDto } from '../dtos/update.adjunct.dto';
+import { ICreateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/create.adjunct.use-case';
+import { IListAllAdjunctsUseCase } from '@/domain/interfaces/use-cases/adjunct/list.all.adjunct.use-case';
+import { IFindOneAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/find.one.adjunct.use-case';
+import { IUpdateAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/update.adjunct.use-case';
+import { IGetBdmUserByEmailUseCase } from '@/domain/interfaces/use-cases/adjunct/get.bdm.user.by.email.use-case';
 
 @Controller('adjuncts')
 export class AdjunctController {

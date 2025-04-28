@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IAdjunctRepository } from '@/domain/interfaces/repositories/adjunct.repository';
-import { IFindOneAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/find-one-adjunct.use-case';
+import { IFindOneAdjunctUseCase } from '@/domain/interfaces/use-cases/adjunct/find.one.adjunct.use-case';
 import { AdjunctEntity } from '@/domain/entities/adjunct.entity';
 
 @Injectable()

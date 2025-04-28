@@ -1,4 +1,4 @@
-import { UpdateAdjunctDto } from '@/modules/adjunct/api/dtos/update-adjunct.dto';
+import { UpdateAdjunctDto } from '@/modules/adjunct/api/dtos/update.adjunct.dto';
 import { AdjunctEntity } from '@/domain/entities/adjunct.entity';
 
 export interface IUpdateAdjunctUseCase {

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IBdmExternal } from '@/domain/interfaces/external/bdm.external';
-import { IGetBdmUserByEmailUseCase } from '@/domain/interfaces/use-cases/adjunct/get-bdm-user-by-email.use-case';
+import { IGetBdmUserByEmailUseCase } from '@/domain/interfaces/use-cases/adjunct/get.bdm.user.by.email.use-case';
 
 @Injectable()
 export class GetBdmUserByEmailUseCase implements IGetBdmUserByEmailUseCase {

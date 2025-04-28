@@ -5,7 +5,7 @@ export class CreateAdjunctDto {
   email: string;
 
   @IsString()
-  nickname: string;
+  surname: string;
 
   @IsUUID()
   representativeId: string;
