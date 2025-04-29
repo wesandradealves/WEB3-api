@@ -1,7 +1,9 @@
 import { IAuthExetrnal } from '@/domain/interfaces/auth/auth.external';
+import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import { AuthExternal } from '@/infrastructure/external/auth.external';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { CognitoProvider } from '../aws/cognito/cognito.provider';
 import { HttpBdmProvider } from './http.bdm.provider';
 
 @Module({
@@ -12,6 +14,10 @@ import { HttpBdmProvider } from './http.bdm.provider';
     {
       provide: IAuthExetrnal,
       useClass: AuthExternal,
+    },
+    {
+      provide: ICognitoProvider,
+      useClass: CognitoProvider,
     },
   ],
   exports: [HttpBdmProvider, IAuthExetrnal],
