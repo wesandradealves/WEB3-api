@@ -6,11 +6,32 @@ function wp_before_admin_bar_render()
     echo '
 
         <style type="text/css">
-
-            .editor-editor-interface.edit-post-layout.is-mode-visual.interface-interface-skeleton.has-footer .interface-interface-skeleton__body {
-                // opacity: .1
+            @media only screen and (min-width: 800px) {
+                .interface-interface-skeleton__body {
+                    flex-flow: column wrap !important;
+                } 
+                .editor-editor-interface .interface-interface-skeleton__body .interface-navigable-region.interface-interface-skeleton__sidebar .interface-complementary-area__fill .interface-complementary-area.editor-sidebar,
+                .editor-editor-interface .interface-interface-skeleton__body .interface-navigable-region.interface-interface-skeleton__sidebar .interface-complementary-area__fill,
+                .editor-editor-interface .interface-interface-skeleton__secondary-sidebar[style] > div .block-editor-tabbed-sidebar,
+                .editor-editor-interface .interface-interface-skeleton__secondary-sidebar[style] > div { 
+                    transform: initial !important;
+                    transition: initial !important;
+                    position: relative !important;
+                    width: 100% !important;
+                }
+                .editor-editor-interface .interface-interface-skeleton__secondary-sidebar[style] > div .editor-inserter-sidebar
+                .editor-editor-interface .interface-interface-skeleton__secondary-sidebar[style] > div,
+                .editor-editor-interface .interface-interface-skeleton__secondary-sidebar[style],
+                .editor-editor-interface .interface-interface-skeleton__body .interface-navigable-region.interface-interface-skeleton__sidebar,
+                .editor-editor-interface .interface-interface-skeleton__body .interface-interface-skeleton__content {
+                    flex: 1 !important;
+                }
+                .editor-editor-interface .interface-interface-skeleton__secondary-sidebar[style] {
+                    flex: 0 0 100% !important;
+                    overflow: hidden !important;
+                    width: auto !important;
+                }
             }
-
         </style>
 
     ';
@@ -620,6 +641,18 @@ function my_acf_blocks_init() {
                 'category'    => 'rest-api',
                 'icon'        => '',
                 'keywords'    => ['slider', 'acf', 'rest'],
+                'supports'    => [
+                    'align' => true,
+                    'jsx'   => true, 
+                ],
+            ],
+            (object) [
+                'name'        => 'timeline',
+                'title'       => __('Timeline'),
+                'description' => __('Timeline Component'),
+                'category'    => 'rest-api',
+                'icon'        => '',
+                'keywords'    => ['timeline', 'acf', 'rest'],
                 'supports'    => [
                     'align' => true,
                     'jsx'   => true, 
