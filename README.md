@@ -2,6 +2,8 @@
 
 This repository contains a **WordPress setup** with a custom API theme and required plugins, all managed using **Docker Compose**.
 
+- [Frontend](https://github.com/Dourado-Cash/bdm-web3-frontend)
+
 ---
 
 ## Features
