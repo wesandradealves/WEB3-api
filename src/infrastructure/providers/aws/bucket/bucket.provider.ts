@@ -18,16 +18,27 @@ export class BucketProvider implements IBucketProvider {
   private readonly bucketName: string;
 
   constructor() {
-    this.s3Client = new S3Client({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
-      forcePathStyle: true,
-      endpoint: "http://localhost:4566", 
-    });
-
+    if(process.env.IS_OFFLINE === 'true'){
+      this.s3Client = new S3Client({
+        region: process.env.AWS_REGION,
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        },
+        forcePathStyle: true,
+        endpoint: "http://localhost:9000", 
+      });
+    }else{
+      this.s3Client = new S3Client({
+        region: process.env.AWS_REGION,
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        },
+        forcePathStyle: true,
+      });
+    }
+    
   }
 
   async uploadFile(bucketName: string, filePath: string, fileContent: Buffer): Promise<any> {

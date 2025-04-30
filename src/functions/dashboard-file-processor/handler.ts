@@ -7,9 +7,8 @@ export async function createInstance(): Promise<IDashboardFileProcessorRepositor
   return server.get<IDashboardFileProcessorRepository>(IDashboardFileProcessorRepository);
 }
 
-export const handler = async (context: any): Promise<void> => {
+export const handler = async (): Promise<void> => {
   try {
-    console.log(context);
     const instance = await createInstance();
     console.log('[Handler] - start dashboard file processor.');
     await instance.fileProcessor();

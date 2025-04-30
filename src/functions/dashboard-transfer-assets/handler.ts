@@ -22,7 +22,6 @@ export async function createInstance(): Promise<ITransferAssetUseCase> {
 export const handler = async (event: any): Promise<void> => {
   try {
     const instance = await createInstance();
-    console.log(event)
     console.log('[Handler] - start transfer assets.');
     await instance.execute(event);
   } catch (error) {

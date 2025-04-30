@@ -47,7 +47,7 @@ export class SendCsvUseCase implements ISendCsvUseCase {
       }
   
       // Gravando arquivo no bucket
-      await this.bucketProvider.uploadFile(
+       await this.bucketProvider.uploadFile(
         this.bucket,
         path,
         file.buffer,
