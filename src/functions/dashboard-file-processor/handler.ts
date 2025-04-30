@@ -1,5 +1,5 @@
-import { IDashboardFileProcessorRepository } from '../../domain/repositories/dashboard-file-processor/dashboard-file.processor.repository';
 import { NestFactory } from '@nestjs/core';
+import { IDashboardFileProcessorRepository } from '../../domain/repositories/dashboard-file-processor/dashboard-file.processor.repository';
 import { DashboardFileProcessorModule } from './dashboard-file-processor.module';
 
 export async function createInstance(): Promise<IDashboardFileProcessorRepository> {
