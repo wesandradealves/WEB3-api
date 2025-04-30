@@ -5,11 +5,11 @@ import { BucketProvider } from '@/infrastructure/providers/aws/bucket/bucket.pro
 import { ISendCsvUseCase } from '@/domain/interfaces/use-cases/update-file/send.csv.use-case';
 import { SendCsvUseCase } from './use-cases/send.csv.use-case';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UpdateFiles } from '@/domain/entities/update-files.entity';
+import { UploadedFiles } from '@/domain/entities/uploaded.files.entity';
 
 @Module({
   imports: [
-     TypeOrmModule.forFeature([UpdateFiles]),
+     TypeOrmModule.forFeature([UploadedFiles]),
   ],
   controllers: [UploadController],
   providers: [

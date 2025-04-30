@@ -1,28 +1,26 @@
-import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
-import { IGetListAvailableTransferUseCase } from "@/domain/interfaces/use-cases/transfer/get.list.available.transfer.use-case";
+import { TransferStatusEnum } from "@/domain/commons/enum/transfer.status.enum";
+import { IGetAvailableTransferUseCase } from "@/domain/interfaces/use-cases/transfer/get.available.transfer.use-case";
 import { ITransferUseCase } from "@/domain/interfaces/use-cases/transfer/transfer.user-case";
-
-
-import { AdminGuard } from "../admin.guard";
 import { JwtAuthGuard } from "@/modules/auth/jwt.auth.guard";
 import { Body, Controller, Get, Inject, Post, Query, Request, UseGuards } from "@nestjs/common";
-
-import { GetListAvailableTransfersDto } from "./dtos/get.list.available.transfers.dto";
+import { GetAvailableTransfersDto } from "./dtos/get.available.transfers.dto";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ProfileGuard } from "@/modules/auth/profile/profile.guard";
+import { ProfileUserEnum } from "@/domain/commons/enum/profile.user.enum";
+import { Profile } from "@/modules/auth/profile/profile.decorator";
 
-@ApiTags('Transfer')
+@ApiTags('Transfer Asset')
 @ApiBearerAuth()
-@Controller('transfer')
+@UseGuards(JwtAuthGuard)
+@Controller('transfer-asset')
 export class TrasferController {
   constructor(
     @Inject(ITransferUseCase)
     private readonly transferUseCase: ITransferUseCase,
-    @Inject(IGetListAvailableTransferUseCase)
-    private readonly getListAvailableTransferUseCase: IGetListAvailableTransferUseCase,
+    @Inject(IGetAvailableTransferUseCase)
+    private readonly getAvailableTransferUseCase: IGetAvailableTransferUseCase,
   ) {}
-
-  @Post('create')  
-  @UseGuards(AdminGuard)
+ 
   @ApiOperation({ 
     summary: 'Create asset transfer',
     description: 'Transfers assets to one or more recipients' 
@@ -58,35 +56,33 @@ export class TrasferController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized - JWT token invalid or expired' })
   @ApiResponse({ status: 404, description: 'No transfer IDs were found' })
-  @Post('create')
-  @UseGuards(JwtAuthGuard)
+  @Profile(ProfileUserEnum.ADMIN)
+  @UseGuards(ProfileGuard)
+  @Post()
   async transfer(
     @Body() body: Array<string>,
     @Request() req: any,
   ): Promise<any> {
-    const result = await this.transferUseCase.execute(body, req.user);
-    return result;
+    return this.transferUseCase.execute(body, req.user);
   }
 
-  
-  @Get('list')
-  @UseGuards(JwtAuthGuard)
+
+  @Get()
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Get list of available transfers',
+    summary: 'Get of available transfers',
     description: 'Get list of available transfers',
   })
   @ApiQuery({ name: 'status', required: false, type: String, enum: TransferStatusEnum })
   @ApiResponse({
     status: 200,
     description: 'List of available transfers',
-    type: [GetListAvailableTransfersDto],
+    type: [GetAvailableTransfersDto],
   })
-  async getListAvailableTransfers(
+  async getAvailableTransfers(
     @Request() req: any,
     @Query('status') status?: TransferStatusEnum,
   ): Promise<any> {
-    const result = await this.getListAvailableTransferUseCase.execute(req.user.email, status);
-    return result;
+    return this.getAvailableTransferUseCase.execute(req.user.email, status);
   }
 }

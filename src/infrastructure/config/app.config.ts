@@ -35,6 +35,11 @@ const AppEnvs = () => ({
     username: process.env.BDM_AUTH_USERNAME,
     password: process.env.BDM_AUTH_PASSWORD,
   },
+  transfer:{
+    asset: {
+      bucketName: process.env.AWS_S3_BUCKET_NAME,
+    }
+  }
 });
 
 export type AppEnvsType = ReturnType<typeof AppEnvs>;

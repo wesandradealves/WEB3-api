@@ -1,6 +1,6 @@
 import { base58Decode, base58Encode, blake2b } from '@waves/ts-lib-crypto';
 import * as axlsign from 'axlsign';
-import { BlockchainTransactionsTypeEnum } from '@/domain/enums/blockchain.enum';
+import { BlockchainTransactionsTypeEnum } from '@/domain/commons/enum/blockchain.enum';
 import { ISenderKeyPair } from '@/domain/interfaces/util/crypto.util';
 
 const base58StringToByteArray = (base58String: string): any[] => {

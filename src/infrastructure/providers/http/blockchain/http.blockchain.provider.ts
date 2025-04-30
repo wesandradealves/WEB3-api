@@ -1,4 +1,4 @@
-import { BlockchainEnum } from '@/domain/enums/blockchain.enum';
+import { BlockchainEnum } from '@/domain/commons/enum/blockchain.enum';
 import {
   Injectable,
   Logger,

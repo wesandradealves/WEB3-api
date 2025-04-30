@@ -1,13 +1,12 @@
-import { DashboardTransferList } from "@/domain/entities/dashboard-transfer-list.entity";
-import { ITransferAssetRepository } from "@/domain/interfaces/repositories/transfer.repository";
+import { DashboardTransferList } from "@/domain/entities/transfer.assets.entity";
+import { ISenderTransferData, ITransferAssetRepository } from "@/domain/interfaces/repositories/transfer.repository";
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 import { SqsProvider } from "../providers/aws/sqs/sqs.provider";
-import { UserEntity } from "@/domain/entities/user.entity";
 import { IBdmExternal } from "@/domain/interfaces/external/bdm.external";
 import { IBlockchainExternal } from "@/domain/interfaces/external/blockchain.external";
-import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
+import { TransferStatusEnum } from "@/domain/commons/enum/transfer.status.enum";
 import { SQSDeleteParams, SQSMessage, TransferPayload, TransferQueueItem, TransferResult } from "@/domain/interfaces/functions/process.transfer.interface";
 
 
@@ -17,8 +16,6 @@ export class TransferRepository implements ITransferAssetRepository{
   constructor(
     @InjectRepository(DashboardTransferList)
     private readonly dashboardTransferList: Repository<DashboardTransferList>,
-    @InjectRepository(UserEntity)
-    private readonly userEntity: Repository<UserEntity>,
     private readonly sqsProvider: SqsProvider,
     @Inject(IBdmExternal)
     private readonly bdmExternal: IBdmExternal,
@@ -40,13 +37,10 @@ export class TransferRepository implements ITransferAssetRepository{
     }
   }
 
-  async transfer(ids: string[], user: any ): Promise<any> {
+  async transfer(ids: string[], user: ISenderTransferData ): Promise<any> {
     try {
       //dados de quem envia
       let notFoundIds: string[];
-      const userSenderData =  await this.userEntity.findOne({where: { id: user.userId }})
-      const senderBdmUserDatabyWalletId =  await this.bdmExternal.getBdmUserDataByEmail(userSenderData.email);
-      const senderWalletData =  await this.bdmExternal.findDefaultWalletByUserId(senderBdmUserDatabyWalletId.id);
 
       //dados de quem vai receber
       const userReciptData = await this.dashboardTransferList.findBy({ id: In(ids) });
@@ -62,9 +56,9 @@ export class TransferRepository implements ITransferAssetRepository{
           recipetId: item.wallet,
           recipetEmail: item.email,
           amount: item.amount,
-          senderEmail: userSenderData.email,
-          senderDefaultWalletAddress: senderWalletData.address,
-          senderWalletId: senderWalletData.id,
+          senderEmail: user.senderEmail,
+          senderDefaultWalletAddress: user.senderWalletAddress,
+          senderWalletId: user.senderWalletId,
         }));
         
         this.sqsProvider.sendMessage(this.awsSqsUrl, objectToQueue);;
@@ -92,6 +86,7 @@ export class TransferRepository implements ITransferAssetRepository{
       }
       
       for (const item of body) {
+        //TODO: ajustar rota para ajustar carteira padrão
         const recipetBdmUserDatabyWalletId = await this.bdmExternal.getBdmUserDataByEmail(item.recipetEmail);
         const recipetWalletData = await this.bdmExternal.findDefaultWalletByUserId(recipetBdmUserDatabyWalletId.id);
   

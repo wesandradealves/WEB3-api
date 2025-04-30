@@ -1,9 +1,11 @@
-import { UpdateFiles } from '@/domain/entities/update-files.entity';
-import { UpdateFileEnum } from '@/domain/enums/update.file.enum';
+import { UploadedFiles } from '@/domain/entities/uploaded.files.entity';
+import { UploadedFileEnum } from '@/domain/commons/enum/uploaded.file.enum';
 import { IBucketProvider } from '@/domain/interfaces/providers/bucket.provider';
 import { ISendCsvUseCase } from '@/domain/interfaces/use-cases/update-file/send.csv.use-case';
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+import { randomUUID } from 'crypto';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,16 +16,18 @@ export class SendCsvUseCase implements ISendCsvUseCase {
   constructor(
     @Inject(IBucketProvider)
     private readonly bucketProvider: IBucketProvider,
-    @InjectRepository(UpdateFiles)
-    private readonly updateFiles: Repository<UpdateFiles>,
+    @InjectRepository(UploadedFiles)
+    private readonly updateFiles: Repository<UploadedFiles>,
+    private readonly configService: ConfigService,
   ) {
-    this.bucket = process.env.BUCKET_NAME;
+    this.bucket = this.configService.get<string>('transfer.asset.bucketName');
     this.logger.debug(`Bucket name set to: ${this.bucket}`);
-  }
+  } 
 
   async execute(file: Express.Multer.File, userId: string): Promise<any> {
-    const path = `uploads/${file.originalname}`;
-    this.logger.log(`Uploading file: ${file.originalname} to path: ${path}`);
+    const fileName = `${randomUUID()}-${file.originalname}`
+    const path = `transfer/assets/uploads/${fileName}`;
+    this.logger.log(`Uploading file: ${fileName} to path: ${path}`);
     const hash = this.generateHash(file.buffer);
 
     try {
@@ -49,13 +53,13 @@ export class SendCsvUseCase implements ISendCsvUseCase {
         file.buffer,
       );
   
-      this.logger.log(`File uploaded successfully: ${file.originalname}`);
+      this.logger.log(`File uploaded successfully: ${fileName}`);
   
       // Salvando link no banco update-files
       const updateFile = this.updateFiles.create({
         link: `https://${this.bucket}.s3.amazonaws.com/${path}`,
-        status: UpdateFileEnum.UPLOADED,
-        user_id: userId,
+        status: UploadedFileEnum.UPLOADED,
+        userId,
         hash: hash,
       });
   

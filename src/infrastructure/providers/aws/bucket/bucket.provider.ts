@@ -24,7 +24,8 @@ export class BucketProvider implements IBucketProvider {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
-      forcePathStyle: true, 
+      forcePathStyle: true,
+      endpoint: "http://localhost:4566", 
     });
 
   }

@@ -3,8 +3,8 @@ import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.
 import { AuthExternal } from '@/infrastructure/external/auth.external';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { CognitoProvider } from '../aws/cognito/cognito.provider';
 import { HttpBdmProvider } from './http.bdm.provider';
+import { CognitoProvider } from '../../aws/cognito/cognito.provider';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],

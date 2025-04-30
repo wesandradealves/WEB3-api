@@ -1,11 +1,11 @@
 
-import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
+import { TransferStatusEnum } from "@/domain/commons/enum/transfer.status.enum";
 import { ITransferAssetRepository } from "@/domain/interfaces/repositories/transfer.repository";
-import { IGetListAvailableTransferUseCase } from "@/domain/interfaces/use-cases/transfer/get.list.available.transfer.use-case";
+import { IGetAvailableTransferUseCase } from "@/domain/interfaces/use-cases/transfer/get.available.transfer.use-case";
 import { Inject, Injectable } from "@nestjs/common";
 
 @Injectable()
-export class GetListAvailableTransfersUseCase implements IGetListAvailableTransferUseCase {
+export class GetAvailableTransfersUseCase implements IGetAvailableTransferUseCase {
   constructor(
     @Inject(ITransferAssetRepository)
     private readonly transferRepository: ITransferAssetRepository,  

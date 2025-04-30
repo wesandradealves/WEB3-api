@@ -1,5 +1,5 @@
-import { DashboardTransferList } from "@/domain/entities/dashboard-transfer-list.entity";
-import { UpdateFiles } from "@/domain/entities/update-files.entity";
+import { DashboardTransferList } from "@/domain/entities/transfer.assets.entity";
+import { UploadedFiles } from "@/domain/entities/uploaded.files.entity";
 import { IDashboardFileProcessorRepository } from "@/domain/repositories/dashboard-file-processor/dashboard-file.processor.repository";
 import { DataBaseModule } from "@/infrastructure/database/database.module";
 import { S3External } from "@/infrastructure/external/s3.external";
@@ -11,7 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 @Module({
   imports: [
     DataBaseModule, 
-    TypeOrmModule.forFeature([UpdateFiles, DashboardTransferList]),
+    TypeOrmModule.forFeature([UploadedFiles, DashboardTransferList]),
   ],   
 
   providers: [

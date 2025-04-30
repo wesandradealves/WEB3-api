@@ -1,27 +1,27 @@
-import { UpdateFiles } from "@/domain/entities/update-files.entity";
+import { UploadedFiles } from "@/domain/entities/uploaded.files.entity";
 import { IDashboardFileProcessorRepository } from "@/domain/repositories/dashboard-file-processor/dashboard-file.processor.repository";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as csvParser from "csv-parser";
 import { S3External } from "@/infrastructure/external/s3.external";
-import { DashboardTransferList } from "@/domain/entities/dashboard-transfer-list.entity";
-import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
-import { UpdateFileEnum } from "@/domain/enums/update.file.enum";
+import { DashboardTransferList } from "@/domain/entities/transfer.assets.entity";
+import { TransferStatusEnum } from "@/domain/commons/enum/transfer.status.enum";
+import { UploadedFileEnum } from "@/domain/commons/enum/uploaded.file.enum";
 
 
 @Injectable()
 export class DashboardFileProcessor implements IDashboardFileProcessorRepository {
   constructor(
-    @InjectRepository(UpdateFiles)
-    private readonly updateFiles: Repository<UpdateFiles>,
+    @InjectRepository(UploadedFiles)
+    private readonly updateFiles: Repository<UploadedFiles>,
     @InjectRepository(DashboardTransferList)
     private readonly DashboardTransferList: Repository<DashboardTransferList>,
     private readonly s3External: S3External,
   ) {}
 
   async fileProcessor(): Promise<any> {
-    const results = await this.updateFiles.find({ where: { status: UpdateFileEnum.UPLOADED } });
+    const results = await this.updateFiles.find({ where: { status: UploadedFileEnum.UPLOADED } });
   
     for (const file of results) {
       try {

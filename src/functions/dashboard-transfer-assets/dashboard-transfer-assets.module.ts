@@ -1,5 +1,5 @@
-import { DashboardTransferList } from "@/domain/entities/dashboard-transfer-list.entity";
-import { UpdateFiles } from "@/domain/entities/update-files.entity";
+import { DashboardTransferList } from "@/domain/entities/transfer.assets.entity";
+import { UploadedFiles } from "@/domain/entities/uploaded.files.entity";
 import { DataBaseModule } from "@/infrastructure/database/database.module";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -26,7 +26,7 @@ import AppEnvs from "@/infrastructure/config/app.config";
   imports: [
     ConfigModule.forRoot({isGlobal: true, load: [AppEnvs]}),
     DataBaseModule,
-    TypeOrmModule.forFeature([UpdateFiles, DashboardTransferList, UserEntity]),
+    TypeOrmModule.forFeature([UploadedFiles, DashboardTransferList, UserEntity]),
     HttpBdmModule,
     CognitoModule,
     HttpBlochChainModule,

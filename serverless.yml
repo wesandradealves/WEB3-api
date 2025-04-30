@@ -1,4 +1,4 @@
-service: dashboar-file-processor-lambda
+service: dourado-dashboard-service
 frameworkVersion: '^3.0.0'
 
 useDotenv: true
@@ -27,6 +27,7 @@ custom:
       - local
     host: http://localhost
     edgePort: 4566
+    autostart: true
 
   serverless-offline:
     httpPort: 6870
@@ -37,7 +38,10 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-2
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'development'}
+  s3:
+    myBucket:
+      name: development-dashboard-docs-transfers
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT}
     HTTP_PORT: ${env:HTTP_PORT}
@@ -53,8 +57,6 @@ provider:
     REFRESH_TOKEN_JWT_SECRET: ${env:REFRESH_TOKEN_JWT_SECRET}
     REFRESH_TOKEN_JWT_EXPIRES: ${env:REFRESH_TOKEN_JWT_EXPIRES}
     AWS_SQS_TRANSFER_URL: ${env:AWS_SQS_TRANSFER_URL}
-    AWS_S3_BUCKET_NAME: ${env:AWS_S3_BUCKET_NAME}
-    BUCKET_NAME: ${env:BUCKET_NAME}
   
   iam:
     role:
@@ -65,8 +67,8 @@ provider:
             - s3:PutObject
             - s3:ListBucket
           Resource:
-            - "arn:aws:s3:::development-dashboard-documents"
-            - "arn:aws:s3:::development-dashboard-documents/*"
+            - "arn:aws:s3:::development-dashboard-docs-transfers"
+            - "arn:aws:s3:::development-dashboard-docs-transfers/*"
         - Effect: Allow
           Action:
             - sqs:SendMessage
@@ -77,16 +79,14 @@ provider:
             - Fn::GetAtt: [DashboardTransferProcessingQueue, Arn]
 
 functions:
-  dashbooardFileProcessor:
+  DashbooardFileProcessor:
     timeout: 30
     memorySize: 512
     handler: ./src/functions/dashboard-file-processor/handler.handler
+    name: ${self:service}-${self:provider.stage}-dashboard-file-processor
     events:
-      - http:
-          method: get
-          path: /dashboard-file-processor
       - s3:
-          bucket: development-dashboard-documents
+          bucket: development-dashboard-docs-transfers
           event: s3:ObjectCreated:*
           existing: true
     environment:
@@ -94,15 +94,14 @@ functions:
       SES_SOURCE_ARN: ${env:SES_SOURCE_ARN}
       SES_EMAIL_FROM: ${env:SES_EMAIL_FROM}
       SES_2FA_TEMPLATE: ${env:SES_2FA_TEMPLATE}
+      AWS_S3_BUCKET_NAME: ${env:AWS_S3_BUCKET_NAME}
 
-  transferAssets:
+  TransferAssets:
     timeout: 30
     memorySize: 512
     handler: ./src/functions/dashboard-transfer-assets/handler.handler
+    name: ${self:service}-${self:provider.stage}-dashboard-transfer-assets
     events:
-      - http:
-          method: post
-          path: /transfer-assets
       - sqs:
           arn:
             Fn::GetAtt:
@@ -126,5 +125,7 @@ resources:
     DashboardTransferProcessingQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${file(./src/common/serverless/sqs/index.js):build.DashboardTransferProcessingQueueFifo}
+        QueueName: ${self:provider.stage}-dashboard-docs-transfer.fifo
         FifoQueue: true
+        visibleTimeout: 30
+        ContentBasedDeduplication: true

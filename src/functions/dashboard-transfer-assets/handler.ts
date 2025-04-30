@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DashboardTransferAssetsModule } from './dashboard-transfer-assets.module';
 import { ITransferAssetUseCase } from '@/domain/interfaces/use-cases/transfer/transfer.asset.user-case';
-import { HttpBlockchainProvider } from '@/infrastructure/providers/http/blockchain/http.blockchain.provider';
 
 export async function createInstance(): Promise<ITransferAssetUseCase> {
   try {
@@ -11,10 +10,6 @@ export async function createInstance(): Promise<ITransferAssetUseCase> {
         logger: ['error', 'warn', 'log', 'debug'],
       }
     );
-    
-    // Test the HttpBlockchainProvider is properly injected
-    const blockchainProvider = server.get(HttpBlockchainProvider);
-    console.log('BlockchainProvider injected successfully:', !!blockchainProvider);
     
     return server.get<ITransferAssetUseCase>(ITransferAssetUseCase);
   } catch (error) {

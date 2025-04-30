@@ -10,14 +10,13 @@ export class UploadController {
     private readonly sendCsvToTransferUseCase: ISendCsvUseCase,
   ) {}
 
-  @Post('send-csv')  
+  @Post('transfer-asset/send/csv')  
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async sendCsvToBackend(
     @UploadedFile() file: Express.Multer.File,
     @Request() req: any,
   ): Promise<any> {
-    const result = await this.sendCsvToTransferUseCase.execute(file, req.user.userId);
-    return result;
+    return this.sendCsvToTransferUseCase.execute(file, req.user.userId);
   }
 }

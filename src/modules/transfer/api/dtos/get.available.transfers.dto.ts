@@ -1,7 +1,7 @@
-import { TransferStatusEnum } from "@/domain/enums/transfer.status.enum";
+import { TransferStatusEnum } from "@/domain/commons/enum/transfer.status.enum";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class GetListAvailableTransfersDto {
+export class GetAvailableTransfersDto {
   @ApiProperty({
     description: 'Unique identifier for the transfer',
     example: 'a85a01fb-79d5-4470-a43s-231eb6eba1a9',

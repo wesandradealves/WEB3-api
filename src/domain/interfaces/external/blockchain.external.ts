@@ -1,4 +1,5 @@
-import { BlockchainTransactionsTypeEnum } from '@/domain/enums/blockchain.enum';
+
+import { BlockchainTransactionsTypeEnum } from '@/domain/commons/enum/blockchain.enum';
 import { ISenderKeyPair } from '../util/crypto.util';
 
 export interface ICheckStatusPaymentRequest {

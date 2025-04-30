@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   BlockchainEnum,
   BlockchainTransactionsTypeEnum,
-} from '@/domain/enums/blockchain.enum';
+} from '@/domain/commons/enum/blockchain.enum';
 import {
   buildId,
   getAmountBytes,
