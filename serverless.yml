@@ -1,0 +1,133 @@
+service: dourado-dashboard-service
+frameworkVersion: '^3.0.0'
+
+useDotenv: true
+
+plugins:
+  - serverless-webpack
+  - serverless-localstack
+  - serverless-offline-sqs
+  - serverless-offline-s3
+  - serverless-offline
+
+configValidationMode: warn
+
+package:
+  individually: true
+
+custom:
+  serverless-offline-sqs:
+    apiVersion: '2012-11-05'
+    endpoint: 'http://127.0.0.1:4566'
+    region: us-east-2
+    accessKeyId: 'root'
+    secretAccessKey: 'root'
+
+  localstack:
+    stages:
+      - development
+    host: http://localhost
+    edgePort: 4566
+    region: us-east-2
+    accessKeyId: 'root'
+    secretAccessKey: 'root'
+
+  serverless-offline:
+    httpPort: 6870
+    lambdaPort: 3003
+    noPrependStageInUrl: true
+
+  serverless-offline-s3:
+    endpoint: http://0.0.0.0:9000
+    region: us-east-2
+    accessKey: minioadmin
+    secretKey: minioadmin
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-2
+  stage: ${opt:stage, 'development'}
+
+  environment:
+    ENVIRONMENT: ${env:ENVIRONMENT}
+    HTTP_TIMEOUT: ${env:HTTP_TIMEOUT}
+    DATABASE_TYPE: ${env:DATABASE_TYPE}
+    DATABASE_HOST: ${env:DATABASE_HOST}
+    DATABASE_PORT: ${env:DATABASE_PORT}
+    DATABASE_NAME: ${env:DATABASE_NAME}
+    DATABASE_USERNAME: ${env:DATABASE_USERNAME}
+    DATABASE_PASSWORD: ${env:DATABASE_PASSWORD}
+    AWS_SQS_TRANSFER_URL: ${env:AWS_SQS_TRANSFER_URL}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:ListBucket
+          Resource:
+            - 'arn:aws:s3:::${self:provider.stage}-dashboard-docs-transfer'
+            - 'arn:aws:s3:::${self:provider.stage}-dashboard-docs-transfer/*'
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource:
+            - Fn::GetAtt: [DashboardTransferProcessingQueue, Arn]
+
+functions:
+  DashbooardFileProcessor:
+    timeout: 30
+    memorySize: 512
+    handler: ./src/functions/dashboard-file-processor/handler.handler
+    name: ${self:provider.stage}-dashboard-file-processor
+    events:
+      - s3:
+          bucket: ${self:provider.stage}-dashboard-docs-transfer
+          event: s3:ObjectCreated:Put
+          rules:
+            - suffix: .csv
+    environment:
+      HTTP_TIMEOUT: ${env:HTTP_TIMEOUT}
+      SES_SOURCE_ARN: ${env:SES_SOURCE_ARN}
+      SES_EMAIL_FROM: ${env:SES_EMAIL_FROM}
+      SES_2FA_TEMPLATE: ${env:SES_2FA_TEMPLATE}
+      AWS_S3_BUCKET_NAME: ${env:AWS_S3_BUCKET_NAME}
+
+  TransferAssets:
+    timeout: 30
+    memorySize: 512
+    handler: ./src/functions/dashboard-transfer-assets/handler.handler
+    name: ${self:service}-${self:provider.stage}-dashboard-transfer-assets
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DashboardTransferProcessingQueue
+              - Arn
+          batchSize: 1
+    environment:
+      AWS_COGNITO_CLIENT_ID: ${env:AWS_COGNITO_CLIENT_ID}
+      AWS_COGNITO_CLIENT_ID_SECRET: ${env:AWS_COGNITO_CLIENT_ID_SECRET}
+      BLOCKCHAIN_API_URL: ${env:BLOCKCHAIN_API_URL}
+      BLOCKCHAIN_API_KEY_HASH: ${env:BLOCKCHAIN_API_KEY_HASH}
+      BDM_API_KEY: ${env:BDM_API_KEY}
+      BASE_URL_BDM: ${env:BASE_URL_BDM}
+      BDM_VERSION: ${env:BDM_VERSION}
+      BDM_AUTH_USERNAME: ${env:BDM_AUTH_USERNAME}
+      BDM_AUTH_PASSWORD: ${env:BDM_AUTH_PASSWORD}
+
+resources:
+  Resources:
+    DashboardTransferProcessingQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.stage}-dashboard-docs-transfer.fifo
+        FifoQueue: true
+        VisibilityTimeout: 30
+        ContentBasedDeduplication: true

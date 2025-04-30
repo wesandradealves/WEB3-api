@@ -3,11 +3,11 @@ import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.
 import { AuthExternal } from '@/infrastructure/external/auth.external';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { CognitoProvider } from '../aws/cognito/cognito.provider';
 import { HttpBdmProvider } from './http.bdm.provider';
-import { CognitoModule } from '../aws/cognito/cognito.module';
 import { IBdmExternal } from '@/domain/interfaces/external/bdm.external';
 import { BdmExternal } from '@/infrastructure/external/bdm.external';
+import { CognitoModule } from '../../aws/cognito/cognito.module';
+import { CognitoProvider } from '../../aws/cognito/cognito.provider';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), CognitoModule],
@@ -29,4 +29,4 @@ import { BdmExternal } from '@/infrastructure/external/bdm.external';
   ],
   exports: [HttpBdmProvider, IAuthExetrnal, IBdmExternal],
 })
-export class HttpModule {}
+export class HttpBdmModule {}
