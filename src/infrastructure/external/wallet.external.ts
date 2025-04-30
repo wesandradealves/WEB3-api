@@ -1,7 +1,7 @@
 import { IWalletRepository } from "@/domain/interfaces/external/wallet.external";
 import { Inject, Injectable } from "@nestjs/common";
-import { HttpBdmProvider } from "../providers/http/http.bdm.provider";
 import { UserWalletResponseDto } from "@/modules/wallet/api/dto/user.wallet.response.dto";
+import { HttpBdmProvider } from "../providers/http/bdm/http.bdm.provider";
 
 @Injectable()
 export class WalletRepository implements IWalletRepository {

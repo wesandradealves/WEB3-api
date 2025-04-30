@@ -1,8 +1,8 @@
 import { IQuotationExternal } from '@/domain/interfaces/external/quotation.external';
 import { Inject, Injectable } from "@nestjs/common";
-import { HttpBdmProvider } from "../providers/http/http.bdm.provider";
 import { GetQuotationsResponseDto } from '@/modules/quotations/api/dto/get.quotations.response.dto';
 import { QuotationInformationResponseDto } from '@/modules/quotations/api/dto/quote.information.response.dto';
+import { HttpBdmProvider } from '../providers/http/bdm/http.bdm.provider';
 
 @Injectable()
 export class QuotationExternal implements IQuotationExternal {

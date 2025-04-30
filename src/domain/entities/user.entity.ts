@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
-import { ProfileUserEnum } from '../commons/enum/profile.user.enum';
 import { BaseEntity } from './commons/base.entity';
+import { ProfileUserEnum } from '../commons/enum/profile.user.enum';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -22,7 +22,7 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'user_market_id', type: 'uuid', unique: true })
   userMarketId: string;
 
-  @Column({ name: 'profile', enum: ProfileUserEnum, default: ProfileUserEnum.USER })
+  @Column({ type: 'enum', enum: ProfileUserEnum, default: ProfileUserEnum.USER })
   profile: ProfileUserEnum;
 
   @Column({ name: 'is_admin', type: 'boolean', default: false })
