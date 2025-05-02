@@ -132,6 +132,14 @@
 				{
 					"name": "SES_SOURCE_ARN",
 					"value": "arn:aws:ses:us-east-2:915863716341:identity/dourado.cash"
+				},
+				{
+					"name": "BLOCKCHAIN_API_URL",
+					"value": "http://172.31.0.69:6869"
+				},
+				{
+					"name": "BLOCKCHAIN_API_KEY_HASH",
+					"value": "ODIyM2UzZDQzYmExNWNmMjM1Y2UzODUyNDAyNWIwMzI="
 				}
 			]
 		}

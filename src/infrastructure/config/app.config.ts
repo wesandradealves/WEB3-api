@@ -34,12 +34,17 @@ const AppEnvs = () => ({
     url: process.env.BASE_URL_BDM,
     username: process.env.BDM_AUTH_USERNAME,
     password: process.env.BDM_AUTH_PASSWORD,
+    apiKey: process.env.BDM_API_KEY,
   },
-  transfer:{
+  transfer: {
     asset: {
       bucketName: process.env.AWS_S3_BUCKET_NAME,
-    }
-  }
+    },
+  },
+  blockChain: {
+    blockChainApiUrl: process.env.BLOCKCHAIN_API_URL,
+    blockChainApiKey: process.env.BLOCKCHAIN_API_KEY,
+  },
 });
 
 export type AppEnvsType = ReturnType<typeof AppEnvs>;
