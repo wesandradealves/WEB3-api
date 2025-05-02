@@ -1,7 +1,4 @@
 export enum BlockchainEnum {
-  BLOCKCHAIN_API_URL = 'BLOCKCHAIN_API_URL',
-  BLOCKCHAIN_API_KEY_HASH = 'BLOCKCHAIN_API_KEY_HASH',
-  BLOCKCHAIN_TRANSFER_FEE = 'BLOCKCHAIN_TRANSFER_FEE',
   TRANSFER_STATUS = '/transactions/status?id=',
   BROADCAST = '/transactions/broadcast',
 }

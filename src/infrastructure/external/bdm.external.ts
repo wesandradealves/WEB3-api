@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpBdmProvider } from '../providers/http/bdm/http.bdm.provider';
 
 export class BdmExternal implements IBdmExternal {
-  private readonly BDM_API_KEY: string;
+  private readonly bdmApiKey: string;
   private tokenJwt: string;
   constructor(
     @Inject(ICognitoProvider)
@@ -20,7 +20,7 @@ export class BdmExternal implements IBdmExternal {
     private readonly configService: ConfigService,
   ) {
     this.logger = new Logger(BdmExternal.name);
-    this.BDM_API_KEY = this.configService.getOrThrow('BDM_API_KEY');
+    this.bdmApiKey = this.configService.getOrThrow('bdm.apiKey');
   }
 
   async findDefaultWalletByUserId(userId: number): Promise<IViewWallet> {
@@ -33,7 +33,7 @@ export class BdmExternal implements IBdmExternal {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'bdm-api-key': this.BDM_API_KEY,
+          'bdm-api-key': this.bdmApiKey,
           Authorization: `Bearer ${this.tokenJwt}`,
           payload: `custom:id:${userId}]`,
         },
@@ -191,7 +191,7 @@ export class BdmExternal implements IBdmExternal {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'bdm-api-key': this.BDM_API_KEY,
+          'bdm-api-key': this.bdmApiKey,
           Authorization: `Bearer ${cognitoResponse.AccessToken}`,
           payload: `custom:id:${cognitoResponse['custom:id']}]`,
         },
@@ -220,7 +220,7 @@ export class BdmExternal implements IBdmExternal {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'bdm-api-key': this.BDM_API_KEY,
+          'bdm-api-key': this.bdmApiKey,
           Authorization: `Bearer ${cognitoResponse.AccessToken}`,
           payload: `custom:id:${cognitoResponse['custom:id']}]`,
         },
