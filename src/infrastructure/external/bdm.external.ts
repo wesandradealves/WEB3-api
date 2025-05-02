@@ -122,6 +122,7 @@ export class BdmExternal implements IBdmExternal {
       throw error;
     }
   }
+
   async getBdmUserDataByWalletId(walletId: string): Promise<IViewBdmUserData> {
     const attachment = `${walletId}:`;
     Logger.log(

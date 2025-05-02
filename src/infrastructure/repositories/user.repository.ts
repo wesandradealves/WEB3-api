@@ -1,20 +1,26 @@
-import { UserEntity } from "@/domain/entities/user.entity";
-import { IUserRepository } from "@/domain/interfaces/repositories/user.repository";
-import { ICreateUser, IViewUser, IUpdateUser } from "@/domain/types/user";
-import { ViewUserDto } from "@/modules/user/api/dtos/view.user.dto";
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, UpdateResult } from "typeorm";
+import { UserEntity } from '@/domain/entities/user.entity';
+import { IUserRepository } from '@/domain/interfaces/repositories/user.repository';
+import { ICreateUser, IViewUser, IUpdateUser } from '@/domain/types/user';
+import { ViewUserDto } from '@/modules/user/api/dtos/view.user.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
   private readonly logger = new Logger(UserRepository.name);
-  
+
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>, 
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
-  
+
   async create(data: ICreateUser): Promise<ViewUserDto> {
     try {
       return await this.userRepository.save(data);
@@ -23,9 +29,10 @@ export class UserRepository implements IUserRepository {
       this.handleDBExceptions(error);
     }
   }
+
   async update(id: string, data: IUpdateUser): Promise<UpdateResult> {
     try {
-      return await this.userRepository.update({id}, data);
+      return await this.userRepository.update({ id }, data);
     } catch (error) {
       this.logger.error(`STATUS: ${error.status} | MESSAGE: ${error.message}`);
       this.handleDBExceptions(error);
@@ -43,7 +50,7 @@ export class UserRepository implements IUserRepository {
     try {
       const response = await this.userRepository.findOne({
         where: {
-          id: id
+          id: id,
         },
         withDeleted: false,
       });
@@ -53,9 +60,9 @@ export class UserRepository implements IUserRepository {
       this.handleDBExceptions(error);
     }
   }
-  
+
   listAll(): Promise<IViewUser[]> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   private handleDBExceptions(error: any): never {
@@ -66,4 +73,3 @@ export class UserRepository implements IUserRepository {
     throw new InternalServerErrorException('Erro interno do servidor.');
   }
 }
-

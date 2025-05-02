@@ -1,5 +1,3 @@
-
-
 export interface IViewWallet {
   id: number;
   name: string;
@@ -33,7 +31,7 @@ export type IViewBdmUserData = {
   email: string;
   phone: string;
   cpfCnpj: string;
-}
+};
 
 export class BalanceResponse {
   balance: number;

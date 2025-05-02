@@ -1,6 +1,9 @@
 import { ISignInRequest } from '@/domain/interfaces/auth/auth.external';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
-import { BdmIdToken } from '@/domain/types/cognito/cognito.type';
+import {
+  BdmIdToken,
+  SignInBdmFullResponseResult,
+} from '@/domain/types/cognito/cognito.type';
 import {
   AuthFlowType,
   CognitoIdentityProviderClient,
@@ -8,7 +11,7 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
-import * as jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class CognitoProvider implements ICognitoProvider {
@@ -17,17 +20,14 @@ export class CognitoProvider implements ICognitoProvider {
   private readonly clientSecret: string;
   private bdmUserName: string;
   private bdmPassword: string;
-  constructor(
-    private readonly logger: Logger
-  ) {
+  constructor(private readonly logger: Logger) {
     this.cognito = new CognitoIdentityProviderClient({
       region: process.env.AWS_REGION,
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      }, 
-    }
-  );
+      },
+    });
     this.clientId = process.env.AWS_COGNITO_CLIENT_ID;
     this.clientSecret = process.env.AWS_COGNITO_CLIENT_ID_SECRET;
     this.bdmUserName = process.env.BDM_AUTH_USERNAME as string;
@@ -66,27 +66,32 @@ export class CognitoProvider implements ICognitoProvider {
       return result.AuthenticationResult.AccessToken;
     } catch (error) {
       this.logger.log(error);
-      return ''
+      return '';
     }
   }
 
-  async signInBdmFullResponse(): Promise<any> {
+  async signInBdmFullResponse(): Promise<SignInBdmFullResponseResult> {
     try {
-      Logger.log('Sign in BDM Cognito', 'signInBdmFullResponse')
+      Logger.log('Sign in BDM Cognito', 'signInBdmFullResponse');
       const cognitoResponse = await this.signIn({
         username: this.bdmUserName,
         password: this.bdmPassword,
       });
-      const idTokenInfo = jwt.decode(cognitoResponse.AuthenticationResult.IdToken) as BdmIdToken
+      const idTokenInfo = jwt.decode(
+        cognitoResponse.AuthenticationResult.IdToken,
+      ) as BdmIdToken;
 
-      Logger.debug(`idTokenInfo \n${JSON.stringify(idTokenInfo)}`, 'signInBdmFullResponse')
+      Logger.debug(
+        `idTokenInfo \n${JSON.stringify(idTokenInfo)}`,
+        'signInBdmFullResponse',
+      );
       return {
         ...idTokenInfo,
         AccessToken: cognitoResponse.AuthenticationResult.AccessToken,
-      }
+      };
     } catch (error) {
-      Logger.error(error, error.stack, 'signInBdmFullResponse')
-      throw error
+      Logger.error(error, error.stack, 'signInBdmFullResponse');
+      throw error;
     }
   }
 }
