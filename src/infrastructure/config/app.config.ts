@@ -43,7 +43,7 @@ const AppEnvs = () => ({
   },
   blockChain: {
     blockChainApiUrl: process.env.BLOCKCHAIN_API_URL,
-    blockChainApiKey: process.env.BLOCKCHAIN_API_KEY,
+    blockChainApiKeyHash: process.env.BLOCKCHAIN_API_KEY_HASH,
   },
 });
 
