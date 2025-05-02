@@ -4,7 +4,7 @@ import {
   ISignInResponse,
 } from '@/domain/interfaces/auth/auth.external';
 import { Injectable, Logger } from '@nestjs/common';
-import { HttpBdmProvider } from '../providers/http/http.bdm.provider';
+import { HttpBdmProvider } from '../providers/http/bdm/http.bdm.provider';
 
 @Injectable()
 export class AuthExternal implements IAuthExetrnal {
