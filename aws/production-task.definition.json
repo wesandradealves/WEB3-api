@@ -74,6 +74,18 @@
 				{
 					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
 					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID_SECRET::"
+				},
+				{
+					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID_SECRET::"
+				},
+				{
+					"name": "BLOCKCHAIN_API_KEY_HASH",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/blockchain/secrets-3H2v0n:BLOCKCHAIN_API_KEY_HASH::"
+				},
+				{
+					"name": "BDM_API_KEY",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/bdm/secrets-kTQdKd:BDM_API_KEY::"
 				}
 			],
 			"environment": [

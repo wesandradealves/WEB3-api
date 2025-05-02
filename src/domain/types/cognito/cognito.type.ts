@@ -18,5 +18,5 @@ export interface BdmIdToken {
 }
 
 export interface SignInBdmFullResponseResult extends BdmIdToken {
-  AccessToken: string
+  AccessToken: string;
 }

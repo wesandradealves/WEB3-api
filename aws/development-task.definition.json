@@ -74,6 +74,14 @@
 				{
 					"name": "AWS_COGNITO_CLIENT_ID_SECRET",
 					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/cognito/secrets-TuGndb:AWS_COGNITO_CLIENT_ID_SECRET::"
+				},
+				{
+					"name": "BLOCKCHAIN_API_KEY_HASH",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/blockchain/secrets-3H2v0n:BLOCKCHAIN_API_KEY_HASH::"
+				},
+				{
+					"name": "BDM_API_KEY",
+					"valueFrom": "arn:aws:secretsmanager:us-east-2:915863716341:secret:development/bdm/secrets-kTQdKd:BDM_API_KEY::"
 				}
 			],
 			"environment": [
@@ -118,10 +126,6 @@
 					"value": "https://opiihi8ab4.execute-api.us-east-2.amazonaws.com"
 				},
 				{
-					"name": "BDM_API_KEY",
-					"value": "tbmwTjihCu8HYTOmycKbNzLup6o3iPWu3kXUFxM8YrM="
-				},
-				{
 					"name": "SES_2FA_TEMPLATE",
 					"value": "teste-template"
 				},
@@ -136,6 +140,10 @@
 				{
 					"name": "AWS_S3_BUCKET_NAME",
 					"value": "development-dashboard-docs-transfer"
+				},
+				{
+					"name": "BLOCKCHAIN_API_URL",
+					"value": "http://172.31.0.69:6869"
 				}
 			]
 		}
