@@ -28,7 +28,6 @@ export class HttpBlockchainProvider {
         'X-API-Key': this.blockChainApiKeyHash,
       },
     });
-
     this.httpClient.interceptors.request.use(function (config) {
       config['metadata'] = { ...config['metadata'], startDate: new Date() };
       return config;

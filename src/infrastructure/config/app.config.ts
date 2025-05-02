@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const AppEnvs = () => ({
-  isDevelopment: process.env.ENVIRONMENT === 'production',
+  isDevelopment: process.env.ENVIRONMENT !== 'production',
   application: {
     serviceName: 'dourado-dashboard-backend',
     port: process.env.HTTP_PORT,
