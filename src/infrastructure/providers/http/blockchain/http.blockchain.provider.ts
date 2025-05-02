@@ -1,45 +1,31 @@
-import { BlockchainEnum } from '@/domain/commons/enum/blockchain.enum';
 import {
-  Injectable,
-  Logger,
-  InternalServerErrorException,
   HttpException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 @Injectable()
 export class HttpBlockchainProvider {
   private readonly httpClient: AxiosInstance;
-  private readonly BLOCKCHAIN_API_URL: string = '';
-  private readonly BLOCKCHAIN_API_KEY_HASH: string = '';
+  private readonly blockChainUrl: string;
+  private readonly blockChainApiKeyHash: string;
 
   constructor(
     private readonly logger: Logger,
     private readonly configService: ConfigService,
   ) {
-    this.BLOCKCHAIN_API_URL =
-      this.configService.get(BlockchainEnum.BLOCKCHAIN_API_URL) ?? '';
-    this.BLOCKCHAIN_API_KEY_HASH =
-      this.configService.get(BlockchainEnum.BLOCKCHAIN_API_KEY_HASH) ?? '';
-      
-    if (!this.BLOCKCHAIN_API_URL || !this.BLOCKCHAIN_API_KEY_HASH) {
-      const errorMessage = `Required environment parameters to work -> [BLOCKCHAIN_API_URL, BLOCKCHAIN_API_KEY_HASH]`;
-      this.logger.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
+    this.blockChainUrl = this.configService.get('blockChain.blockChainApiUrl');
+    this.blockChainApiKeyHash = this.configService.get('blockChain.blockChainApiKeyHash');
     this.logger = new Logger(HttpBlockchainProvider.name);
 
     this.httpClient = axios.create({
-      baseURL: `${this.BLOCKCHAIN_API_URL}`,
+      baseURL: `${this.blockChainUrl}`,
       timeout: +(process.env.HTTP_TIMEOUT as any) || 30000,
       headers: {
-        'X-API-Key': this.BLOCKCHAIN_API_KEY_HASH,
+        'X-API-Key': this.blockChainApiKeyHash,
       },
     });
 
