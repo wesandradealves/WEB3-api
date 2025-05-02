@@ -138,6 +138,10 @@
 					"value": "arn:aws:ses:us-east-2:915863716341:identity/dourado.cash"
 				},
 				{
+					"name": "AWS_S3_BUCKET_NAME",
+					"value": "development-dashboard-docs-transfer"
+				},
+				{
 					"name": "BLOCKCHAIN_API_URL",
 					"value": "http://172.31.0.69:6869"
 				}
