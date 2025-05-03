@@ -7,12 +7,6 @@ export class PrefixTokenEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  hash: string;
-
-  @Column({ type: 'text' })
-  description: string;
-
   @Column({ name: 'maturity_time_days', type: 'integer' })
   maturityTimeDays: number;
 
@@ -22,8 +16,17 @@ export class PrefixTokenEntity extends BaseEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
-  @Column({ name: 'yield_interval', type: 'int', array: true, nullable: true })
-  yieldInterval?: number[];
+  @Column({ name: 'hash', type: 'varchar', length: 255, unique: true })
+  hash: string;
+
+  @Column({ name: 'description', type: 'text', nullable: true })
+  description: string;
+
+  @Column({ name: 'decimal_place', type: 'integer' })
+  decimalPlace: number;
+
+  @Column({ name: 'yield_interval', type: 'integer', nullable: true })
+  yieldInterval: number;
 
   @OneToMany(() => PrefixInvestmentEntity, (investment) => investment.token)
   prefixInvestments: PrefixInvestmentEntity[];
