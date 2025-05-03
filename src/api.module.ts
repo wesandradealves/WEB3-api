@@ -10,6 +10,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
 import { ExtractModule } from './modules/extract/extract.module';
 import { QuotationModule } from './modules/quotations/quotations.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { TokenModule } from './modules/tokens/token.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { WalletModule } from './modules/wallet/wallet.module';
     QuotationModule,
     CognitoModule,
     TransactionsModule,
-    ExtractModule
+    ExtractModule,
+    TokenModule
   ],
 })
 export class ApiModule {}

@@ -21,12 +21,8 @@
     "noUnusedParameters": true,
     "paths": {
       "@/*": ["src/*"],
-      "@/modules/*": ["src/modules/*"],
-      "@/commons/*": ["src/commons/*"],
-      "@/domain/*": ["src/domain/*"],
-      "@/infrastructure/*": ["src/infrastructure/*"],
-      "@/test/*": ["test/*"]
+      "src/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*"]
 }
