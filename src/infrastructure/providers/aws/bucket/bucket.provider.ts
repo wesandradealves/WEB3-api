@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  DeleteObjectCommand,
-  ListObjectsV2Command,
-  PutObjectCommandInput,
-
-  DeleteObjectCommandInput,
-  ListObjectsV2CommandInput,
-} from '@aws-sdk/client-s3';
 import { IBucketProvider } from '@/domain/interfaces/providers/bucket.provider';
+import {
+  DeleteObjectCommand,
+  DeleteObjectCommandInput,
+  GetObjectCommand,
+  ListObjectsV2Command,
+  ListObjectsV2CommandInput,
+  PutObjectCommand,
+  PutObjectCommandInput,
+  S3Client,
+  S3ClientConfig,
+} from '@aws-sdk/client-s3';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -21,20 +21,35 @@ export class BucketProvider implements IBucketProvider {
   constructor(
     private readonly configService: ConfigService, // Replace with your actual config service type
   ) {
-      this.s3Client = new S3Client({
-        ...this.configService.get('aws'),
+    let options: S3ClientConfig;
+
+    if (this.configService.get('IS_OFFLINE') === 'true') {
+      options = {
         endpoint: this.configService.get('aws.s3.endpoint'),
-        forcePathStyle: true,
-      });
+        ...this.configService.get('aws'),
+      };
+    } else {
+      options = {
+        ...this.configService.get('aws'),
+      };
+    }
+    this.s3Client = new S3Client({
+      ...options,
+      forcePathStyle: true,
+    });
   }
 
-  async uploadFile(bucketName: string, filePath: string, fileContent: Buffer): Promise<any> {
+  async uploadFile(
+    bucketName: string,
+    filePath: string,
+    fileContent: Buffer,
+  ): Promise<any> {
     const params: PutObjectCommandInput = {
       Bucket: bucketName,
       Key: filePath,
       Body: fileContent,
     };
-  
+
     const command = new PutObjectCommand(params);
     return this.s3Client.send(command);
   }
