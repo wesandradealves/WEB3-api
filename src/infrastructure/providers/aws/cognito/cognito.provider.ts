@@ -26,9 +26,9 @@ export class CognitoProvider implements ICognitoProvider {
     private readonly configService: ConfigService,
   ) {
     this.cognito = new CognitoIdentityProviderClient({
-      ...this.configService.get('aws')
-    }
-  );
+      ...this.configService.get('aws.auth'),
+    });
+
     this.clientId = this.configService.get('aws.cognito.clientId');
     this.clientSecret = this.configService.get('aws.cognito.clientSecret');
     this.bdmUserName = this.configService.get('bdm.username');

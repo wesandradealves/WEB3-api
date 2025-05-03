@@ -39,20 +39,20 @@ const AppEnvs = () => ({
   transfer: {
     asset: {
       bucketName: process.env.AWS_S3_BUCKET_NAME,
-    }
-  },
-  aws:{
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
-    region: process.env.AWS_REGION,
-    s3:{
-      endpoint: process.env.AWS_S3_URL || undefined,
+  },
+  aws: {
+    auth: {
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
+      region: process.env.AWS_REGION,
     },
     cognito: {
       clientId: process.env.AWS_COGNITO_CLIENT_ID,
-      clientSecret: process.env.AWS_COGNITO_CLIENT_ID_SECRET,}
+      clientSecret: process.env.AWS_COGNITO_CLIENT_ID_SECRET,
+    },
   },
   blockChain: {
     blockChainApiUrl: process.env.BLOCKCHAIN_API_URL,

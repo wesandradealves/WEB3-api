@@ -3,8 +3,6 @@ import {
   DeleteObjectCommand,
   DeleteObjectCommandInput,
   GetObjectCommand,
-  ListObjectsV2Command,
-  ListObjectsV2CommandInput,
   PutObjectCommand,
   PutObjectCommandInput,
   S3Client,
@@ -18,25 +16,25 @@ export class BucketProvider implements IBucketProvider {
   private readonly s3Client: S3Client;
   private readonly bucketName: string;
 
-  constructor(
-    private readonly configService: ConfigService, // Replace with your actual config service type
-  ) {
+  constructor(private readonly configService: ConfigService) {
     let options: S3ClientConfig;
 
     if (this.configService.get('IS_OFFLINE') === 'true') {
       options = {
-        endpoint: this.configService.get('aws.s3.endpoint'),
-        ...this.configService.get('aws'),
+        region: this.configService.get('aws.auth.region'),
+        credentials: {
+          accessKeyId: 'minioadmin',
+          secretAccessKey: 'minioadmin',
+        },
+        endpoint: 'http://localhost:9000',
       };
     } else {
       options = {
-        ...this.configService.get('aws'),
+        ...this.configService.get('aws.auth'),
+        forcePathStyle: true,
       };
     }
-    this.s3Client = new S3Client({
-      ...options,
-      forcePathStyle: true,
-    });
+    this.s3Client = new S3Client(options);
   }
 
   async uploadFile(
@@ -67,20 +65,5 @@ export class BucketProvider implements IBucketProvider {
 
     const command = new DeleteObjectCommand(params);
     await this.s3Client.send(command);
-  }
-
-  async listFiles(prefix: string = ''): Promise<any> {
-    const params: ListObjectsV2CommandInput = {
-      Bucket: this.bucketName,
-      Prefix: prefix,
-    };
-
-    const command = new ListObjectsV2Command(params);
-    return this.s3Client.send(command);
-  }
-
-  downloadFile(bucketName: string, filePath: string): Promise<any> {
-    console.log('downloadFile', bucketName, filePath);
-    return Promise.resolve();
   }
 }
