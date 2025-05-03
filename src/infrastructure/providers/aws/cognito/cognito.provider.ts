@@ -7,6 +7,7 @@ import {
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken'
 
@@ -18,20 +19,17 @@ export class CognitoProvider implements ICognitoProvider {
   private bdmUserName: string;
   private bdmPassword: string;
   constructor(
-    private readonly logger: Logger
+    private readonly logger: Logger,
+    private readonly configService: ConfigService,
   ) {
     this.cognito = new CognitoIdentityProviderClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      }, 
+      ...this.configService.get('aws')
     }
   );
-    this.clientId = process.env.AWS_COGNITO_CLIENT_ID;
-    this.clientSecret = process.env.AWS_COGNITO_CLIENT_ID_SECRET;
-    this.bdmUserName = process.env.BDM_AUTH_USERNAME as string;
-    this.bdmPassword = process.env.BDM_AUTH_PASSWORD as string;
+    this.clientId = this.configService.get('aws.cognito.clientId');
+    this.clientSecret = this.configService.get('aws.cognito.clientSecret');
+    this.bdmUserName = this.configService.get('bdm.username');
+    this.bdmPassword = this.configService.get('bdm.password');
     this.logger = new Logger(CognitoProvider.name);
   }
 
@@ -45,7 +43,7 @@ export class CognitoProvider implements ICognitoProvider {
         PASSWORD: data.password,
         SECRET_HASH: secretHash,
       },
-      ClientId: process.env.AWS_COGNITO_CLIENT_ID,
+      ClientId: this.clientId,
     });
 
     return await this.cognito.send(command);

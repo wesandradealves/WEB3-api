@@ -1,6 +1,6 @@
 export interface IBucketProvider {
   uploadFile(bucketName: string, filePath: string, fileContent: Buffer): Promise<string>;
-  downloadFile(bucketName: string, filePath: string): Promise<Buffer>;
+  download(Bucket: any, Key: string): Promise<any>;
   deleteFile(bucketName: string, filePath: string): Promise<void>;
   listFiles(bucketName: string, prefix?: string): Promise<string[]>;
 }

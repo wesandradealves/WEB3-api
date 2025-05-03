@@ -7,11 +7,14 @@ export async function createInstance(): Promise<IDashboardFileProcessorRepositor
   return server.get<IDashboardFileProcessorRepository>(IDashboardFileProcessorRepository);
 }
 
-export const handler = async (): Promise<void> => {
+export const handler = async (context: any): Promise<void> => {
+  console.log('context', context);
+  const objecValue = context.Records[0].s3;
+
   try {
     const instance = await createInstance();
     console.log('[Handler] - start dashboard file processor.');
-    await instance.fileProcessor();
+    await instance.fileProcessor(objecValue.bucket.name, objecValue.object.key);
   } catch (error) {
     console.error(error);
   }

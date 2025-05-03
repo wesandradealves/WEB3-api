@@ -1,5 +1,5 @@
 export interface IDashboardFileProcessorRepository {
-  fileProcessor(): Promise<any>;
+  fileProcessor(bucket: any, key: any): Promise<any>;
 }
 
 export const IDashboardFileProcessorRepository = Symbol('IDashboardFileProcessorRepository');

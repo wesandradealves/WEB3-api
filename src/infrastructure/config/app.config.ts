@@ -39,6 +39,19 @@ const AppEnvs = () => ({
     asset: {
       bucketName: process.env.AWS_S3_BUCKET_NAME,
     }
+  },
+  aws:{
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+    region: process.env.AWS_REGION,
+    s3:{
+      endpoint: process.env.AWS_S3_URL,
+    },
+    cognito: {
+      clientId: process.env.AWS_COGNITO_CLIENT_ID,
+      clientSecret: process.env.AWS_COGNITO_CLIENT_ID_SECRET,}
   }
 });
 

@@ -1,4 +1,3 @@
-import { UploadedFiles } from "@/domain/entities/uploaded.files.entity";
 import { IDashboardFileProcessorRepository } from "@/domain/repositories/dashboard-file-processor/dashboard-file.processor.repository";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -7,7 +6,7 @@ import * as csvParser from "csv-parser";
 import { S3External } from "@/infrastructure/external/s3.external";
 import { DashboardTransferList } from "@/domain/entities/transfer.assets.entity";
 import { TransferStatusEnum } from "@/domain/commons/enum/transfer.status.enum";
-import { UploadedFileEnum } from "@/domain/commons/enum/uploaded.file.enum";
+import { UploadedFiles } from "@/domain/entities/uploaded.files.entity";
 
 
 @Injectable()
@@ -20,14 +19,10 @@ export class DashboardFileProcessor implements IDashboardFileProcessorRepository
     private readonly s3External: S3External,
   ) {}
 
-  async fileProcessor(): Promise<any> {
-    const results = await this.updateFiles.find({ where: { status: UploadedFileEnum.UPLOADED } });
-  
-    for (const file of results) {
-      try {
-        console.log(`[FileProcessor] - Processing file: ${file.link}`);
-  
-        const fileStream = await this.s3External.downloadFile(file.link);
+  async fileProcessor(bucketName: string, key: string): Promise<any> {
+      try {  
+        const results = await this.updateFiles.findOne({ where: { link: key} });
+        const fileStream = await this.s3External.downloadFile(bucketName, key);
   
         const data = await this.parseCsv(fileStream);
   
@@ -39,34 +34,16 @@ export class DashboardFileProcessor implements IDashboardFileProcessorRepository
           email: item.email,
           obs: item.obs,
           status: TransferStatusEnum.PENDING,
-          updateFileId: file.id,
+          uploadedFile: {
+            id: results.id,},
         }));
   
         console.log(`[FileProcessor] - Processed data with IDs:`, enrichedData);
-  
-        for (const record of enrichedData) {
-          const exists = await this.DashboardTransferList.findOne({
-            where: {
-              asset: record.asset,
-              name: record.name,
-              wallet: record.wallet,
-              amount: record.amount,
-              email: record.email,
-              obs: record.obs,
-              updateFileId: record.updateFileId,
-            },
-          });
-  
-          if (!exists) {
-            await this.DashboardTransferList.save(record);
-          } else {
-            console.log(`[FileProcessor] - Skipping duplicate record:`, record);
-          }
-        }
+        await this.DashboardTransferList.save(enrichedData);
+        
       } catch (error) {
-        console.error(`[FileProcessor] - Error processing file: ${file.link}`, error);
+        console.error(`[FileProcessor] - Error processing file: `, error);
       }
-    }
   }
   private parseCsv(stream: NodeJS.ReadableStream): Promise<any[]> {
     return new Promise((resolve, reject) => {

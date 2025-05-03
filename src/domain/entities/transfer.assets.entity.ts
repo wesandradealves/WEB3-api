@@ -7,10 +7,7 @@ import { TransferStatusEnum } from '../commons/enum/transfer.status.enum';
 export class DashboardTransferList extends BaseEntity {
   @ManyToOne(() => UploadedFiles, (updateFile) => updateFile.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'uploaded_file_id' }) 
-  updateFile: UploadedFiles;
-
-  @Column({ name: 'update_file_id', type: 'uuid' })
-  updateFileId: string;
+  uploadedFile: UploadedFiles;
 
   @Column({ type: 'varchar', length: 255 })
   asset: string;
