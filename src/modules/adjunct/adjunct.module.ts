@@ -10,7 +10,7 @@ import { BdmExternal } from '@/infrastructure/external/bdm.external';
 import { CognitoModule } from '@/infrastructure/providers/aws/cognito/cognito.module';
 import { HttpBdmModule } from '@/infrastructure/providers/http/bdm/http.bdm.module';
 import { AdjunctRepository } from '@/infrastructure/repositories/adjunct.repository';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdjunctController } from './api/controller/adjunct.controller';
 import { CreateAdjunctUseCase } from './use-cases/create.adjunct.use-case';
@@ -23,6 +23,7 @@ import { UpdateAdjunctUseCase } from './use-cases/update.adjunct.use-case';
   imports: [TypeOrmModule.forFeature([AdjunctEntity]), HttpBdmModule, CognitoModule],
   controllers: [AdjunctController],
   providers: [
+    Logger,
     {
       provide: IBdmExternal,
       useClass: BdmExternal,
