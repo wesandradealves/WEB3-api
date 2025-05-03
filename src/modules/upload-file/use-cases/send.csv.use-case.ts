@@ -57,7 +57,7 @@ export class SendCsvUseCase implements ISendCsvUseCase {
   
       // Salvando link no banco update-files
       const updateFile = this.updateFiles.create({
-        link: `https://${this.bucket}.s3.amazonaws.com/${path}`,
+        link: path,
         status: UploadedFileEnum.UPLOADED,
         userId,
         hash: hash,
