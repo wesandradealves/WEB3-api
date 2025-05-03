@@ -98,7 +98,6 @@ functions:
       SES_EMAIL_FROM: ${env:SES_EMAIL_FROM}
       SES_2FA_TEMPLATE: ${env:SES_2FA_TEMPLATE}
       AWS_S3_BUCKET_NAME: ${env:AWS_S3_BUCKET_NAME}
-      AWS_S3_URL: ${env:AWS_S3_URL}
 
   TransferAssets:
     timeout: 30

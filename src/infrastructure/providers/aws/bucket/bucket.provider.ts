@@ -1,16 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-  DeleteObjectCommand,
-  ListObjectsV2Command,
-  PutObjectCommandInput,
-
-  DeleteObjectCommandInput,
-  ListObjectsV2CommandInput,
-} from '@aws-sdk/client-s3';
 import { IBucketProvider } from '@/domain/interfaces/providers/bucket.provider';
+import {
+  DeleteObjectCommand,
+  DeleteObjectCommandInput,
+  GetObjectCommand,
+  PutObjectCommand,
+  PutObjectCommandInput,
+  S3Client,
+  S3ClientConfig,
+} from '@aws-sdk/client-s3';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -18,23 +16,38 @@ export class BucketProvider implements IBucketProvider {
   private readonly s3Client: S3Client;
   private readonly bucketName: string;
 
-  constructor(
-    private readonly configService: ConfigService, // Replace with your actual config service type
-  ) {
-      this.s3Client = new S3Client({
-        ...this.configService.get('aws'),
-        endpoint: this.configService.get('aws.s3.endpoint'),
+  constructor(private readonly configService: ConfigService) {
+    let options: S3ClientConfig;
+
+    if (this.configService.get('IS_OFFLINE') === 'true') {
+      options = {
+        region: this.configService.get('aws.auth.region'),
+        credentials: {
+          accessKeyId: 'minioadmin',
+          secretAccessKey: 'minioadmin',
+        },
+        endpoint: 'http://localhost:9000',
+      };
+    } else {
+      options = {
+        ...this.configService.get('aws.auth'),
         forcePathStyle: true,
-      });
+      };
+    }
+    this.s3Client = new S3Client(options);
   }
 
-  async uploadFile(bucketName: string, filePath: string, fileContent: Buffer): Promise<any> {
+  async uploadFile(
+    bucketName: string,
+    filePath: string,
+    fileContent: Buffer,
+  ): Promise<any> {
     const params: PutObjectCommandInput = {
       Bucket: bucketName,
       Key: filePath,
       Body: fileContent,
     };
-  
+
     const command = new PutObjectCommand(params);
     return this.s3Client.send(command);
   }
@@ -52,20 +65,5 @@ export class BucketProvider implements IBucketProvider {
 
     const command = new DeleteObjectCommand(params);
     await this.s3Client.send(command);
-  }
-
-  async listFiles(prefix: string = ''): Promise<any> {
-    const params: ListObjectsV2CommandInput = {
-      Bucket: this.bucketName,
-      Prefix: prefix,
-    };
-
-    const command = new ListObjectsV2Command(params);
-    return this.s3Client.send(command);
-  }
-
-  downloadFile(bucketName: string, filePath: string): Promise<any> {
-    console.log('downloadFile', bucketName, filePath);
-    return Promise.resolve();
   }
 }

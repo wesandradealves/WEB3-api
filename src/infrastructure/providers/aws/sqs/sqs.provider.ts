@@ -19,7 +19,6 @@ export class SqsProvider implements ISQSProvider {
   private readonly sqsClient: SQSClient;
 
   constructor() {
-
     if (process.env.IS_OFFLINE === 'true') {
       this.awsConfig = {
         endpoint: process.env.AWS_SQS_ENDPOINT,
