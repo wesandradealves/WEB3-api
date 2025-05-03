@@ -25,7 +25,7 @@ custom:
 
   localstack:
     stages:
-      - development
+      - local
     host: http://localhost
     edgePort: 4566
     region: us-east-2
@@ -104,7 +104,7 @@ functions:
     timeout: 30
     memorySize: 512
     handler: ./src/functions/dashboard-transfer-assets/handler.handler
-    name: ${self:service}-${self:provider.stage}-dashboard-transfer-assets
+    name: ${self:provider.stage}-dashboard-transfer-assets
     events:
       - sqs:
           arn:

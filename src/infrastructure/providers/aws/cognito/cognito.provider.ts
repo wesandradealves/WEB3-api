@@ -1,6 +1,9 @@
 import { ISignInRequest } from '@/domain/interfaces/auth/auth.external';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
-import { BdmIdToken } from '@/domain/types/cognito/cognito.type';
+import {
+  BdmIdToken,
+  SignInBdmFullResponseResult,
+} from '@/domain/types/cognito/cognito.type';
 import {
   AuthFlowType,
   CognitoIdentityProviderClient,
@@ -9,7 +12,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
-import * as jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class CognitoProvider implements ICognitoProvider {
@@ -64,27 +67,32 @@ export class CognitoProvider implements ICognitoProvider {
       return result.AuthenticationResult.AccessToken;
     } catch (error) {
       this.logger.log(error);
-      return ''
+      return '';
     }
   }
 
-  async signInBdmFullResponse(): Promise<any> {
+  async signInBdmFullResponse(): Promise<SignInBdmFullResponseResult> {
     try {
-      Logger.log('Sign in BDM Cognito', 'signInBdmFullResponse')
+      Logger.log('Sign in BDM Cognito', 'signInBdmFullResponse');
       const cognitoResponse = await this.signIn({
         username: this.bdmUserName,
         password: this.bdmPassword,
       });
-      const idTokenInfo = jwt.decode(cognitoResponse.AuthenticationResult.IdToken) as BdmIdToken
+      const idTokenInfo = jwt.decode(
+        cognitoResponse.AuthenticationResult.IdToken,
+      ) as BdmIdToken;
 
-      Logger.debug(`idTokenInfo \n${JSON.stringify(idTokenInfo)}`, 'signInBdmFullResponse')
+      Logger.debug(
+        `idTokenInfo \n${JSON.stringify(idTokenInfo)}`,
+        'signInBdmFullResponse',
+      );
       return {
         ...idTokenInfo,
         AccessToken: cognitoResponse.AuthenticationResult.AccessToken,
-      }
+      };
     } catch (error) {
-      Logger.error(error, error.stack, 'signInBdmFullResponse')
-      throw error
+      Logger.error(error, error.stack, 'signInBdmFullResponse');
+      throw error;
     }
   }
 }
