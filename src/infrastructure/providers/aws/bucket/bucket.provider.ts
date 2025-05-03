@@ -18,8 +18,10 @@ export class BucketProvider implements IBucketProvider {
 
   constructor(private readonly configService: ConfigService) {
     let options: S3ClientConfig;
+    const isOffline = this.configService.get('isOffline');
+    const isRunningInLambda = this.configService.get('isRunningInLambda');
 
-    if (this.configService.get('IS_OFFLINE') === 'true') {
+    if (isOffline) {
       options = {
         region: this.configService.get('aws.auth.region'),
         credentials: {
@@ -28,12 +30,15 @@ export class BucketProvider implements IBucketProvider {
         },
         endpoint: 'http://localhost:9000',
       };
-    } else {
+    }
+
+    if (!isOffline && !isRunningInLambda) {
       options = {
         ...this.configService.get('aws.auth'),
         forcePathStyle: true,
       };
     }
+
     this.s3Client = new S3Client(options);
   }
 
