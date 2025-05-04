@@ -43,6 +43,16 @@ custom:
     accessKey: minioadmin
     secretKey: minioadmin
 
+  webpack:
+    packager: 'yarn'
+    webpackConfig: ./webpack.config.js
+    excludeFiles: src/**/*.test.js
+    includeModules:
+      forceInclude:
+        - dotenv
+        - pg
+      forceExclude:
+        - aws-sdk
 provider:
   name: aws
   runtime: nodejs18.x
