@@ -5,10 +5,10 @@ dotenv.config();
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ApiModule } from './api.module';
 import HttpExceptionFilter from './domain/commons/interceptors/http.exception';
 import { healthRoute } from './infrastructure/api-health/api-health.router';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const logger = new Logger('Application');
 
@@ -42,7 +42,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
-  await app.listen(process.env.PORT || 3000);
-  logger.log(`Application started in port: ${process.env.PORT || 3000}`);
+  await app.listen(process.env.HTTP_PORT || 3000);
+  logger.log(`Application started in port: ${process.env.HTTP_PORT || 3000}`);
 }
 bootstrap();
