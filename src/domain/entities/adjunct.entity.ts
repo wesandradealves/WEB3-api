@@ -22,7 +22,7 @@ export class AdjunctEntity extends BaseEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
-  @ManyToOne(() => UserEntity, (e) => e.adjuncts, { nullable: false })
+  @ManyToOne(() => UserEntity, { nullable: false })
   @JoinColumn({ name: 'representative_id', referencedColumnName: 'id' })
   representative: UserEntity;
 

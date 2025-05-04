@@ -63,7 +63,7 @@ export class TrasferController {
     @Body() body: Array<string>,
     @Request() req: any,
   ): Promise<any> {
-    return this.transferUseCase.execute(body, req.user);
+    return this.transferUseCase.execute(body, req.user.userId);
   }
 
 

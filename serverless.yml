@@ -47,7 +47,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-2
-  stage: ${opt:stage, 'development'}
+  stage: ${opt:stage, 'local'}
 
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT}
