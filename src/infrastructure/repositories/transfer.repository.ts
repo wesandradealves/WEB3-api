@@ -92,7 +92,7 @@ export class TransferRepository implements ITransferAssetRepository{
   
         const transferPayload: TransferPayload = {
           wallet_id: item.senderWalletId,
-          destination_user_id: Number(item.recipetWallet),
+          destination_user_id: Number(recipetBdmUserDatabyWalletId.id),
           destination_wallet_id: recipetWalletData.id,
           amount: Number(item.amount),
           destination_company_id: 1,

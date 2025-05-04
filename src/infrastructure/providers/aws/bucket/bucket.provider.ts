@@ -18,10 +18,10 @@ export class BucketProvider implements IBucketProvider {
 
   constructor(private readonly configService: ConfigService) {
     let options: S3ClientConfig;
-    const isOffline = this.configService.get('isOffline');
+    const isLocal = this.configService.get('isLocal');
     const isRunningInLambda = this.configService.get('isRunningInLambda');
 
-    if (isOffline) {
+    if (isLocal) {
       options = {
         region: this.configService.get('aws.auth.region'),
         credentials: {
@@ -29,10 +29,11 @@ export class BucketProvider implements IBucketProvider {
           secretAccessKey: 'minioadmin',
         },
         endpoint: 'http://localhost:9000',
+        forcePathStyle: true,
       };
     }
 
-    if (!isOffline && !isRunningInLambda) {
+    if (!isLocal && !isRunningInLambda) {
       options = {
         ...this.configService.get('aws.auth'),
         forcePathStyle: true,

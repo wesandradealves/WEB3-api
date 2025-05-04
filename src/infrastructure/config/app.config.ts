@@ -6,6 +6,7 @@ const AppEnvs = () => ({
   isDevelopment: process.env.ENVIRONMENT !== 'production',
   isRunningInLambda: !!process.env.AWS_LAMBDA_FUNCTION_NAME,
   isOffline: !!process.env.IS_OFFLINE,
+  isLocal: process.env.ENVIRONMENT === 'local',
 
   application: {
     serviceName: 'dourado-dashboard-backend',
