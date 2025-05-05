@@ -61,7 +61,6 @@ export class TransanctionsController {
     @Request() request: any,
     @Res() response: Response
   ): Promise<void> {
-    // Ensure that downloadFormat is set to EXCEL or CSV (default to Excel)
     if (!data.downloadFormat || data.downloadFormat === FileFormat.NONE) {
       data.downloadFormat = FileFormat.EXCEL;
     }
@@ -69,14 +68,11 @@ export class TransanctionsController {
     const {type, limit, after } = request.headers;
     const params = {type, limit, after, ...data};
     
-    // Get the data using the same use case
     const result = await this.getConsolidateTransactionsByWalletIdUseCase.execute(params);
     
-    // Generate filename based on date and wallet ID
     const currentDate = new Date().toISOString().split('T')[0];
     const filename = `transactions_wallet_${data.walletId}_${currentDate}`;
     
-    // Delegate to appropriate export method based on format
     if (data.downloadFormat === FileFormat.EXCEL) {
       await this.fileExportService.exportToExcel(result, filename, response);
     } else if (data.downloadFormat === FileFormat.CSV) {
