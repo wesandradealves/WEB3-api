@@ -1,7 +1,7 @@
 import { IGetTransactionsByWalletIdUseCase } from '@/domain/interfaces/use-cases/transactions/get.transactions.by.wallet.id.use-case';
 import { JwtAuthGuard } from '@/modules/auth/jwt.auth.guard';
 import { Controller, Get, Inject, Query, Request, Res, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TransactionsDto } from '../dtos/transactions.dto';
 import { TransactionsResponseDto } from '../dtos/transactions.reponse.dto';
 import { IGetConsolidateTransactionsByWalletIdUseCase } from '@/domain/interfaces/use-cases/transactions/get.consolidate.transactions.by.wallet.id.use-case';
@@ -56,6 +56,17 @@ export class TransanctionsController {
   })
   @ApiResponse({ status: 400, description: 'Invalid input or format.' })
   @ApiResponse({ status: 404, description: 'Transactions not found.' })
+  @ApiQuery({ name: 'walletId', required: true, description: 'ID da carteira para download das transações' })
+  @ApiQuery({ 
+    name: 'downloadFormat', 
+    required: false, 
+    description: 'Formato do arquivo para download (EXCEL ou CSV)',
+    enum: FileFormat
+  })
+  @ApiQuery({ name: 'username', required: true, description: 'Nome de usuário' })
+  @ApiHeader({ name: 'type', required: false, description: 'Tipo de transação' })
+  @ApiHeader({ name: 'limit', required: false, description: 'Limite de registros para retorno' })
+  @ApiHeader({ name: 'after', required: false, description: 'Cursor de paginação' })
   async downloadConsolidateTransactions(
     @Query() data: any,
     @Request() request: any,
