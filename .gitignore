@@ -42,3 +42,6 @@ lerna-debug.log*
 .webpack/
 .serverless/
 aws-tools.*
+
+yarn.lock
+*.lock
