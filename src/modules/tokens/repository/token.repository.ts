@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PrefixTokenEntity } from 'src/domain/entities/prefix.token.entity';
-import { ITokenRepository } from 'src/domain/interfaces/repositories/token.repository.interface';
+import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
 
 @Injectable()
 export class TokenRepository implements ITokenRepository {

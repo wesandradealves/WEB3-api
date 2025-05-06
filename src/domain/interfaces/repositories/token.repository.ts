@@ -7,3 +7,5 @@ export interface ITokenRepository {
   update(token: PrefixTokenEntity): Promise<PrefixTokenEntity>;
   delete(id: string): Promise<void>;
 }
+
+export const ITokenRepository = Symbol('ITokenRepository');

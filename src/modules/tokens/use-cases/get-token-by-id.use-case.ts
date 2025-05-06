@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ITokenRepository } from 'src/domain/interfaces/repositories/token.repository.interface';
+import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
 import { TOKEN_REPOSITORY } from '../token.symbols';
 import { TokenResponseDto } from '../api/dto/token.response.dto';
 import { ApiProperty } from '@nestjs/swagger';
