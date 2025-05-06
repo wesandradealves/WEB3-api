@@ -38,6 +38,10 @@ export class TokensController {
   @ApiBody({ description: 'Update token data', type: UpdateTokenDto, required: true })
   @Put(':id')
   async updateToken(@Param('id') id: string, @Body() updateTokenDto: UpdateTokenDto) {
+    const token = await this.tokenUseCases.getTokenById(id);
+    if (!token) {
+      throw new NotFoundException('Token not found');
+    }
     if (updateTokenDto.hash) {
       throw new BadRequestException('Hash cannot be updated');
     }
@@ -46,6 +50,10 @@ export class TokensController {
 
   @Delete(':id')
   async deleteToken(@Param('id') id: string) {
+    const token = await this.tokenUseCases.getTokenById(id);
+    if (!token) {
+      throw new NotFoundException('Token not found');
+    }
     await this.tokenUseCases.deleteToken(id);
     return { message: 'Token deleted successfully' };
   }
