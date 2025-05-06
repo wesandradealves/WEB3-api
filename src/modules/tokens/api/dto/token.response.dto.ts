@@ -22,8 +22,8 @@ export class TokenResponseDto {
   @ApiProperty({ description: 'Token está ativo?', example: true })
   isActive: boolean;
 
-  @ApiProperty({ description: 'Intervalos de rendimento', example: [1, 7, 30], required: false, type: [Number] })
-  yieldInterval?: number[];
+  @ApiProperty({ description: 'Intervalo de rendimento', example: 1, required: false, type: Number })
+  yieldInterval?: number | null;
 
   @ApiProperty({ description: 'Data de criação', example: '2025-05-03T00:00:00Z' })
   createdAt: Date;

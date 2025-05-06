@@ -24,7 +24,7 @@ export class GetTokenByIdUseCase {
       maturityTimeDays: token.maturityTimeDays,
       yieldPercentage: token.yieldPercentage,
       isActive: token.isActive,
-      yieldInterval: token.yieldInterval,
+      yieldInterval: token.yieldInterval as number | null,
       createdAt: token.createdAt,
       updatedAt: token.updatedAt,
     };

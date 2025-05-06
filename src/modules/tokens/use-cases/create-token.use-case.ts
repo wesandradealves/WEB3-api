@@ -19,7 +19,9 @@ export class CreateTokenUseCase {
     token.maturityTimeDays = dto.maturityTimeDays;
     token.yieldPercentage = dto.yieldPercentage;
     token.isActive = dto.isActive;
-    token.yieldInterval = dto.yieldInterval || [];
+    token.yieldInterval = Array.isArray(dto.yieldInterval) && dto.yieldInterval.length > 0 
+      ? dto.yieldInterval[0] 
+      : null;
 
     return this.tokenRepository.create(token);
   }

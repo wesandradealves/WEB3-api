@@ -12,6 +12,16 @@ export class TokenUseCases {
   ) {}
 
   async createToken(createTokenDto: CreateTokenDto): Promise<PrefixTokenEntity> {
+    // Verifica se já existe um token com o mesmo name
+    const existingTokenByName = await this.tokenRepository.findOneBy({ name: createTokenDto.name });
+    if (existingTokenByName) {
+      throw new Error('A token with this name already exists.');
+    }
+
+    // Gera um hash único para o token
+    createTokenDto.hash = require('crypto').randomBytes(16).toString('hex');
+
+    // Cria e salva o novo token
     const token = this.tokenRepository.create(createTokenDto);
     return this.tokenRepository.save(token);
   }

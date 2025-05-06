@@ -1,9 +1,12 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
 import { BaseEntity } from './commons/base.entity';
 import { PrefixInvestmentEntity } from './prefix.investment.entity';
 
 @Entity('prefix_tokens')
 export class PrefixTokenEntity extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: string;
+
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
@@ -30,4 +33,15 @@ export class PrefixTokenEntity extends BaseEntity {
 
   @OneToMany(() => PrefixInvestmentEntity, (investment) => investment.token)
   prefixInvestments: PrefixInvestmentEntity[];
+
+  @BeforeInsert()
+  beforeInsert(): void {
+    this.generateHash();
+  }
+
+  private generateHash(): void {
+    if (!this.hash) {
+      this.hash = require('crypto').randomBytes(16).toString('hex');
+    }
+  }
 }

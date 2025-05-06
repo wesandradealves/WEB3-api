@@ -20,7 +20,7 @@ export class GetAllTokensUseCase {
       maturityTimeDays: token.maturityTimeDays,
       yieldPercentage: token.yieldPercentage,
       isActive: token.isActive,
-      yieldInterval: token.yieldInterval,
+      yieldInterval: Array.isArray(token.yieldInterval) ? token.yieldInterval[0] : token.yieldInterval,
       createdAt: token.createdAt,
       updatedAt: token.updatedAt,
     }));

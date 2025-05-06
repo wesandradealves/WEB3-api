@@ -16,7 +16,14 @@ export class TokenRepository implements ITokenRepository {
   }
 
   async findAll(): Promise<PrefixTokenEntity[]> {
-    return this.repo.find();
+    try {
+      const tokens = await this.repo.find();
+      console.log('TokenRepository: Tokens found', tokens);
+      return tokens;
+    } catch (error) {
+      console.error('TokenRepository: Error fetching tokens', error);
+      throw error;
+    }
   }
 
   async findById(id: string): Promise<PrefixTokenEntity | null> {
