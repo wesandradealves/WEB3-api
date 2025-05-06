@@ -1,4 +1,3 @@
-// Interfaces para uso opcional em testes, mocks ou desacoplamento completo
 import { CreateTokenDto } from 'src/modules/tokens/api/dto/create-token.dto';
 import { UpdateTokenDto } from 'src/modules/tokens/api/dto/update-token.dto';
 import { TokenResponseDto } from 'src/modules/tokens/api/dto/token.response.dto';

@@ -16,7 +16,7 @@ import { AuthModule } from '../auth/auth.module';
   imports: [TypeOrmModule.forFeature([PrefixTokenEntity]), AuthModule],
   controllers: [TokensController],
   providers: [
-    TokenUseCases, // Registered TokenUseCases as a provider
+    TokenUseCases, 
     CreateTokenUseCase,
     GetAllTokensUseCase,
     GetTokenByIdUseCase,
@@ -27,6 +27,6 @@ import { AuthModule } from '../auth/auth.module';
       useClass: TokenRepository,
     },
   ],
-  exports: [TokenUseCases], // Exported TokenUseCases if needed in other modules
+  exports: [TokenUseCases], 
 })
 export class TokenModule {}
