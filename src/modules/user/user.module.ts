@@ -5,17 +5,17 @@ import { IUserRepository } from '@/domain/interfaces/repositories/user.repositor
 import { UserRepository } from '@/infrastructure/repositories/user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '@/domain/entities/user.entity';
-import { HttpModule } from '@/infrastructure/providers/http/http.module';
+
 import { DeleteUserUseCase } from './use-cases/delete.user.use-case';
 import { UpdateUserUseCase } from './use-cases/update.user.use-case';
 import { IUpdateUseCase } from '@/domain/interfaces/use-cases/user/update.user.use-case';
 import { IDeleteUserUseCase } from '@/domain/interfaces/use-cases/user/delete.user.use-case';
 import { ICreateUserUseCase } from '@/domain/interfaces/use-cases/user/create.user.use-case';
+import { HttpBdmModule } from '@/infrastructure/providers/http/bdm/http.bdm.module';
 
 @Module({
   imports: [
-    HttpModule,
-    
+    HttpBdmModule,
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [UserController],

@@ -6,7 +6,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { HttpBdmProvider } from '../providers/http/http.bdm.provider';
+import { HttpBdmProvider } from '../providers/http/bdm/http.bdm.provider';
+import { ConsolidateTransactionsDto } from '@/modules/transactions/api/dtos/consolidate-transactions.dto';
 
 @Injectable()
 export class TransactionsExternal implements ITransactionsExternal {
@@ -40,6 +41,32 @@ export class TransactionsExternal implements ITransactionsExternal {
         Authorization: `Bearer ${AuthenticationResult.AccessToken}`,
         'Content-Type': 'application/json',
         payload: `payload: custom:id:${user.userBdmId}]`,
+      },
+    });
+
+    return result;
+  }
+
+
+  async getConsolidateTransactionsByWalletId(data: ConsolidateTransactionsDto): Promise<any> {
+    let user = await this.user.findOneBy({ email: data.username });
+
+    const { AuthenticationResult } = await this.cognito.signIn({
+      username: this.bdmUsername,
+      password: this.bdmPassword,
+    });
+
+    const result = await this.httpBdmProvider.fetchData({
+      url: `history/app/${data.walletId}/${data.type}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${AuthenticationResult.AccessToken}`,
+        'Content-Type': 'application/json',
+        payload: `payload: custom:id:${user.userBdmId}]`,
+      },
+      params: {
+        limit: data.limit || 10,
+        after: data.after || 0,
       },
     });
 

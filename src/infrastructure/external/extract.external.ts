@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { HttpBdmProvider } from '../providers/http/http.bdm.provider';
+import { HttpBdmProvider } from '../providers/http/bdm/http.bdm.provider';
 
 @Injectable()
 export class ExtractExternal implements IExtractExternal {
