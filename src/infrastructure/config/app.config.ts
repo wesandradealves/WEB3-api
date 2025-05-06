@@ -3,7 +3,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const AppEnvs = () => ({
-  isDevelopment: process.env.ENVIRONMENT === 'production',
+  isDevelopment: process.env.ENVIRONMENT !== 'production',
+  isRunningInLambda: !!process.env.AWS_LAMBDA_FUNCTION_NAME,
+  isOffline: !!process.env.IS_OFFLINE,
+  isLocal: process.env.ENVIRONMENT === 'local',
+
   application: {
     serviceName: 'dourado-dashboard-backend',
     port: process.env.HTTP_PORT,
@@ -34,6 +38,29 @@ const AppEnvs = () => ({
     url: process.env.BASE_URL_BDM,
     username: process.env.BDM_AUTH_USERNAME,
     password: process.env.BDM_AUTH_PASSWORD,
+    apiKey: process.env.BDM_API_KEY,
+  },
+  transfer: {
+    asset: {
+      bucketName: process.env.AWS_S3_BUCKET_NAME,
+    },
+  },
+  aws: {
+    auth: {
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
+      region: process.env.AWS_REGION,
+    },
+    cognito: {
+      clientId: process.env.AWS_COGNITO_CLIENT_ID,
+      clientSecret: process.env.AWS_COGNITO_CLIENT_ID_SECRET,
+    },
+  },
+  blockChain: {
+    blockChainApiUrl: process.env.BLOCKCHAIN_API_URL,
+    blockChainApiKeyHash: process.env.BLOCKCHAIN_API_KEY_HASH,
   },
 });
 

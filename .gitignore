@@ -38,3 +38,7 @@ lerna-debug.log*
 # Envs
 .env
 .env.*
+
+.webpack/
+.serverless/
+aws-tools.*

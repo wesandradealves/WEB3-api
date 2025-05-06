@@ -1,9 +1,13 @@
 import { IGetTransactionsByWalletIdUseCase } from '@/domain/interfaces/use-cases/transactions/get.transactions.by.wallet.id.use-case';
 import { JwtAuthGuard } from '@/modules/auth/jwt.auth.guard';
-import { Controller, Get, Inject, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Inject, Query, Request, Res, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TransactionsDto } from '../dtos/transactions.dto';
 import { TransactionsResponseDto } from '../dtos/transactions.reponse.dto';
+import { IGetConsolidateTransactionsByWalletIdUseCase } from '@/domain/interfaces/use-cases/transactions/get.consolidate.transactions.by.wallet.id.use-case';
+import { ConsolidateTransactionsDto } from '../dtos/consolidate-transactions.dto';
+import { FileExportService, FileFormat } from '@/infrastructure/repositories/services/FileExportService';
+import { Response } from 'express';
 
 @ApiTags('Transactions')
 @ApiBearerAuth()
@@ -12,6 +16,9 @@ export class TransanctionsController {
   constructor(
     @Inject(IGetTransactionsByWalletIdUseCase)
     private readonly getTransactionsByWalletIdUseCase: IGetTransactionsByWalletIdUseCase,
+    @Inject(IGetConsolidateTransactionsByWalletIdUseCase)
+    private readonly getConsolidateTransactionsByWalletIdUseCase: IGetConsolidateTransactionsByWalletIdUseCase,
+    private readonly fileExportService: FileExportService, // Adicionar injeção do serviço
   ) {}
 
   @Get('by-wallet-id')
@@ -28,5 +35,61 @@ export class TransanctionsController {
     @Query() data: TransactionsDto,
   ): Promise<TransactionsResponseDto> {
     return await this.getTransactionsByWalletIdUseCase.execute(data);
+  }
+
+  @Get('consolidate/by-wallet-id/')
+  async getConsolidateTransactionsByWalletId(
+    @Query() data: ConsolidateTransactionsDto,
+    @Request() request: any
+  ): Promise<TransactionsResponseDto> {
+    const {type, limit, after } = request.headers;
+    const params = {type, limit, after, ...data}
+    return await this.getConsolidateTransactionsByWalletIdUseCase.execute(params);
+  }
+
+  @Get('consolidate/download')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Download consolidated transactions as spreadsheet' })
+  @ApiResponse({
+    status: 200,
+    description: 'File downloaded successfully.',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input or format.' })
+  @ApiResponse({ status: 404, description: 'Transactions not found.' })
+  @ApiQuery({ name: 'walletId', required: true, description: 'ID da carteira para download das transações' })
+  @ApiQuery({ 
+    name: 'downloadFormat', 
+    required: false, 
+    description: 'Formato do arquivo para download (EXCEL ou CSV)',
+    enum: FileFormat
+  })
+  @ApiQuery({ name: 'username', required: true, description: 'Nome de usuário' })
+  @ApiHeader({ name: 'type', required: false, description: 'Tipo de transação' })
+  @ApiHeader({ name: 'limit', required: false, description: 'Limite de registros para retorno' })
+  @ApiHeader({ name: 'after', required: false, description: 'Cursor de paginação' })
+  async downloadConsolidateTransactions(
+    @Query() data: any,
+    @Request() request: any,
+    @Res() response: Response
+  ): Promise<void> {
+    if (!data.downloadFormat || data.downloadFormat === FileFormat.NONE) {
+      data.downloadFormat = FileFormat.EXCEL;
+    }
+
+    const {type, limit, after } = request.headers;
+    const params = {type, limit, after, ...data};
+    
+    const result = await this.getConsolidateTransactionsByWalletIdUseCase.execute(params);
+    
+    const currentDate = new Date().toISOString().split('T')[0];
+    const filename = `transactions_wallet_${data.walletId}_${currentDate}`;
+    
+    if (data.downloadFormat === FileFormat.EXCEL) {
+      await this.fileExportService.exportToExcel(result, filename, response);
+    } else if (data.downloadFormat === FileFormat.CSV) {
+      await this.fileExportService.exportToCSV(result, filename, response);
+    } else {
+      response.status(400).json({ message: 'Invalid download format' }); 
+    }
   }
 }

@@ -1,29 +1,39 @@
 import { ISignInRequest } from '@/domain/interfaces/auth/auth.external';
 import { ICognitoProvider } from '@/domain/interfaces/providers/cognito/cognito.provider';
 import {
+  BdmIdToken,
+  SignInBdmFullResponseResult,
+} from '@/domain/types/cognito/cognito.type';
+import {
   AuthFlowType,
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class CognitoProvider implements ICognitoProvider {
   private readonly cognito: CognitoIdentityProviderClient;
   private readonly clientId: string;
   private readonly clientSecret: string;
-  constructor() {
+  private bdmUserName: string;
+  private bdmPassword: string;
+  constructor(
+    private readonly logger: Logger,
+    private readonly configService: ConfigService,
+  ) {
     this.cognito = new CognitoIdentityProviderClient({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      },
+      ...this.configService.get('aws.auth'),
     });
 
-    this.clientId = process.env.AWS_COGNITO_CLIENT_ID;
-    this.clientSecret = process.env.AWS_COGNITO_CLIENT_ID_SECRET;
+    this.clientId = this.configService.get('aws.cognito.clientId');
+    this.clientSecret = this.configService.get('aws.cognito.clientSecret');
+    this.bdmUserName = this.configService.get('bdm.username');
+    this.bdmPassword = this.configService.get('bdm.password');
+    this.logger = new Logger(CognitoProvider.name);
   }
 
   async signIn(data: ISignInRequest): Promise<any> {
@@ -36,7 +46,7 @@ export class CognitoProvider implements ICognitoProvider {
         PASSWORD: data.password,
         SECRET_HASH: secretHash,
       },
-      ClientId: process.env.AWS_COGNITO_CLIENT_ID,
+      ClientId: this.clientId,
     });
 
     return await this.cognito.send(command);
@@ -46,5 +56,43 @@ export class CognitoProvider implements ICognitoProvider {
     const hmac = crypto.createHmac('sha256', this.clientSecret);
     hmac.update(`${username}${this.clientId}`);
     return hmac.digest('base64');
+  }
+
+  async signInBdm(): Promise<string> {
+    try {
+      const result = await this.signIn({
+        username: this.bdmUserName,
+        password: this.bdmPassword,
+      });
+      return result.AuthenticationResult.AccessToken;
+    } catch (error) {
+      this.logger.log(error);
+      return '';
+    }
+  }
+
+  async signInBdmFullResponse(): Promise<SignInBdmFullResponseResult> {
+    try {
+      Logger.log('Sign in BDM Cognito', 'signInBdmFullResponse');
+      const cognitoResponse = await this.signIn({
+        username: this.bdmUserName,
+        password: this.bdmPassword,
+      });
+      const idTokenInfo = jwt.decode(
+        cognitoResponse.AuthenticationResult.IdToken,
+      ) as BdmIdToken;
+
+      Logger.debug(
+        `idTokenInfo \n${JSON.stringify(idTokenInfo)}`,
+        'signInBdmFullResponse',
+      );
+      return {
+        ...idTokenInfo,
+        AccessToken: cognitoResponse.AuthenticationResult.AccessToken,
+      };
+    } catch (error) {
+      Logger.error(error, error.stack, 'signInBdmFullResponse');
+      throw error;
+    }
   }
 }
