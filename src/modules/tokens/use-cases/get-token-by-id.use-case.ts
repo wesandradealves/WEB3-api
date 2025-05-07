@@ -11,7 +11,7 @@ export class GetTokenByIdUseCase {
     private readonly tokenRepository: ITokenRepository,
   ) {}
 
-  async execute(id: string): Promise<TokenResponseDto> {
+  async execute(id: number): Promise<TokenResponseDto> {
     const token = await this.tokenRepository.findById(id);
     if (!token) {
       throw new NotFoundException('Token not found');

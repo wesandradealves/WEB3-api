@@ -10,7 +10,7 @@ export class UpdateTokenUseCase {
     private readonly tokenRepository: ITokenRepository,
   ) {}
 
-  async execute(id: string, dto: UpdateTokenDto) {
+  async execute(id: number, dto: UpdateTokenDto) {
     const token = await this.tokenRepository.findById(id);
     if (!token) {
       throw new NotFoundException('Token not found');

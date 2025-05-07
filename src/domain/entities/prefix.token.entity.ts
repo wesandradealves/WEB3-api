@@ -1,11 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
-import { BaseEntity } from './commons/base.entity';
-import { PrefixInvestmentEntity } from './prefix.investment.entity';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  UpdateDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
+import { randomBytes } from 'crypto';
 
 @Entity('prefix_tokens')
-export class PrefixTokenEntity extends BaseEntity {
+export class PrefixTokenEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column({ type: 'varchar', length: 100 })
   name: string;
@@ -31,8 +38,14 @@ export class PrefixTokenEntity extends BaseEntity {
   @Column({ name: 'yield_interval', type: 'integer', nullable: true })
   yieldInterval: number;
 
-  @OneToMany(() => PrefixInvestmentEntity, (investment) => investment.token)
-  prefixInvestments: PrefixInvestmentEntity[];
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt: Date;
 
   @BeforeInsert()
   beforeInsert(): void {
@@ -41,7 +54,7 @@ export class PrefixTokenEntity extends BaseEntity {
 
   private generateHash(): void {
     if (!this.hash) {
-      this.hash = require('crypto').randomBytes(16).toString('hex');
+      this.hash = randomBytes(16).toString('hex');
     }
   }
 }

@@ -1,7 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { TokenUseCases } from '../../use-cases/token.use-cases';
-import { CreateTokenDto, UpdateTokenDto } from '../../../../domain/interfaces/dto/tokens.dto';
-import { ApiOperation, ApiBody, ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  CreateTokenDto,
+  UpdateTokenDto,
+} from '../../../../domain/interfaces/dto/tokens.dto';
+import {
+  ApiOperation,
+  ApiBody,
+  ApiTags,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/modules/auth/jwt.auth.guard';
 
 @ApiTags('Tokens')
@@ -26,7 +46,7 @@ export class TokensController {
   }
 
   @Get(':id')
-  async getTokenById(@Param('id') id: string) {
+  async getTokenById(@Param('id') id: number) {
     const token = await this.tokenUseCases.getTokenById(id);
     if (!token) {
       throw new NotFoundException('Token not found');
@@ -37,7 +57,7 @@ export class TokensController {
   @ApiOperation({ summary: 'Update a token by ID' })
   @ApiBody({ description: 'Update token data', type: UpdateTokenDto, required: true })
   @Put(':id')
-  async updateToken(@Param('id') id: string, @Body() updateTokenDto: UpdateTokenDto) {
+  async updateToken(@Param('id') id: number, @Body() updateTokenDto: UpdateTokenDto) {
     const token = await this.tokenUseCases.getTokenById(id);
     if (!token) {
       throw new NotFoundException('Token not found');
@@ -49,7 +69,7 @@ export class TokensController {
   }
 
   @Delete(':id')
-  async deleteToken(@Param('id') id: string) {
+  async deleteToken(@Param('id') id: number) {
     const token = await this.tokenUseCases.getTokenById(id);
     if (!token) {
       throw new NotFoundException('Token not found');

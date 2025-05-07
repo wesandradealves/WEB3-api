@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TokenResponseDto {
   @ApiProperty({ description: 'ID do token', example: '1' })
-  id: string;
+  id: number;
 
   @ApiProperty({ description: 'Nome do token', example: 'Token A' })
   name: string;
@@ -22,7 +22,12 @@ export class TokenResponseDto {
   @ApiProperty({ description: 'Token está ativo?', example: true })
   isActive: boolean;
 
-  @ApiProperty({ description: 'Intervalo de rendimento', example: 1, required: false, type: Number })
+  @ApiProperty({
+    description: 'Intervalo de rendimento',
+    example: 1,
+    required: false,
+    type: Number,
+  })
   yieldInterval?: number | null;
 
   @ApiProperty({ description: 'Data de criação', example: '2025-05-03T00:00:00Z' })

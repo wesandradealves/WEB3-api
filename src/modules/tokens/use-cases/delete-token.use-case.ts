@@ -11,7 +11,7 @@ export class DeleteTokenUseCase {
   ) {}
 
   @ApiProperty({ description: 'ID of the token to delete', example: '1' })
-  async execute(id: string): Promise<void> {
+  async execute(id: number): Promise<void> {
     const token = await this.tokenRepository.findById(id);
     if (!token) {
       throw new NotFoundException('Token not found');

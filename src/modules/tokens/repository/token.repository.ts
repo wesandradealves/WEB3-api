@@ -26,7 +26,7 @@ export class TokenRepository implements ITokenRepository {
     }
   }
 
-  async findById(id: string): Promise<PrefixTokenEntity | null> {
+  async findById(id: number): Promise<PrefixTokenEntity | null> {
     return this.repo.findOne({ where: { id } });
   }
 
@@ -34,7 +34,7 @@ export class TokenRepository implements ITokenRepository {
     return this.repo.save(token);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.repo.delete(id);
   }
 }
