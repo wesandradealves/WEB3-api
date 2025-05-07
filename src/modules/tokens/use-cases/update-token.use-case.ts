@@ -1,22 +1,15 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateTokenDto } from '../api/dto/update-token.dto';
-import { TOKEN_REPOSITORY } from '../token.symbols';
 import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { UpdateTokenDto } from '../api/dto/update-token.dto';
 
 @Injectable()
 export class UpdateTokenUseCase {
   constructor(
-    @Inject(TOKEN_REPOSITORY)
+    @Inject(ITokenRepository)
     private readonly tokenRepository: ITokenRepository,
   ) {}
 
-  async execute(id: number, dto: UpdateTokenDto) {
-    const token = await this.tokenRepository.findById(id);
-    if (!token) {
-      throw new NotFoundException('Token not found');
-    }
-
-    Object.assign(token, dto);
-    return this.tokenRepository.update(token);
+  async execute(id: string, dto: UpdateTokenDto) {
+    return this.tokenRepository.update(id, dto);
   }
 }

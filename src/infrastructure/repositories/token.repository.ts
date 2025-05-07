@@ -1,8 +1,9 @@
+import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
+import { UpdateTokenDto } from '@/modules/tokens/api/dto/update-token.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { PrefixTokenEntity } from 'src/domain/entities/prefix.token.entity';
-import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TokenRepository implements ITokenRepository {
@@ -26,15 +27,15 @@ export class TokenRepository implements ITokenRepository {
     }
   }
 
-  async findById(id: number): Promise<PrefixTokenEntity | null> {
-    return this.repo.findOne({ where: { id } });
+  async findById(id: string): Promise<PrefixTokenEntity> {
+    return await this.repo.findOne({ where: { id } });
   }
 
-  async update(token: PrefixTokenEntity): Promise<PrefixTokenEntity> {
-    return this.repo.save(token);
+  async update(id: string, token: UpdateTokenDto): Promise<void> {
+    await this.repo.update(id, token);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.repo.delete(id);
   }
 }

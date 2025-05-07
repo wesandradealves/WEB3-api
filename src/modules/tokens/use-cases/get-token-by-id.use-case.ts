@@ -1,33 +1,17 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
-import { TOKEN_REPOSITORY } from '../token.symbols';
-import { TokenResponseDto } from '../api/dto/token.response.dto';
+import { Inject, Injectable } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { TokenResponseDto } from '../api/dto/token.response.dto';
 
 @Injectable()
 export class GetTokenByIdUseCase {
   constructor(
-    @Inject(TOKEN_REPOSITORY)
+    @Inject(ITokenRepository)
     private readonly tokenRepository: ITokenRepository,
   ) {}
 
-  async execute(id: number): Promise<TokenResponseDto> {
-    const token = await this.tokenRepository.findById(id);
-    if (!token) {
-      throw new NotFoundException('Token not found');
-    }
-    return {
-      id: token.id,
-      name: token.name,
-      hash: token.hash,
-      description: token.description,
-      maturityTimeDays: token.maturityTimeDays,
-      yieldPercentage: token.yieldPercentage,
-      isActive: token.isActive,
-      yieldInterval: token.yieldInterval as number | null,
-      createdAt: token.createdAt,
-      updatedAt: token.updatedAt,
-    };
+  async execute(id: string): Promise<TokenResponseDto> {
+    return await this.tokenRepository.findById(id);
   }
 }
 

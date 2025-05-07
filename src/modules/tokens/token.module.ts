@@ -1,32 +1,49 @@
+import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
+import { ICreateTokenUseCase } from '@/domain/interfaces/use-cases/tokens/create.token.use-case';
+import { IGetTokenByIdUseCase } from '@/domain/interfaces/use-cases/tokens/getById.token.use-case';
+import { IUpdateTokenUseCase } from '@/domain/interfaces/use-cases/tokens/update.token.use-case';
+import { IDeleteUserUseCase } from '@/domain/interfaces/use-cases/user/delete.user.use-case';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrefixTokenEntity } from 'src/domain/entities/prefix.token.entity';
+import { TokenRepository } from '../../infrastructure/repositories/token.repository';
 import { TokensController } from './api/controller/tokens.controller';
 import { CreateTokenUseCase } from './use-cases/create-token.use-case';
-import { GetAllTokensUseCase } from './use-cases/get-all-tokens.use-case';
-import { GetTokenByIdUseCase } from './use-cases/get-token-by-id.use-case';
-import { UpdateTokenUseCase } from './use-cases/update-token.use-case';
 import { DeleteTokenUseCase } from './use-cases/delete-token.use-case';
-import { TOKEN_REPOSITORY } from './token.symbols';
-import { TokenRepository } from './repository/token.repository';
-import { TokenUseCases } from './use-cases/token.use-cases';
-import { AuthModule } from '../auth/auth.module';
+import { GetTokenByIdUseCase } from './use-cases/get-token-by-id.use-case';
+
+import { IGetAllTokenUseCase } from '@/domain/interfaces/use-cases/tokens/getAll.token.use-case';
+import { GetAllTokenUseCase } from './use-cases/get-all-tokens.use-case';
+import { UpdateTokenUseCase } from './use-cases/update-token.use-case';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PrefixTokenEntity]), AuthModule],
+  imports: [TypeOrmModule.forFeature([PrefixTokenEntity])],
   controllers: [TokensController],
   providers: [
-    TokenUseCases, 
-    CreateTokenUseCase,
-    GetAllTokensUseCase,
-    GetTokenByIdUseCase,
-    UpdateTokenUseCase,
-    DeleteTokenUseCase,
     {
-      provide: TOKEN_REPOSITORY,
+      provide: ITokenRepository,
       useClass: TokenRepository,
     },
+    {
+      provide: ICreateTokenUseCase,
+      useClass: CreateTokenUseCase,
+    },
+    {
+      provide: IUpdateTokenUseCase,
+      useClass: UpdateTokenUseCase,
+    },
+    {
+      provide: IDeleteUserUseCase,
+      useClass: DeleteTokenUseCase,
+    },
+    {
+      provide: IGetAllTokenUseCase,
+      useClass: GetAllTokenUseCase,
+    },
+    {
+      provide: IGetTokenByIdUseCase,
+      useClass: GetTokenByIdUseCase,
+    },
   ],
-  exports: [TokenUseCases], 
 })
 export class TokenModule {}

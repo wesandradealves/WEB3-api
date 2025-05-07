@@ -1,14 +1,13 @@
+import { IViewToken } from '@/domain/types/token';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class TokenResponseDto {
-  @ApiProperty({ description: 'ID do token', example: '1' })
-  id: number;
+export class TokenResponseDto implements IViewToken {
+  decimalPlace: number;
+  id: string;
+  deletedAt: Date;
 
   @ApiProperty({ description: 'Nome do token', example: 'Token A' })
-  name: string;
-
-  @ApiProperty({ description: 'Hash do token', example: 'abc123' })
-  hash: string;
+  asset: string;
 
   @ApiProperty({ description: 'Descrição do token', example: 'Token de exemplo.' })
   description: string;
@@ -28,7 +27,7 @@ export class TokenResponseDto {
     required: false,
     type: Number,
   })
-  yieldInterval?: number | null;
+  yieldInterval: number;
 
   @ApiProperty({ description: 'Data de criação', example: '2025-05-03T00:00:00Z' })
   createdAt: Date;

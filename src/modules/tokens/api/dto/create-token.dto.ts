@@ -1,11 +1,22 @@
-import { IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { ICreatetoken } from '@/domain/types/token';
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
-export class CreateTokenDto {
+export class CreateTokenDto implements ICreatetoken {
+  decimalPlace: number;
+
   @ApiProperty({ description: 'Nome do token', example: 'Token A' })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  asset: string;
 
   @ApiProperty({ description: 'Hash do token', example: 'abc123' })
   @IsString()
@@ -30,8 +41,12 @@ export class CreateTokenDto {
   @IsBoolean()
   isActive: boolean;
 
-  @ApiProperty({ description: 'Intervalos de rendimento', example: [1, 7, 30], required: false, type: [Number] })
+  @ApiProperty({
+    description: 'Intervalos de rendimento',
+    required: false,
+    type: Number,
+  })
   @IsOptional()
   @IsInt({ each: true })
-  yieldInterval?: number[];
+  yieldInterval: number;
 }

@@ -1,11 +1,10 @@
-import { PrefixTokenEntity } from 'src/domain/entities/prefix.token.entity';
+import { ICreatetoken, IUpdateToken, IViewToken } from '@/domain/types/token';
 
 export interface ITokenRepository {
-  create(token: PrefixTokenEntity): Promise<PrefixTokenEntity>;
-  findAll(): Promise<PrefixTokenEntity[]>;
-  findById(id: number): Promise<PrefixTokenEntity | null>;
-  update(token: PrefixTokenEntity): Promise<PrefixTokenEntity>;
-  delete(id: number): Promise<void>;
+  create(token: ICreatetoken): Promise<IViewToken>;
+  findAll(): Promise<IViewToken[]>;
+  findById(id: string): Promise<IViewToken>;
+  update(id: string, token: IUpdateToken): Promise<void>;
+  delete(id: string): Promise<void>;
 }
-
 export const ITokenRepository = Symbol('ITokenRepository');
