@@ -1,10 +1,11 @@
 import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
+import { IGetTokenByIdUseCase } from '@/domain/interfaces/use-cases/tokens/getById.token.use-case';
 import { Inject, Injectable } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { TokenResponseDto } from '../api/dto/token.response.dto';
 
 @Injectable()
-export class GetTokenByIdUseCase {
+export class GetTokenByIdUseCase implements IGetTokenByIdUseCase {
   constructor(
     @Inject(ITokenRepository)
     private readonly tokenRepository: ITokenRepository,

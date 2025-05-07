@@ -9,33 +9,32 @@ import { Repository } from 'typeorm';
 export class TokenRepository implements ITokenRepository {
   constructor(
     @InjectRepository(PrefixTokenEntity)
-    private readonly repo: Repository<PrefixTokenEntity>,
+    private readonly tokenRepository: Repository<PrefixTokenEntity>,
   ) {}
 
   async create(token: PrefixTokenEntity): Promise<PrefixTokenEntity> {
-    return this.repo.save(token);
+    return this.tokenRepository.save(token);
   }
 
   async findAll(): Promise<PrefixTokenEntity[]> {
     try {
-      const tokens = await this.repo.find();
-      console.log('TokenRepository: Tokens found', tokens);
-      return tokens;
+      console.log('TokentokenRepositorysitory: Tokens found');
+      return await this.tokenRepository.find();
     } catch (error) {
-      console.error('TokenRepository: Error fetching tokens', error);
+      console.error('TokentokenRepositorysitory: Error fetching tokens', error);
       throw error;
     }
   }
 
   async findById(id: string): Promise<PrefixTokenEntity> {
-    return await this.repo.findOne({ where: { id } });
+    return await this.tokenRepository.findOne({ where: { id } });
   }
 
   async update(id: string, token: UpdateTokenDto): Promise<void> {
-    await this.repo.update(id, token);
+    await this.tokenRepository.update(id, token);
   }
 
   async delete(id: string): Promise<void> {
-    await this.repo.delete(id);
+    await this.tokenRepository.delete(id);
   }
 }
