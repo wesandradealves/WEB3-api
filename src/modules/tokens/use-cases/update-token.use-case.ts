@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateTokenDto } from '../api/dto/update-token.dto';
 import { TOKEN_REPOSITORY } from '../token.symbols';
-import { ITokenRepository } from 'src/domain/interfaces/repositories/token.repository.interface';
+import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
 
 @Injectable()
 export class UpdateTokenUseCase {

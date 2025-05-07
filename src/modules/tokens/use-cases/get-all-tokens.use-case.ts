@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ITokenRepository } from 'src/domain/interfaces/repositories/token.repository.interface';
+import { ITokenRepository } from '@/domain/interfaces/repositories/token.repository';
 import { TOKEN_REPOSITORY } from '../token.symbols';
 import { TokenResponseDto } from '../api/dto/token.response.dto';
 
@@ -20,7 +20,9 @@ export class GetAllTokensUseCase {
       maturityTimeDays: token.maturityTimeDays,
       yieldPercentage: token.yieldPercentage,
       isActive: token.isActive,
-      yieldInterval: Array.isArray(token.yieldInterval) ? token.yieldInterval[0] : token.yieldInterval,
+      yieldInterval: Array.isArray(token.yieldInterval)
+        ? token.yieldInterval[0]
+        : token.yieldInterval,
       createdAt: token.createdAt,
       updatedAt: token.updatedAt,
     }));
