@@ -13,6 +13,7 @@ import { UploadFileModule } from './modules/upload-file/upload.file.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { QuotationModule } from './modules/quotations/quotations.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { TokenModule } from './modules/tokens/token.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
     CognitoModule,
     TransactionsModule,
     ExtractModule,
+    TokenModule,
     UploadFileModule,
     TransferModule
   ],
