@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrefixTokenEntity } from 'src/domain/entities/prefix.token.entity';
-import { TokensController } from './api/tokens.controller';
+import { TokensController } from './api/controller/tokens.controller';
 import { CreateTokenUseCase } from './use-cases/create-token.use-case';
 import { GetAllTokensUseCase } from './use-cases/get-all-tokens.use-case';
 import { GetTokenByIdUseCase } from './use-cases/get-token-by-id.use-case';
