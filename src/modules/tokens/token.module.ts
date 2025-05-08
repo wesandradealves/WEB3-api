@@ -2,7 +2,7 @@ import { ITokenRepository } from '@/domain/interfaces/repositories/token.reposit
 import { ICreateTokenUseCase } from '@/domain/interfaces/use-cases/tokens/create.token.use-case';
 import { IGetTokenByIdUseCase } from '@/domain/interfaces/use-cases/tokens/getById.token.use-case';
 import { IUpdateTokenUseCase } from '@/domain/interfaces/use-cases/tokens/update.token.use-case';
-import { IDeleteUserUseCase } from '@/domain/interfaces/use-cases/user/delete.user.use-case';
+import { IDeleteTokenUseCase } from '@/domain/interfaces/use-cases/tokens/delete.token.use-case';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrefixTokenEntity } from 'src/domain/entities/prefix.token.entity';
@@ -33,7 +33,7 @@ import { UpdateTokenUseCase } from './use-cases/update-token.use-case';
       useClass: UpdateTokenUseCase,
     },
     {
-      provide: IDeleteUserUseCase,
+      provide: IDeleteTokenUseCase,
       useClass: DeleteTokenUseCase,
     },
     {
