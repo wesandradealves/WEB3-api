@@ -6,6 +6,9 @@ export class PrefixTokenEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 100 })
   asset: string;
 
+  @Column({ name: 'hash', type: 'varchar', length: 255, unique: true })
+  hash: string;
+
   @Column({ name: 'maturity_time_days', type: 'integer' })
   maturityTimeDays: number;
 

@@ -9,6 +9,9 @@ export class TokenResponseDto implements IViewToken {
   @ApiProperty({ description: 'Nome do token', example: 'Token A' })
   asset: string;
 
+  @ApiProperty({ description: 'Hash', example: 'abc123' })
+  hash: string;
+
   @ApiProperty({ description: 'Descrição do token', example: 'Token de exemplo.' })
   description: string;
 

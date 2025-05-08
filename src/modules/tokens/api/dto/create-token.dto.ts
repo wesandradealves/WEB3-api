@@ -11,6 +11,9 @@ import {
 } from 'class-validator';
 
 export class CreateTokenDto implements ICreatetoken {
+  @ApiProperty({ description: 'Casas decimais do token', example: 2 })
+  @IsInt()
+  @IsNotEmpty()
   decimalPlace: number;
 
   @ApiProperty({ description: 'Nome do token', example: 'Token A' })

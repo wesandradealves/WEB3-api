@@ -18,7 +18,6 @@ export class TokenRepository implements ITokenRepository {
 
   async findAll(): Promise<PrefixTokenEntity[]> {
     try {
-      console.log('TokentokenRepositorysitory: Tokens found');
       return await this.tokenRepository.find();
     } catch (error) {
       console.error('TokentokenRepositorysitory: Error fetching tokens', error);

@@ -16,7 +16,7 @@ export class CreatePrefixTokensTable1744825419071 implements MigrationInterface 
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'asset',
             type: 'varchar',
             length: '100',
           },
