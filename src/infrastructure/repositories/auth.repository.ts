@@ -133,6 +133,7 @@ export class AuthRepository implements IAuthRepository {
       const signin = await this.token.createTokenJwt({
         id: user.id,
         email: user.email,
+        name: user.name,
         profile: user.profile,
       });
 

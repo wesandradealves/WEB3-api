@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { SignInResponseDto } from '../api/dtos/signIn.response.dto';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class TokenService {
@@ -21,9 +21,12 @@ export class TokenService {
   async createTokenJwt(user: any): Promise<SignInResponseDto> {
     this.logger.log('Gerando token de autenticação.');
 
-    this.token = this.jwtService.sign(
-      { sub: user.id, profile: user.profile, email: user.email },
-    );
+    this.token = this.jwtService.sign({
+      sub: user.id,
+      profile: user.profile,
+      email: user.email,
+      name: user.name,
+    });
 
     this.refreshToken = this.jwtService.sign(
       { sub: user.id, email: user.email, profile: user.profile },
