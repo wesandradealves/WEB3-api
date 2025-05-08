@@ -18,11 +18,6 @@ export class UpdateTokenDto implements IUpdateToken {
   @IsNotEmpty()
   asset: string;
 
-  @ApiProperty({ description: 'Hash do token', example: 'abc123' })
-  @IsString()
-  @IsNotEmpty()
-  hash: string;
-
   @ApiProperty({ description: 'Descrição do token', example: 'Token de exemplo.' })
   @IsString()
   @IsNotEmpty()
