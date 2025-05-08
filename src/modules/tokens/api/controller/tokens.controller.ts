@@ -35,16 +35,16 @@ export class TokensController {
     @Inject(ICreateTokenUseCase)
     private readonly createTokenUseCase: ICreateTokenUseCase,
 
-    @Inject(ICreateTokenUseCase)
+    @Inject(IUpdateTokenUseCase)
     private readonly updateTokenUseCase: IUpdateTokenUseCase,
 
-    @Inject(ICreateTokenUseCase)
+    @Inject(IDeleteTokenUseCase)
     private readonly deleteTokenUseCase: IDeleteTokenUseCase,
 
-    @Inject(ICreateTokenUseCase)
+    @Inject(IGetAllTokenUseCase)
     private readonly getAllTokenUseCase: IGetAllTokenUseCase,
 
-    @Inject(ICreateTokenUseCase)
+    @Inject(IGetTokenByIdUseCase)
     private readonly getTokenByIdUseCase: IGetTokenByIdUseCase,
   ) {}
 
