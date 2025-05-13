@@ -2,11 +2,11 @@
 
 set -x
 
-# 📦 Carregar variáveis do .env
-if [ -f /var/www/.env ]; then
-  set -o allexport
-  source /var/www/.env || echo "⚠️ Erro ao carregar .env"
-  set +o allexport
+# Carregar variáveis do arquivo .env
+if [ -f .env ]; then
+  set -a
+  source .env
+  set +a
 fi
 
 # Certifique-se de que o wp-config.php existe
@@ -23,14 +23,11 @@ else
   exit 1
 fi
 
-# ✅ Mostrar variáveis carregadas
 echo "✅ WORDPRESS_DB_HOST=$WORDPRESS_DB_HOST"
 echo "✅ WORDPRESS_DB_USER=$WORDPRESS_DB_USER"
 echo "✅ WORDPRESS_DB_PASSWORD=$WORDPRESS_DB_PASSWORD"
 echo "✅ WORDPRESS_DB_NAME=$WORDPRESS_DB_NAME"
 echo "✅ JWT_AUTH_SECRET_KEY=$JWT_AUTH_SECRET_KEY"
-echo "✅ SITE_URL=$SITE_URL"
-echo "✅ WP_DEBUG=$WP_DEBUG"
 echo "✅ TARGET_URL=$TARGET_URL"
 echo "✅ WP_DEBUG=$WP_DEBUG"
 echo "✅ WP_DEBUG_DISPLAY=$WP_DEBUG_DISPLAY"
