@@ -1,0 +1,3 @@
+memory_limit = ${WP_MEMORY_LIMIT}
+upload_max_filesize = ${WP_MEMORY_LIMIT}
+post_max_size = ${WP_MEMORY_LIMIT}

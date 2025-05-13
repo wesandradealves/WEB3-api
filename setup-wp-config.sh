@@ -31,6 +31,13 @@ echo "✅ JWT_AUTH_SECRET_KEY=$JWT_AUTH_SECRET_KEY"
 echo "✅ TARGET_URL=$TARGET_URL"
 echo "✅ WP_DEBUG=$WP_DEBUG"
 echo "✅ WP_DEBUG_DISPLAY=$WP_DEBUG_DISPLAY"
+echo "✅ WP_MEMORY_LIMIT=$WP_MEMORY_LIMIT"
+echo "✅ WP_MAX_MEMORY_LIMIT=$WP_MAX_MEMORY_LIMIT"
+echo "✅ WORDPRESS_MAIL=$WORDPRESS_MAIL"
+echo "✅ WORDPRESS_USER=$WORDPRESS_USER"
+echo "✅ WORDPRESS_PWD=$WORDPRESS_PWD"
+echo "✅ FS_METHOD=$FS_METHOD"
+echo "✅ JWT_AUTH_CORS_ENABLE=$JWT_AUTH_CORS_ENABLE"
 
 WPCONFIG="/var/www/html/wp-config.php"
 WPCONFIG_TEMPLATE="/var/www/html/wp-config-template.php"
@@ -45,14 +52,6 @@ fi
 echo "🧹 Limpando ^M do wp-config.php..."
 sed -i 's/\r$//' "$WPCONFIG"
 
-# 🔐 Gerar JWT_AUTH_SECRET_KEY se não estiver definido
-if [ -z "$JWT_AUTH_SECRET_KEY" ]; then
-  export JWT_AUTH_SECRET_KEY=$(openssl rand -base64 64)
-  echo "🔐 JWT_AUTH_SECRET_KEY gerado dinamicamente"
-else
-  echo "🔐 JWT_AUTH_SECRET_KEY já existe, pulando..."
-fi
-
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
 sed -i "s/getenv('WORDPRESS_DB_USER')/'${WORDPRESS_DB_USER}'/" "$WPCONFIG"
@@ -61,32 +60,18 @@ sed -i "s/getenv('WORDPRESS_DB_HOST')/'${WORDPRESS_DB_HOST}'/" "$WPCONFIG"
 sed -i "s/getenv('WP_DEBUG')/'${WP_DEBUG}'/" "$WPCONFIG"
 sed -i "s/getenv('WP_DEBUG_DISPLAY')/'${WP_DEBUG_DISPLAY}'/" "$WPCONFIG"
 sed -i "s/getenv('JWT_AUTH_SECRET_KEY')/'${JWT_AUTH_SECRET_KEY}'/" "$WPCONFIG"
-
-# ➕ Adicionar define() se não existir
-insert_define() {
-  local key="$1"
-  local value="$2"
-  if ! grep -q "define('$key'," "$WPCONFIG"; then
-    echo "➕ Adicionando define('$key', $value) ao wp-config.php"
-    sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\//i define('$key', $value);" "$WPCONFIG"
-  else
-    echo "✔️ $key já existe em wp-config.php, pulando..."
-  fi
-}
-
-insert_define "FS_METHOD" "'direct'"
-insert_define "JWT_AUTH_CORS_ENABLE" "true"
+sed -i "s/getenv('WP_MEMORY_LIMIT')/'${WP_MEMORY_LIMIT}'/" "$WPCONFIG"
+sed -i "s/getenv('WP_MAX_MEMORY_LIMIT')/'${WP_MAX_MEMORY_LIMIT}'/" "$WPCONFIG"
+sed -i "s/getenv('WP_DEBUG_LOG')/'${WP_DEBUG_LOG}'/" "$WPCONFIG"
+sed -i "s/getenv('WP_ALLOW_REPAIR')/'${WP_ALLOW_REPAIR}'/" "$WPCONFIG"
+sed -i "s/getenv('FS_METHOD')/'${FS_METHOD}'/" "$WPCONFIG"
+sed -i "s/getenv('JWT_AUTH_CORS_ENABLE')/'${JWT_AUTH_CORS_ENABLE}'/" "$WPCONFIG"
 
 # Replace placeholders in wp-config.php with environment variables
 sed -i "s/database_name_here/${WORDPRESS_DB_NAME}/" /var/www/html/wp-config.php
 sed -i "s/username_here/${WORDPRESS_DB_USER}/" /var/www/html/wp-config.php
 sed -i "s/password_here/${WORDPRESS_DB_PASSWORD}/" /var/www/html/wp-config.php
 sed -i "s/localhost/${WORDPRESS_DB_HOST}/" /var/www/html/wp-config.php
-
-# Adicionar configurações ao wp-config.php
-echo "define('JWT_AUTH_SECRET_KEY', '$(openssl rand -base64 64)');" >> /var/www/html/wp-config.php
-echo "define('JWT_AUTH_CORS_ENABLE', true);" >> /var/www/html/wp-config.php
-echo "define('FS_METHOD', 'direct');" >> /var/www/html/wp-config.php
 
 # 🕒 Aguardar MySQL estar pronto
 echo "⏳ Aguardando MySQL estar pronto..."
@@ -111,7 +96,7 @@ if ! wp core is-installed --allow-root; then
         --title="Meu Site WordPress" \
         --admin_user="$WORDPRESS_USER" \
         --admin_password="$WORDPRESS_PWD" \
-        --admin_email="admin@example.com" \
+        --admin_email="$WORDPRESS_MAIL" \
         --allow-root
     echo "✔️ WordPress instalado com sucesso!"
 else

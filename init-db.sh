@@ -7,6 +7,15 @@ if [ -f .env ]; then
   export $(grep -v '^#' .env | xargs)
 fi
 
+if [ -f uploads.ini ]; then
+  sed -i "s/^memory_limit.*/memory_limit = ${WP_MEMORY_LIMIT}/" uploads.ini
+  sed -i "s/^upload_max_filesize.*/upload_max_filesize = ${WP_MEMORY_LIMIT}/" uploads.ini
+  sed -i "s/^post_max_size.*/post_max_size = ${WP_MEMORY_LIMIT}/" uploads.ini
+  echo "uploads.ini atualizado com valores do .env"
+else
+  echo "uploads.ini não encontrado."
+fi
+
 # Verificar se o banco de dados já existe
 if ! mysql -h"$WORDPRESS_DB_HOST" -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" -e "USE $WORDPRESS_DB_NAME"; then
   echo "Banco de dados '$WORDPRESS_DB_NAME' não existe. Criando..."
@@ -36,21 +45,21 @@ else
   echo "Banco de dados já contém tabelas. Pulando importação."
 fi
 
-# Determine o ambiente e a URL de destino
 echo "# Determine o ambiente e a URL de destino"
 
 # Verificar se o domínio atual é diferente de $TARGET_URL antes de substituir
-echo "TARGET_URL: ${TARGET_URL}"
 
 if [ "$ENVIRONMENT" == "local" ]; then
-  echo "Ambiente local detectado. Usando URL padrão: http://localhost:8000/"
-  TARGET_URL="http://localhost:8000/"
+  echo "Ambiente local detectado. Usando URL padrão: http://${LOCALHOST}/"
+  TARGET_URL="http://${LOCALHOST}/"
 else
   echo "Ambiente de produção detectado. Usando URL do banco de dados: $TARGET_URL"
   CURRENT_URL="http://$(wp option get home --allow-root)"
   TARGET_URL="http://${TARGET_URL}/"
 fi
 
+echo "TARGET_URL: ${TARGET_URL}"
+echo "LOCALHOST: ${LOCALHOST}"
 
 # Rodar composer install no plugin bdm-firebase-bff
 echo "Rodando composer install em bdm-firebase-bff..."

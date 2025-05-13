@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libzip-dev \
     ca-certificates \
+    docker-compose \
+    libcurl4-openssl-dev \
     nodejs \
     default-mysql-client \
     npm \
