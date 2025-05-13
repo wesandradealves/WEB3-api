@@ -9,17 +9,16 @@ define('DB_COLLATE', '');
 
 $table_prefix = 'wp_';
 
-// JWT e configurações adicionais
 define('JWT_AUTH_SECRET_KEY', getenv('JWT_AUTH_SECRET_KEY'));
-define('JWT_AUTH_CORS_ENABLE', true);
-define('FS_METHOD', 'direct');
+define('JWT_AUTH_CORS_ENABLE', getenv('JWT_AUTH_CORS_ENABLE'));
+define('FS_METHOD', getenv('FS_METHOD'));
 
 define('WP_DEBUG', getenv('WP_DEBUG'));
 define('WP_DEBUG_DISPLAY', getenv('WP_DEBUG_DISPLAY'));
-define('WP_MEMORY_LIMIT', '256M');
-define('WP_MAX_MEMORY_LIMIT', '512M');
-define('WP_DEBUG_LOG', true);
-define('WP_ALLOW_REPAIR', true);
+define('WP_MEMORY_LIMIT', getenv('WP_MEMORY_LIMIT'));
+define('WP_MAX_MEMORY_LIMIT', getenv('WP_MAX_MEMORY_LIMIT'));
+define('WP_DEBUG_LOG', getenv('WP_DEBUG_LOG'));
+define('WP_ALLOW_REPAIR', getenv('WP_ALLOW_REPAIR'));
 
 if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', __DIR__ . '/' );
