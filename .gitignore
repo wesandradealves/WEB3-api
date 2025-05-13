@@ -3,3 +3,4 @@ dist
 package-lock.json
 wp-content
 vendor
+.env
