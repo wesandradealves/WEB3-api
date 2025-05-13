@@ -52,11 +52,11 @@ RUN composer require vlucas/phpdotenv && \
 
 # Ensure proper permissions on the plugin files
 #RUN chown -R www-data:www-data /var/www/html/wp-content/plugins && \
- #   chmod -R 755 /var/www/html/wp-content/plugins
+#   chmod -R 755 /var/www/html/wp-content/plugins
 
 # Ensure proper permissions on the theme files
-RUN chown -R www-data:www-data /var/www/html/wp-content/themes && \
-    chmod -R 755 /var/www/html/wp-content/themes
+#RUN chown -R www-data:www-data /var/www/html/wp-content/themes && \
+#    chmod -R 755 /var/www/html/wp-content/themes
 
 # Copy Plugins in a single command
 COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
