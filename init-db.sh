@@ -36,6 +36,22 @@ else
   echo "Banco de dados já contém tabelas. Pulando importação."
 fi
 
+# Determine o ambiente e a URL de destino
+echo "# Determine o ambiente e a URL de destino"
+
+# Verificar se o domínio atual é diferente de $TARGET_URL antes de substituir
+echo "TARGET_URL: ${TARGET_URL}"
+
+if [ "$ENVIRONMENT" == "local" ]; then
+  echo "Ambiente local detectado. Usando URL padrão: http://localhost:8000/"
+  TARGET_URL="http://localhost:8000/"
+else
+  echo "Ambiente de produção detectado. Usando URL do banco de dados: $TARGET_URL"
+  CURRENT_URL="http://$(wp option get home --allow-root)"
+  TARGET_URL="http://${TARGET_URL}/"
+fi
+
+
 # Rodar composer install no plugin bdm-firebase-bff
 echo "Rodando composer install em bdm-firebase-bff..."
 cd /var/www/html/wp-content/plugins/bdm-firebase-bff

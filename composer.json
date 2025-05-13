@@ -1,11 +1,13 @@
 {
     "name": "wordpress/wordpress",
     "description": "WordPress with Composer",
+    "license": "GPL-2.0-or-later",
     "type": "project",
     "require": {
         "php": "^8.2",
-        "google/analytics-data": "^0.22.2",
-        "johnpbloch/wordpress": "*"
+        "johnpbloch/wordpress-core": "^6.0",
+        "wpackagist-plugin/woocommerce": "*",
+        "vlucas/phpdotenv": "^5.6"
     },
     "repositories": [
         {
@@ -19,19 +21,16 @@
         "allow-plugins": {
             "composer/installers": true,
             "johnpbloch/wordpress-core-installer": true
-        },        
+        },
         "preferred-install": "dist",
         "optimize-autoloader": true
     },
     "extra": {
         "wordpress-install-dir": "/var/www/html",
         "installer-paths": {
-            "/var/www/html/wp-content/plugins/{$name}/": ["type:wordpress-plugin"]
+            "/var/www/html/wp-content/plugins/{$name}/": [
+                "type:wordpress-plugin"
+            ]
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "wp core update-db"
-        ]
     }
 }
