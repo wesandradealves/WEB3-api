@@ -7,15 +7,6 @@ if [ -f .env ]; then
   export $(grep -v '^#' .env | xargs)
 fi
 
-if [ -f uploads.ini ]; then
-  sed -i "s/^memory_limit.*/memory_limit = ${WP_MEMORY_LIMIT}/" uploads.ini
-  sed -i "s/^upload_max_filesize.*/upload_max_filesize = ${WP_MEMORY_LIMIT}/" uploads.ini
-  sed -i "s/^post_max_size.*/post_max_size = ${WP_MEMORY_LIMIT}/" uploads.ini
-  echo "uploads.ini atualizado com valores do .env"
-else
-  echo "uploads.ini não encontrado."
-fi
-
 # Verificar se o banco de dados já existe
 if ! mysql -h"$WORDPRESS_DB_HOST" -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" -e "USE $WORDPRESS_DB_NAME"; then
   echo "Banco de dados '$WORDPRESS_DB_NAME' não existe. Criando..."
