@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'wesan/bdm-firebase-bff',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '1574580ffa0840d62f702f89da9eee0f51827be3',
+        'pretty_version' => '6.7.2',
+        'version' => '6.7.2.0',
+        'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -287,9 +287,9 @@
             'dev_requirement' => false,
         ),
         'wesan/bdm-firebase-bff' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '1574580ffa0840d62f702f89da9eee0f51827be3',
+            'pretty_version' => '6.7.2',
+            'version' => '6.7.2.0',
+            'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
