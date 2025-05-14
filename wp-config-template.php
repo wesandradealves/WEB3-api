@@ -20,6 +20,8 @@ define('WP_MAX_MEMORY_LIMIT', getenv('WP_MAX_MEMORY_LIMIT'));
 define('WP_DEBUG_LOG', getenv('WP_DEBUG_LOG'));
 define('WP_ALLOW_REPAIR', getenv('WP_ALLOW_REPAIR'));
 
+/* That's all, stop editing! Happy publishing. */
+
 if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', __DIR__ . '/' );
 }
