@@ -15,13 +15,25 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 fi
 
 if [ "$ENVIRONMENT" == "local" ]; then
-  TARGET_URL="http://localhost:8000/"
+  TARGET_URL="http://${LOCALHOST}/"
 elif [ "$ENVIRONMENT" == "hml" ]; then
-  TARGET_URL=$WORDPRESS_DOMAIN
+  TARGET_URL="http://${WORDPRESS_DOMAIN}/"
 else
   echo "Ambiente desconhecido: $ENVIRONMENT"
   exit 1
 fi
+
+insert_define() {
+  local key="$1"
+  local value="$2"
+  # Procura apenas por defines não comentados
+  if ! grep -q "^[^#]*define('$key'," "$WPCONFIG"; then
+    echo "➕ Adicionando define('$key', $value) ao wp-config.php"
+    sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\//i define('$key', $value);" "$WPCONFIG"
+  else
+    echo "✔️ $key já existe em wp-config.php, pulando..."
+  fi
+}
 
 echo "✅ WORDPRESS_DB_HOST=$WORDPRESS_DB_HOST"
 echo "✅ WORDPRESS_DB_USER=$WORDPRESS_DB_USER"
@@ -52,6 +64,14 @@ fi
 echo "🧹 Limpando ^M do wp-config.php..."
 sed -i 's/\r$//' "$WPCONFIG"
 
+echo "DEBUG: ENVIRONMENT=$ENVIRONMENT"
+echo "DEBUG: LOCALHOST=$LOCALHOST"
+echo "DEBUG: WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN"
+echo "DEBUG: TARGET_URL=$TARGET_URL"
+
+insert_define "WP_HOME" "'$TARGET_URL'"
+insert_define "WP_SITEURL" "'$TARGET_URL'"
+
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
 sed -i "s/getenv('WORDPRESS_DB_USER')/'${WORDPRESS_DB_USER}'/" "$WPCONFIG"
@@ -67,11 +87,15 @@ sed -i "s/getenv('WP_ALLOW_REPAIR')/'${WP_ALLOW_REPAIR}'/" "$WPCONFIG"
 sed -i "s/getenv('FS_METHOD')/'${FS_METHOD}'/" "$WPCONFIG"
 sed -i "s/getenv('JWT_AUTH_CORS_ENABLE')/'${JWT_AUTH_CORS_ENABLE}'/" "$WPCONFIG"
 
-# Replace placeholders in wp-config.php with environment variables
-sed -i "s/database_name_here/${WORDPRESS_DB_NAME}/" /var/www/html/wp-config.php
-sed -i "s/username_here/${WORDPRESS_DB_USER}/" /var/www/html/wp-config.php
-sed -i "s/password_here/${WORDPRESS_DB_PASSWORD}/" /var/www/html/wp-config.php
-sed -i "s/localhost/${WORDPRESS_DB_HOST}/" /var/www/html/wp-config.php
+if [ ! -f /var/www/html/wp-config.php ]; then
+    cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+
+    # Substituir placeholders apenas se criou do sample
+    sed -i "s/database_name_here/${WORDPRESS_DB_NAME}/" /var/www/html/wp-config.php
+    sed -i "s/username_here/${WORDPRESS_DB_USER}/" /var/www/html/wp-config.php
+    sed -i "s/password_here/${WORDPRESS_DB_PASSWORD}/" /var/www/html/wp-config.php
+    sed -i "s/localhost/${WORDPRESS_DB_HOST}/" /var/www/html/wp-config.php
+fi
 
 # 🕒 Aguardar MySQL estar pronto
 echo "⏳ Aguardando MySQL estar pronto..."
