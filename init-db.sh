@@ -41,16 +41,12 @@ echo "# Determine o ambiente e a URL de destino"
 # Verificar se o domínio atual é diferente de $TARGET_URL antes de substituir
 
 if [ "$ENVIRONMENT" == "local" ]; then
-  echo "Ambiente local detectado. Usando URL padrão: http://${LOCALHOST}/"
   TARGET_URL="http://${LOCALHOST}/"
+  echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
 else
-  echo "Ambiente de produção detectado. Usando URL do banco de dados: $TARGET_URL"
-  CURRENT_URL="http://$(wp option get home --allow-root)"
-  TARGET_URL="http://${TARGET_URL}/"
+  TARGET_URL="http://${WORDPRESS_DOMAIN}/"
+  echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
 fi
-
-echo "TARGET_URL: ${TARGET_URL}"
-echo "LOCALHOST: ${LOCALHOST}"
 
 # Rodar composer install no plugin bdm-firebase-bff
 echo "Rodando composer install em bdm-firebase-bff..."
