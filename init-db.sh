@@ -42,13 +42,13 @@ echo "# Determine o ambiente e a URL de destino"
 
 if [ "$ENVIRONMENT" == "local" ]; then
   TARGET_URL="http://${LOCALHOST}/"
-  echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
+  echo "Ambiente local detectado. Usando URL: $TARGET_URL"
 else
   TARGET_URL="http://${WORDPRESS_DOMAIN}/"
   echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
 
-  echo "Executando wp search-replace de $LOCALHOST para $TARGET_URL (dry-run)..."
-  wp search-replace '$LOCALHOST' '$TARGET_URL' --all-tables --allow-root
+  echo "Executando wp search-replace de http://$LOCALHOST para http://$WORDPRESS_DOMAIN ..."
+  wp search-replace "http://$LOCALHOST" "http://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
 fi
 
 # Rodar composer install no plugin bdm-firebase-bff
