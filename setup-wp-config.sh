@@ -83,7 +83,7 @@ sed -i "s/getenv('JWT_AUTH_SECRET_KEY')/'${JWT_AUTH_SECRET_KEY}'/" "$WPCONFIG"
 sed -i "s/getenv('WP_MEMORY_LIMIT')/'${WP_MEMORY_LIMIT}'/" "$WPCONFIG"
 sed -i "s/getenv('WP_MAX_MEMORY_LIMIT')/'${WP_MAX_MEMORY_LIMIT}'/" "$WPCONFIG"
 sed -i "s/getenv('WP_DEBUG_LOG')/${WP_DEBUG_LOG}/" "$WPCONFIG"
-sed -i "s/getenv('WP_ALLOW_REPAIR')/'${WP_ALLOW_REPAIR}'/" "$WPCONFIG"
+sed -i "s/getenv('WP_ALLOW_REPAIR')/${WP_ALLOW_REPAIR}/" "$WPCONFIG"
 sed -i "s/getenv('FS_METHOD')/'${FS_METHOD}'/" "$WPCONFIG"
 sed -i "s/getenv('JWT_AUTH_CORS_ENABLE')/'${JWT_AUTH_CORS_ENABLE}'/" "$WPCONFIG"
 
