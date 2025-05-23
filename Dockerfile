@@ -68,6 +68,7 @@ COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-a
 COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
 COPY ./quick-featured-images /var/www/html/wp-content/plugins/quick-featured-images
 COPY ./bdm-firebase-bff /var/www/html/wp-content/plugins/bdm-firebase-bff
+COPY ./wp-content/uploads /var/www/html/wp-content/uploads
 
 # Build SCSS do plugin
 #WORKDIR /var/www/html/wp-content/plugins/bdm-digital-payment-gateway
