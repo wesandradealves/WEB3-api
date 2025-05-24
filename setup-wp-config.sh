@@ -15,12 +15,24 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 fi
 
 if [ "$ENVIRONMENT" == "local" ]; then
-  TARGET_URL="http://${LOCALHOST}/"
-elif [ "$ENVIRONMENT" == "hml" ]; then
-  TARGET_URL="http://${WORDPRESS_DOMAIN}/"
+  if [ "$SSL" == "true" ]; then
+    PROTOCOL="https"
+  else
+    PROTOCOL="http"
+  fi
+  TARGET_URL="${PROTOCOL}://${LOCALHOST}/"
+  echo "Ambiente local detectado. Usando URL: $TARGET_URL"
 else
-  echo "Ambiente desconhecido: $ENVIRONMENT"
-  exit 1
+  if [ "$SSL" == "true" ]; then
+    PROTOCOL="https"
+  else
+    PROTOCOL="http"
+  fi
+  TARGET_URL="${PROTOCOL}://${WORDPRESS_DOMAIN}/"
+  echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
+
+  echo "Executando wp search-replace de ${PROTOCOL}://$LOCALHOST para ${PROTOCOL}://$WORDPRESS_DOMAIN ..."
+  wp search-replace "${PROTOCOL}://$LOCALHOST" "${PROTOCOL}://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
 fi
 
 insert_define() {
