@@ -523,6 +523,23 @@ function my_custom_block_category($categories, $post) {
 }
 add_filter('block_categories_all', 'my_custom_block_category', 10, 2);
 
+// Api Health
+
+function api_health_check() {
+    return rest_ensure_response(['status' => 'ok']);
+}
+
+function register_api_health_route() {
+    register_rest_route('custom/v1', '/api-health', array(
+        'methods'  => 'GET',
+        'callback' => 'api_health_check',
+        'permission_callback' => '__return_true', // Pública, sem autenticação
+    ));
+}
+add_action('rest_api_init', 'register_api_health_route');
+
+// 
+
 function my_acf_blocks_init() {
     if( function_exists('acf_register_block_type') ) {
         $blocks = [
