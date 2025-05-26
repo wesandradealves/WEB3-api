@@ -693,6 +693,26 @@ function my_acf_blocks_init() {
 }
 add_action('acf/init', 'my_acf_blocks_init');
 
+// Filtro para a api
+
+add_filter('rest_post_dispatch', function ($response) {
+    if (is_wp_error($response)) {
+        return $response;
+    }
+    $data = $response->get_data();
+    $json = wp_json_encode($data);
+
+    // Substitui todas as ocorrências do domínio antigo pelo novo
+    $json = str_replace(
+        'http://177.71.161.215:8000',
+        'https://dev-bdm.dourado.cash:8000',
+        $json
+    );
+
+    $response->set_data(json_decode($json, true));
+    return $response;
+}, 10, 1);
+
 // Colunas personalizadas para o admin
 
 // Adicionar uma nova coluna para o campo customizado "rating"
