@@ -57,8 +57,8 @@ else
   TARGET_URL="${PROTOCOL}://${WORDPRESS_DOMAIN}/"
   echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
 
-  echo "Executando wp search-replace de ${PROTOCOL}://$LOCALHOST para ${PROTOCOL}://$WORDPRESS_DOMAIN ..."
-  wp search-replace "${PROTOCOL}://$LOCALHOST" "${PROTOCOL}://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
+  echo "Executando wp search-replace de http://$LOCALHOST para ${PROTOCOL}://$WORDPRESS_DOMAIN ..."
+  wp search-replace "http://$LOCALHOST" "${PROTOCOL}://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
 fi
 
 # Rodar composer install no plugin bdm-firebase-bff
