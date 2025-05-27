@@ -44,6 +44,18 @@ insert_define() {
   fi
 }
 
+update_define() {
+  local key="$1"
+  local value="$2"
+  if grep -q "^[^#]*define('$key'," "$WPCONFIG"; then
+    echo "🔄 Atualizando define('$key') no wp-config.php"
+    sed -i "s|^.*define('$key',.*);|define('$key', $value);|" "$WPCONFIG"
+  else
+    echo "➕ Adicionando define('$key', $value) ao wp-config.php"
+    sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\//i define('$key', $value);" "$WPCONFIG"
+  fi
+}
+
 echo "✅ WORDPRESS_DB_HOST=$WORDPRESS_DB_HOST"
 echo "✅ WORDPRESS_DB_USER=$WORDPRESS_DB_USER"
 echo "✅ WORDPRESS_DB_PASSWORD=$WORDPRESS_DB_PASSWORD"
@@ -73,13 +85,21 @@ fi
 echo "🧹 Limpando ^M do wp-config.php..."
 sed -i 's/\r$//' "$WPCONFIG"
 
+if [ "$ENVIRONMENT" != "local" ] && [ -n "$PROXY" ]; then
+  FINAL_URL="$PROXY"
+else
+  FINAL_URL="$TARGET_URL"
+fi
+
+update_define "WP_HOME" "'$FINAL_URL'"
+update_define "WP_SITEURL" "'$FINAL_URL'"
+
+echo "🌐 WP_HOME/WP_SITEURL definido como: $FINAL_URL"
+
 echo "DEBUG: ENVIRONMENT=$ENVIRONMENT"
 echo "DEBUG: LOCALHOST=$LOCALHOST"
 echo "DEBUG: WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN"
 echo "DEBUG: TARGET_URL=$TARGET_URL"
-
-insert_define "WP_HOME" "'$TARGET_URL'"
-insert_define "WP_SITEURL" "'$TARGET_URL'"
 
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
