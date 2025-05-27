@@ -15,21 +15,12 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 fi
 
 if [ "$ENVIRONMENT" == "local" ]; then
-  if [ "$SSL" == "true" ]; then
-    PROTOCOL="https"
-  else
-    PROTOCOL="http"
-  fi
-  TARGET_URL="${PROTOCOL}://${LOCALHOST}/"
-  echo "Ambiente local detectado. Usando URL: $TARGET_URL"
+  TARGET_URL="http://${LOCALHOST}/"
+elif [ "$ENVIRONMENT" == "hml" ]; then
+  TARGET_URL="http://${WORDPRESS_DOMAIN}/"
 else
-  if [ "$SSL" == "true" ]; then
-    PROTOCOL="https"
-  else
-    PROTOCOL="http"
-  fi
-  TARGET_URL="${PROTOCOL}://${WORDPRESS_DOMAIN}/"
-  echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
+  echo "Ambiente desconhecido: $ENVIRONMENT"
+  exit 1
 fi
 
 insert_define() {
@@ -41,18 +32,6 @@ insert_define() {
     sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\//i define('$key', $value);" "$WPCONFIG"
   else
     echo "✔️ $key já existe em wp-config.php, pulando..."
-  fi
-}
-
-update_define() {
-  local key="$1"
-  local value="$2"
-  if grep -q "^[^#]*define('$key'," "$WPCONFIG"; then
-    echo "🔄 Atualizando define('$key') no wp-config.php"
-    sed -i "s|^.*define('$key',.*);|define('$key', $value);|" "$WPCONFIG"
-  else
-    echo "➕ Adicionando define('$key', $value) ao wp-config.php"
-    sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\//i define('$key', $value);" "$WPCONFIG"
   fi
 }
 
@@ -85,21 +64,13 @@ fi
 echo "🧹 Limpando ^M do wp-config.php..."
 sed -i 's/\r$//' "$WPCONFIG"
 
-if [ "$ENVIRONMENT" != "local" ] && [ -n "$PROXY" ]; then
-  FINAL_URL="$PROXY"
-else
-  FINAL_URL="$TARGET_URL"
-fi
-
-update_define "WP_HOME" "'$FINAL_URL'"
-update_define "WP_SITEURL" "'$FINAL_URL'"
-
-echo "🌐 WP_HOME/WP_SITEURL definido como: $FINAL_URL"
-
 echo "DEBUG: ENVIRONMENT=$ENVIRONMENT"
 echo "DEBUG: LOCALHOST=$LOCALHOST"
 echo "DEBUG: WORDPRESS_DOMAIN=$WORDPRESS_DOMAIN"
 echo "DEBUG: TARGET_URL=$TARGET_URL"
+
+insert_define "WP_HOME" "'$TARGET_URL'"
+insert_define "WP_SITEURL" "'$TARGET_URL'"
 
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
