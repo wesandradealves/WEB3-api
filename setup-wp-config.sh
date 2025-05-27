@@ -30,13 +30,6 @@ else
   fi
   TARGET_URL="${PROTOCOL}://${WORDPRESS_DOMAIN}/"
   echo "Ambiente de produção detectado. Usando URL: $TARGET_URL"
-
-  echo "Executando wp search-replace de http://$LOCALHOST para ${PROTOCOL}://$WORDPRESS_DOMAIN ..."
-  wp search-replace "http://$LOCALHOST" "${PROTOCOL}://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
-
-  echo "Executando wp search-replace de ${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads para ${PROXY}/wp-content/uploads ..."
-  wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_posts --include-columns=guid,post_content --report-changed-only --allow-root
-  wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_postmeta --report-changed-only --allow-root
 fi
 
 insert_define() {
