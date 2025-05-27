@@ -59,34 +59,6 @@ else
 
   echo "Executando wp search-replace de http://$LOCALHOST para ${PROTOCOL}://$WORDPRESS_DOMAIN ..."
   wp search-replace "http://$LOCALHOST" "${PROTOCOL}://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
-  
-  wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_posts --include-columns=guid,post_content --report-changed-only --allow-root
-  wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_postmeta --report-changed-only --allow-root
-
-  OLD_URL="${PROTOCOL}://${WORDPRESS_DOMAIN}"
-  NEW_URL="${PROXY}"
-  
-  echo "🎯 Substituindo GUIDs das mídias de $OLD_URL para $NEW_URL..."
-  
-  wp db query "
-  UPDATE wp_posts 
-  SET guid = REPLACE(guid, '${OLD_URL}', '${NEW_URL}') 
-  WHERE post_type = 'attachment' AND guid LIKE '${OLD_URL}%';
-  " --allow-root
-
-  echo "✅ GUIDs de mídias atualizados com sucesso!"
-
-  echo "🔍 Substituindo também nos metadados das mídias..."
-
-  wp db query "
-  UPDATE wp_postmeta 
-  SET meta_value = REPLACE(meta_value, '${OLD_URL}', '${NEW_URL}') 
-  WHERE post_id IN (
-    SELECT ID FROM wp_posts WHERE post_type = 'attachment'
-  ) AND meta_value LIKE '%${OLD_URL}%';
-  " --allow-root
-
-  echo "✅ Metadados de mídias atualizados também!"
 fi
 
 # Rodar composer install no plugin bdm-firebase-bff
