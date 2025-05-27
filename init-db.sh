@@ -63,10 +63,10 @@ else
   wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_posts --include-columns=guid,post_content --report-changed-only --allow-root
   wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_postmeta --report-changed-only --allow-root
 
-  echo "🎯 Substituindo GUIDs das mídias de $OLD_URL para $NEW_URL..."
-
   OLD_URL="${PROTOCOL}://${WORDPRESS_DOMAIN}"
   NEW_URL="${PROXY}"
+  
+  echo "🎯 Substituindo GUIDs das mídias de $OLD_URL para $NEW_URL..."
   
   wp db query "
   UPDATE wp_posts 
@@ -77,7 +77,6 @@ else
   echo "✅ GUIDs de mídias atualizados com sucesso!"
 
   echo "🔍 Substituindo também nos metadados das mídias..."
-
 
   wp db query "
   UPDATE wp_postmeta 
