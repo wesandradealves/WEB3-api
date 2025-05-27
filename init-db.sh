@@ -59,6 +59,9 @@ else
 
   echo "Executando wp search-replace de http://$LOCALHOST para ${PROTOCOL}://$WORDPRESS_DOMAIN ..."
   wp search-replace "http://$LOCALHOST" "${PROTOCOL}://$WORDPRESS_DOMAIN" --all-tables --report-changed-only --allow-root
+  
+  wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_posts --include-columns=guid,post_content --report-changed-only --allow-root
+  wp search-replace "${PROTOCOL}://$WORDPRESS_DOMAIN/wp-content/uploads" "${PROXY}/wp-content/uploads" wp_postmeta --report-changed-only --allow-root
 fi
 
 # Rodar composer install no plugin bdm-firebase-bff
