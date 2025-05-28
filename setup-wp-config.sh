@@ -136,7 +136,7 @@ chmod 664 "$WPCONFIG"
 echo "📄 Substituir o valor hardcoded do Access-Control-Allow-Origin pelo FRONTEND_DOMAIN do .env"
 
 if [ -n "$FRONTEND_DOMAIN" ]; then
-  sed -i "s#header('Access-Control-Allow-Origin:.*');#header('Access-Control-Allow-Origin: $FRONTEND_DOMAIN');#g" /var/www/html/wp-content/themes/bdm-digital-website-api-theme/functions.php
+  sed -i "s#header([\"']Access-Control-Allow-Origin:[^\"']*[\"']);#header('Access-Control-Allow-Origin: $FRONTEND_DOMAIN');#g" /var/www/html/wp-content/themes/bdm-digital-website-api-theme/functions.php
 fi
 
 # 🔍 Mostrar últimas linhas do wp-config.php (debug)
