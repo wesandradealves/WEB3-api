@@ -143,6 +143,21 @@ fi
 echo "📄 Conteúdo final do wp-config.php:"
 tail -n 20 "$WPCONFIG"
 
+# Adiciona regras para Authorization no .htaccess se não existirem
+HTACCESS="/var/www/html/.htaccess"
+AUTH_RULES="RewriteCond %{HTTP:Authorization} ^(.*)\nRewriteRule ^(.*) - [E=HTTP_AUTHORIZATION:%1]"
+
+if [ -f "$HTACCESS" ]; then
+  if ! grep -q "HTTP_AUTHORIZATION" "$HTACCESS"; then
+    # Insere após a linha 'RewriteEngine On' ou no início se não existir
+    if grep -q "RewriteEngine On" "$HTACCESS"; then
+      sed -i "/RewriteEngine On/a $(echo -e "$AUTH_RULES")" "$HTACCESS"
+    else
+      echo -e "RewriteEngine On\n$AUTH_RULES\n$(cat $HTACCESS)" > $HTACCESS
+    fi
+  fi
+fi
+
 # 🚀 Inicializar Apache
 echo "====================================="
 echo "✅ Ambiente WordPress preparado!"
