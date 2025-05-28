@@ -1,25 +1,5 @@
 <?php
 
-// Proteçao de CORS
-add_action( 'init', function() {
-    $frontend_domain = getenv('FRONTEND_DOMAIN') ?: 'https://dev-bdm.dourado.cash';
-    // Permite requisições apenas do domínio desejado
-    if ( isset( $_SERVER['HTTP_ORIGIN'] ) && $_SERVER['HTTP_ORIGIN'] === $frontend_domain ) {
-        header( 'Access-Control-Allow-Origin: ' . $frontend_domain );
-        header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE' );
-        header( 'Access-Control-Allow-Credentials: true' );
-        header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
-    }
-    // Permite preflight requests (OPTIONS)
-    if ( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' ) {
-        header( 'Access-Control-Allow-Origin: ' . $frontend_domain );
-        header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE' );
-        header( 'Access-Control-Allow-Credentials: true' );
-        header( 'Access-Control-Allow-Headers: Authorization, Content-Type' );
-        exit;
-    }
-} );
-
 // Renderizar estilos no admin
 function wp_before_admin_bar_render()
 {
@@ -557,20 +537,6 @@ function register_api_health_route() {
     ));
 }
 add_action('rest_api_init', 'register_api_health_route');
-
-add_action('rest_api_init', function () {
-    $frontend_domain = getenv('FRONTEND_DOMAIN');
-    if ($frontend_domain) {
-        header('Access-Control-Allow-Origin: ' . $frontend_domain);
-    }
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: Authorization, Content-Type');
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        status_header(200);
-        exit();
-    }
-});
 
 // 
 
