@@ -71,6 +71,7 @@ echo "DEBUG: TARGET_URL=$TARGET_URL"
 
 insert_define "WP_HOME" "'$TARGET_URL'"
 insert_define "WP_SITEURL" "'$TARGET_URL'"
+insert_define "WP_REDIS_HOST" "'${REDIS_HOST:-redis}'"
 
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
