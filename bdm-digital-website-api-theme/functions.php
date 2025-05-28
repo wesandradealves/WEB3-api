@@ -543,25 +543,6 @@ function my_custom_block_category($categories, $post) {
 }
 add_filter('block_categories_all', 'my_custom_block_category', 10, 2);
 
-add_filter('rest_pre_echo_response', function ($response) {
-    if (is_string($response)) {
-        $response = str_replace(
-            'http://177.71.161.215:8000',
-            'https://dev-bdm.dourado.cash:8000',
-            $response
-        );
-    } elseif (is_array($response) || is_object($response)) {
-        $json = wp_json_encode($response);
-        $json = str_replace(
-            'http://177.71.161.215:8000',
-            'https://dev-bdm.dourado.cash:8000',
-            $json
-        );
-        $response = json_decode($json, true);
-    }
-    return $response;
-}, 10, 1);
-
 // Api Health
 
 function api_health_check() {
@@ -855,3 +836,14 @@ function expose_gutenberg_blocks_to_rest($response, $post, $request) {
 }
 
 add_filter('rest_prepare_page', 'expose_gutenberg_blocks_to_rest', 10, 3);
+
+add_action('rest_api_init', function () {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Headers: Authorization, Content-Type');
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        status_header(200);
+        exit();
+    }
+});
