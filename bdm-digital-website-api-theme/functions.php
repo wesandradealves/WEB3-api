@@ -523,6 +523,42 @@ function my_custom_block_category($categories, $post) {
 }
 add_filter('block_categories_all', 'my_custom_block_category', 10, 2);
 
+add_filter('rest_pre_echo_response', function ($response) {
+    if (is_string($response)) {
+        $response = str_replace(
+            'http://177.71.161.215:8000',
+            'https://dev-bdm.dourado.cash:8000',
+            $response
+        );
+    } elseif (is_array($response) || is_object($response)) {
+        $json = wp_json_encode($response);
+        $json = str_replace(
+            'http://177.71.161.215:8000',
+            'https://dev-bdm.dourado.cash:8000',
+            $json
+        );
+        $response = json_decode($json, true);
+    }
+    return $response;
+}, 10, 1);
+
+// Api Health
+
+function api_health_check() {
+    return rest_ensure_response(['status' => 'ok']);
+}
+
+function register_api_health_route() {
+    register_rest_route('custom/v1', '/api-health', array(
+        'methods'  => 'GET',
+        'callback' => 'api_health_check',
+        'permission_callback' => '__return_true', // Pública, sem autenticação
+    ));
+}
+add_action('rest_api_init', 'register_api_health_route');
+
+// 
+
 function my_acf_blocks_init() {
     if( function_exists('acf_register_block_type') ) {
         $blocks = [
@@ -675,6 +711,26 @@ function my_acf_blocks_init() {
     }
 }
 add_action('acf/init', 'my_acf_blocks_init');
+
+// Filtro para a api
+
+add_filter('rest_post_dispatch', function ($response) {
+    if (is_wp_error($response)) {
+        return $response;
+    }
+    $data = $response->get_data();
+    $json = wp_json_encode($data);
+
+    // Substitui todas as ocorrências do domínio antigo pelo novo
+    $json = str_replace(
+        'http://177.71.161.215:8000',
+        'https://dev-bdm.dourado.cash:8000',
+        $json
+    );
+
+    $response->set_data(json_decode($json, true));
+    return $response;
+}, 10, 1);
 
 // Colunas personalizadas para o admin
 
