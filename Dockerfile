@@ -113,7 +113,7 @@ RUN dos2unix /usr/local/bin/init-db.sh && chmod +x /usr/local/bin/init-db.sh
 
 # Configuração Apache
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
+RUN a2enmod rewrite deflate headers filter
 
 # Copiar php.ini customizado para o container
 COPY php.ini /usr/local/etc/php/php.ini
