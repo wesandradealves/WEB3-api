@@ -22,10 +22,9 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     npm \
     dos2unix \
-    php-opcache \
     redis-server \
   && docker-php-ext-configure gd \
-  && docker-php-ext-install gd zip soap \
+  && docker-php-ext-install gd zip soap opcache \
   && rm -rf /var/lib/apt/lists/*
 
 # Composer
