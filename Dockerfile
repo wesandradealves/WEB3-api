@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client \
     npm \
     dos2unix \
+    php-opcache \
+    redis-server \
   && docker-php-ext-configure gd \
   && docker-php-ext-install gd zip soap \
   && rm -rf /var/lib/apt/lists/*
@@ -68,6 +70,7 @@ COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-a
 COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
 COPY ./quick-featured-images /var/www/html/wp-content/plugins/quick-featured-images
 COPY ./bdm-firebase-bff /var/www/html/wp-content/plugins/bdm-firebase-bff
+COPY ./redis-cache /var/www/html/wp-content/plugins/redis-cache
 COPY ./wp-content/uploads /var/www/html/wp-content/uploads
 
 # Build SCSS do plugin
@@ -110,9 +113,12 @@ RUN dos2unix /usr/local/bin/init-db.sh && chmod +x /usr/local/bin/init-db.sh
 
 # Configuração Apache
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
+RUN a2enmod rewrite deflate headers filter
+
+# Copiar php.ini customizado para o container
+COPY php.ini /usr/local/etc/php/php.ini
 
 EXPOSE 80
 
 # Entrypoint final
-ENTRYPOINT ["/bin/bash", "-c", "/usr/local/bin/setup-wp-config.sh && docker-entrypoint.sh apache2-foreground"]
+ENTRYPOINT ["/bin/bash", "-c", "service redis-server start && /usr/local/bin/setup-wp-config.sh && docker-entrypoint.sh apache2-foreground"]

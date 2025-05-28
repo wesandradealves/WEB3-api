@@ -10,10 +10,12 @@ services:
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
       WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      REDIS_HOST: redis
     env_file: 
       - .env
     depends_on:
       - mysql
+      - redis
     volumes:
       - /var/www/html
       - ./bdm-digital-website-api-theme:/var/www/html/wp-content/themes/bdm-digital-website-api-theme
@@ -26,6 +28,7 @@ services:
       - ./wp-rest-api-controller:/var/www/html/wp-content/plugins/wp-rest-api-controller
       - ./bdm-firebase-bff:/var/www/html/wp-content/plugins/bdm-firebase-bff
       - ./jwt-authentication-for-wp-rest-api:/var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
+      - ./redis-cache:/var/www/html/wp-content/plugins/redis-cache
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./wp-content:/var/www/html/wp-content    
       - ./docs:/var/www/html/docs   
@@ -41,6 +44,13 @@ services:
     volumes:
       - db_data:/var/lib/mysql 
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     links:
@@ -54,3 +64,4 @@ services:
       - .env
 volumes:
   db_data:
+  redis_data:
