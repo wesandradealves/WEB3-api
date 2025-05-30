@@ -9,18 +9,34 @@
 
 if (!defined('ABSPATH')) exit;
 
-add_filter('rest_request_before_callbacks', function($response, $handler, $request) {
-    if ($request instanceof WP_REST_Request && empty($request->get_param('lang'))) {
-        $lang = null;
-        if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
-            $lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
-        } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            $lang = substr($langs[0], 0, 2);
+add_action('rest_api_init', function() {
+    $available_langs = function_exists('pll_languages_list') ? pll_languages_list() : ['pt'];
+
+    $header_lang = null;
+    if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
+        $header_lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
+    } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        $header_lang = substr($langs[0], 0, 2);
+    }
+
+    if ($header_lang && in_array($header_lang, $available_langs, true)) {
+        if (function_exists('pll_switch_lang')) {
+            pll_switch_lang($header_lang);
         }
-        if ($lang && in_array($lang, ['pt', 'en'])) {
-            $request->set_param('lang', $lang);
+        $post_types = get_post_types(['public' => true], 'names');
+        foreach ($post_types as $type) {
+            add_filter("rest_{$type}_query", function($args) use ($header_lang, $type) {
+                error_log("REST Query for type: {$type} | lang: {$header_lang}");
+                $args['lang'] = $header_lang;
+                return $args;
+            });
         }
     }
-    return $response;
-}, 0, 3);
+}, 0);
+
+
+add_action('rest_api_init', function () {
+    $lang = $_SERVER['HTTP_X_LANGUAGE'] ?? 'not set';
+    error_log('X-Language: ' . $lang);
+});

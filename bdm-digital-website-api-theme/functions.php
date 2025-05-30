@@ -190,7 +190,7 @@ function create_homepage_on_activation() {
     if (!$query->have_posts()) {
         // Cria a página
         $homepage_id = wp_insert_post([
-            'post_title'   => 'Documentation',
+            'post_title'   => 'Home',
             'post_content' => '',
             'post_status'  => 'publish',
             'post_type'    => 'page',
@@ -812,9 +812,30 @@ add_action('rest_pre_serve_request', function () {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: Authorization, Content-Type');
+    header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Language');
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         status_header(200);
         exit();
     }
 });
+
+// Endpoint para retornar as línguas cadastradas no Polylang
+if (!function_exists('bdm_get_available_languages')) {
+    function bdm_get_available_languages() {
+        if (function_exists('pll_languages_list')) {
+            $langs = pll_languages_list(['fields' => 'slug']);
+            return rest_ensure_response($langs);
+        } else {
+            return rest_ensure_response(['pt']); 
+        }
+    }
+}
+
+function register_languages_endpoint() {
+    register_rest_route('custom/v1', '/languages', array(
+        'methods' => 'GET',
+        'callback' => 'bdm_get_available_languages',
+        'permission_callback' => '__return_true',
+    ));
+}
+add_action('rest_api_init', 'register_languages_endpoint');
