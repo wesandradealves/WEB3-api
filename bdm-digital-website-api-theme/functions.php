@@ -1,5 +1,7 @@
 <?php
 
+header('Content-Type: application/json; charset=utf-8');
+
 // Renderizar estilos no admin
 function wp_before_admin_bar_render()
 {
