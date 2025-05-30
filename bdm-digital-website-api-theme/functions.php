@@ -176,115 +176,46 @@ function add_menu_link_class($atts, $item, $args)
     return $atts;
 }
 
-// Expor ACF fields na Rest API
-
-function acf_to_rest_api($response, $post, $request)
-{
-    if (function_exists('get_fields') && isset($post->ID)) {
-        $fields = get_fields($post->ID); // Get all ACF fields for the post
-        $field_groups = acf_get_field_groups(['post_id' => $post->ID]); // Get all field groups for the post
-
-        $grouped_fields = [];
-        $used_fields = []; // Track fields that have been grouped
-
-        foreach ($field_groups as $group) {
-            $group_name = $group['title']; // Field group name
-            $group_key = $group['key'];   // Field group key
-            $group_fields = [];
-
-            foreach ($fields as $key => $value) {
-                $field = get_field_object($key); // Get field object for each field
-                if ($field && isset($field['group']) && $field['group'] === $group_key) {
-                    $group_fields[$key] = $value; // Add field to the group if it matches
-                    $used_fields[] = $key; // Mark the field as used
-                }
-            }
-
-            if (!empty($group_fields)) {
-                $grouped_fields[$group_name] = $group_fields; // Add non-empty groups to the response
-            }
-        }
-
-        // Remove fields that have already been grouped
-        foreach ($used_fields as $used_field) {
-            unset($fields[$used_field]);
-        }
-
-        // Add grouped fields to the response
-        $response->data['acf'] = $grouped_fields;
-    }
-
-    return $response;
-}
-
-// Supoerte a image field nativa / featured image na rest api
-
-function ws_register_images_field()
-{
-    register_rest_field(
-        'post',
-        'images',
-        array(
-            'get_callback' => 'ws_get_images_urls',
-            'update_callback' => null,
-            'schema' => null,
-        )
-    );
-}
-
-function ws_get_images_urls($object, $field_name, $request)
-{
-    $medium = wp_get_attachment_image_src(get_post_thumbnail_id($object->id), 'medium');
-    $medium_url = $medium['0'];
-
-    $large = wp_get_attachment_image_src(get_post_thumbnail_id($object->id), 'large');
-    $large_url = $large['0'];
-
-    return array(
-        'medium' => $medium_url,
-        'large' => $large_url,
-    );
-}
-
 // Executar ao ativar otema
 
-function create_homepage_on_activation()
-{
-    // Usar WP_Query para verificar se a página com o título "Home" já existe
+function create_homepage_on_activation() {
+    // Checa se já existe uma página "Home"
     $query = new WP_Query([
-        'post_type'   => 'page',
-        'post_status' => 'publish',
-        'title'       => 'Home', // Procurando pelo título 'Home'
-        'posts_per_page' => 1,  // Limita a busca a um resultado
+        'post_type'      => 'page',
+        'post_status'    => 'publish',
+        'title'          => 'Home',
+        'posts_per_page' => 1,
     ]);
 
     if (!$query->have_posts()) {
+        // Cria a página
         $homepage_id = wp_insert_post([
-            'post_title' => 'Documentation',
+            'post_title'   => 'Documentation',
             'post_content' => '',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_author' => 1,
-            'post_name' => 'home',
-            'page_template' => 'templates/swagger.php'
+            'post_status'  => 'publish',
+            'post_type'    => 'page',
+            'post_author'  => 1,
+            'post_name'    => 'home',
         ]);
-
-        update_option('show_on_front', 'page');
-        update_option('page_on_front', $homepage_id);
-
-        flush_rewrite_rules();
+        // Seta o template
+        if ($homepage_id && !is_wp_error($homepage_id)) {
+            update_post_meta($homepage_id, '_wp_page_template', 'templates/swagger.php');
+            update_option('show_on_front', 'page');
+            update_option('page_on_front', $homepage_id);
+            flush_rewrite_rules();
+        }
     }
 
-    // Adicionar suporte a tag title e custom logo
-
+    // Suporte à logo/title
     add_theme_support('custom-logo', array(
-        'width' => 200, 
-        'height' => 100,  
+        'width' => 200,
+        'height' => 100,
         'flex-width' => true,
         'flex-height' => true,
     ));
     add_theme_support('title-tag');
 }
+add_action('after_switch_theme', 'create_homepage_on_activation');
 
 // Remoção da pãgina home/swagger ao desativar o tema
 
@@ -323,62 +254,6 @@ function theme_favicon()
     }
 }
 
-// Rest Services
-
-function get_menu_by_slug($request)
-{
-    $menu_slug = $request->get_param('slug');
-    $menu = wp_get_nav_menu_object($menu_slug);
-
-    if (!$menu) {
-        return new WP_Error('menu_not_found', 'Menu not found', array('status' => 404));
-    }
-
-    $menu_items = wp_get_nav_menu_items($menu->term_id);
-
-    if (empty($menu_items)) {
-        return rest_ensure_response([]);
-    }
-
-    $menu_tree = [];
-    $items_by_id = [];
-
-    foreach ($menu_items as $item) {
-        $item->children = [];
-        $item->acf = function_exists('get_fields') ? get_fields($item->ID) : null; // Add ACF fields
-        $items_by_id[$item->ID] = $item;
-    }
-
-    foreach ($menu_items as $item) {
-        if ($item->menu_item_parent == 0) {
-            $menu_tree[] = $item; 
-        } else {
-            if (isset($items_by_id[$item->menu_item_parent])) {
-                $items_by_id[$item->menu_item_parent]->children[] = $item;
-            }
-        }
-    }
-
-    return rest_ensure_response($menu_tree);
-}
-
-function register_menu_slug_endpoint()
-{
-    register_rest_route('custom/v1', '/menus', array(
-        'methods' => 'GET',
-        'callback' => 'get_menu_by_slug',
-        'args' => array(
-            'slug' => array(
-                'required' => true,
-                'validate_callback' => function ($param) {
-                    return is_string($param);
-                }
-            )
-        ),
-        'permission_callback' => '__return_true',
-    ));
-}
-
 // Fields no Form de Settings
 function settings_form($wp_customize)
 {
@@ -406,53 +281,6 @@ function settings_form($wp_customize)
     }
 }
 
-function register_settings_endpoint()
-{
-    register_rest_route('custom/v1', '/settings', array(
-        'methods' => 'GET',
-        'callback' => 'settings',
-        'permission_callback' => '__return_true', 
-    ));
-}
-
-function settings()
-{
-    $response = array(
-        'social_networks' => array(
-            array(
-                'title' => 'Facebook',
-                'url' => get_theme_mod('facebook', ''),
-            ),
-            array(
-                'title' => 'Twitter',
-                'url' => get_theme_mod('twitter', ''),
-            ),
-            array(
-                'title' => 'Instagram',
-                'url' => get_theme_mod('instagram', ''),
-            ),
-            array(
-                'title' => 'LinkedIn',
-                'url' => get_theme_mod('linkedin', ''),
-            ),
-            array(
-                'title' => 'YouTube',
-                'url' => get_theme_mod('youtube', ''),
-            ),
-        ),
-        'custom_logo' => get_theme_mod('custom_logo') ? wp_get_attachment_image_src(get_theme_mod('custom_logo'), 'full')[0] : '',
-        'favicon'     => get_site_icon_url(),    
-        'blog_info'   => array(        
-            'name'        => get_bloginfo('name'),
-            'description' => get_bloginfo('description'),
-            'url'         => get_bloginfo('url'),
-            'admin_email' =>  get_bloginfo('admin_email'),
-        ),
-    );
-
-    return rest_ensure_response($response);
-}
-
 // Adição de cores para o editor de texto
 
 function customize_acf_wysiwyg_colors($init) {
@@ -469,6 +297,8 @@ function customize_acf_wysiwyg_colors($init) {
     return $init;
 }
 
+// Personalizar a barra de ferramentas do ACF WYSIWYG
+
 function customize_acf_wysiwyg_toolbar($toolbars) {
     $toolbars['Custom'] = array();
     $toolbars['Custom'][1] = array(
@@ -483,7 +313,7 @@ function customize_acf_wysiwyg_toolbar($toolbars) {
     return $toolbars;
 }
 
-// #
+// Hooks e filtros
 
 add_filter('tiny_mce_before_init', 'customize_acf_wysiwyg_colors');
 add_filter('acf/fields/wysiwyg/toolbars', 'customize_acf_wysiwyg_toolbar');
@@ -493,7 +323,6 @@ add_action('customize_register', 'settings_form');
 add_action('rest_api_init', 'register_menu_slug_endpoint');
 add_action('wp_head', 'theme_favicon');
 add_action('switch_theme', 'remove_homepage_on_deactivation');
-add_action('after_setup_theme', 'create_homepage_on_activation');
 add_filter('show_admin_bar', '__return_false');
 add_post_type_support('page', 'excerpt');
 add_theme_support("post-thumbnails");
@@ -507,8 +336,9 @@ add_action("admin_menu", "remove_menus");
 add_action("admin_menu", "disable_default_dashboard_widgets");
 add_action('wp_before_admin_bar_render', 'wp_before_admin_bar_render');
 
-// Blocks
+// Blocos Personalizados
 
+// Adicionar uma nova categoria de blocos personalizados
 function my_custom_block_category($categories, $post) {
     return array_merge(
         array(
@@ -522,23 +352,6 @@ function my_custom_block_category($categories, $post) {
     );
 }
 add_filter('block_categories_all', 'my_custom_block_category', 10, 2);
-
-// Api Health
-
-function api_health_check() {
-    return rest_ensure_response(['status' => 'ok']);
-}
-
-function register_api_health_route() {
-    register_rest_route('custom/v1', '/api-health', array(
-        'methods'  => 'GET',
-        'callback' => 'api_health_check',
-        'permission_callback' => '__return_true', // Pública, sem autenticação
-    ));
-}
-add_action('rest_api_init', 'register_api_health_route');
-
-// 
 
 function my_acf_blocks_init() {
     if( function_exists('acf_register_block_type') ) {
@@ -767,6 +580,196 @@ add_action('pre_get_posts', 'sort_by_readtime_column');
 
 // Rest Services
 
+// Endpoint para retornar as configurações do tema
+
+function register_settings_endpoint()
+{
+    register_rest_route('custom/v1', '/settings', array(
+        'methods' => 'GET',
+        'callback' => 'settings',
+        'permission_callback' => '__return_true', 
+    ));
+}
+
+function settings()
+{
+    $response = array(
+        'social_networks' => array(
+            array(
+                'title' => 'Facebook',
+                'url' => get_theme_mod('facebook', ''),
+            ),
+            array(
+                'title' => 'Twitter',
+                'url' => get_theme_mod('twitter', ''),
+            ),
+            array(
+                'title' => 'Instagram',
+                'url' => get_theme_mod('instagram', ''),
+            ),
+            array(
+                'title' => 'LinkedIn',
+                'url' => get_theme_mod('linkedin', ''),
+            ),
+            array(
+                'title' => 'YouTube',
+                'url' => get_theme_mod('youtube', ''),
+            ),
+        ),
+        'custom_logo' => get_theme_mod('custom_logo') ? wp_get_attachment_image_src(get_theme_mod('custom_logo'), 'full')[0] : '',
+        'favicon'     => get_site_icon_url(),    
+        'blog_info'   => array(        
+            'name'        => get_bloginfo('name'),
+            'description' => get_bloginfo('description'),
+            'url'         => get_bloginfo('url'),
+            'admin_email' =>  get_bloginfo('admin_email'),
+        ),
+    );
+
+    return rest_ensure_response($response);
+}
+
+// Expor ACF fields na Rest API
+function acf_to_rest_api($response, $post, $request)
+{
+    if (function_exists('get_fields') && isset($post->ID)) {
+        $fields = get_fields($post->ID); // Get all ACF fields for the post
+        $field_groups = acf_get_field_groups(['post_id' => $post->ID]); // Get all field groups for the post
+
+        $grouped_fields = [];
+        $used_fields = []; // Track fields that have been grouped
+
+        foreach ($field_groups as $group) {
+            $group_name = $group['title']; // Field group name
+            $group_key = $group['key'];   // Field group key
+            $group_fields = [];
+
+            foreach ($fields as $key => $value) {
+                $field = get_field_object($key); // Get field object for each field
+                if ($field && isset($field['group']) && $field['group'] === $group_key) {
+                    $group_fields[$key] = $value; // Add field to the group if it matches
+                    $used_fields[] = $key; // Mark the field as used
+                }
+            }
+
+            if (!empty($group_fields)) {
+                $grouped_fields[$group_name] = $group_fields; // Add non-empty groups to the response
+            }
+        }
+
+        // Remove fields that have already been grouped
+        foreach ($used_fields as $used_field) {
+            unset($fields[$used_field]);
+        }
+
+        // Add grouped fields to the response
+        $response->data['acf'] = $grouped_fields;
+    }
+
+    return $response;
+}
+
+// Supoerte a image field nativa / featured image na rest api
+
+function ws_register_images_field()
+{
+    register_rest_field(
+        'post',
+        'images',
+        array(
+            'get_callback' => 'ws_get_images_urls',
+            'update_callback' => null,
+            'schema' => null,
+        )
+    );
+}
+
+function ws_get_images_urls($object, $field_name, $request)
+{
+    $medium = wp_get_attachment_image_src(get_post_thumbnail_id($object->id), 'medium');
+    $medium_url = $medium['0'];
+
+    $large = wp_get_attachment_image_src(get_post_thumbnail_id($object->id), 'large');
+    $large_url = $large['0'];
+
+    return array(
+        'medium' => $medium_url,
+        'large' => $large_url,
+    );
+}
+
+// Endpoint para retornar o menu por slug
+function get_menu_by_slug($request)
+{
+    $menu_slug = $request->get_param('slug');
+    $menu = wp_get_nav_menu_object($menu_slug);
+
+    if (!$menu) {
+        return new WP_Error('menu_not_found', 'Menu not found', array('status' => 404));
+    }
+
+    $menu_items = wp_get_nav_menu_items($menu->term_id);
+
+    if (empty($menu_items)) {
+        return rest_ensure_response([]);
+    }
+
+    $menu_tree = [];
+    $items_by_id = [];
+
+    foreach ($menu_items as $item) {
+        $item->children = [];
+        $item->acf = function_exists('get_fields') ? get_fields($item->ID) : null; // Add ACF fields
+        $items_by_id[$item->ID] = $item;
+    }
+
+    foreach ($menu_items as $item) {
+        if ($item->menu_item_parent == 0) {
+            $menu_tree[] = $item; 
+        } else {
+            if (isset($items_by_id[$item->menu_item_parent])) {
+                $items_by_id[$item->menu_item_parent]->children[] = $item;
+            }
+        }
+    }
+
+    return rest_ensure_response($menu_tree);
+}
+
+function register_menu_slug_endpoint()
+{
+    register_rest_route('custom/v1', '/menus', array(
+        'methods' => 'GET',
+        'callback' => 'get_menu_by_slug',
+        'args' => array(
+            'slug' => array(
+                'required' => true,
+                'validate_callback' => function ($param) {
+                    return is_string($param);
+                }
+            )
+        ),
+        'permission_callback' => '__return_true',
+    ));
+}
+
+// Api Health
+
+function api_health_check() {
+    return rest_ensure_response(['status' => 'ok']);
+}
+
+function register_api_health_route() {
+    register_rest_route('custom/v1', '/api-health', array(
+        'methods'  => 'GET',
+        'callback' => 'api_health_check',
+        'permission_callback' => '__return_true', // Pública, sem autenticação
+    ));
+}
+add_action('rest_api_init', 'register_api_health_route');
+
+// Expor Gutenberg blocks na Rest API
+
 function expose_gutenberg_blocks_to_rest($response, $post, $request) {
     if (empty($post->post_content)) {
         return $response;
@@ -803,7 +806,9 @@ function expose_gutenberg_blocks_to_rest($response, $post, $request) {
 
 add_filter('rest_prepare_page', 'expose_gutenberg_blocks_to_rest', 10, 3);
 
-add_action('rest_api_init', function () {
+// Adicionar suporte a CORS na API REST
+
+add_action('rest_pre_serve_request', function () {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
     header('Access-Control-Allow-Credentials: true');

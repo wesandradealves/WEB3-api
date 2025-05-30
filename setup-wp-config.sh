@@ -128,6 +128,11 @@ else
     echo "✔️ WordPress já está instalado, pulando instalação."
 fi
 
+# 🔐 Corrige permissões de wp-content (garante upload/instalação de plugin via admin)
+echo "🔐 Ajustando permissões de wp-content e plugins..."
+chown -R www-data:www-data /var/www/html/wp-content
+chmod -R 755 /var/www/html/wp-content
+
 # 🔐 Permissões
 chown www-data:www-data "$WPCONFIG"
 chmod 664 "$WPCONFIG"
