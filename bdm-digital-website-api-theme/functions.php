@@ -842,40 +842,6 @@ function register_languages_endpoint() {
 }
 add_action('rest_api_init', 'register_languages_endpoint');
 
-// add_filter('rest_pre_dispatch', function ($result, $server, $request) {
-//     $post_types = get_post_types(['public' => true], 'names');
-//     $route_regex = '#/wp/v2/(' . implode('|', array_map('preg_quote', $post_types)) . ')/(\d+)#';
-
-//     if (
-//         $request->get_method() === 'GET' &&
-//         preg_match($route_regex, $request->get_route(), $matches)
-//     ) {
-//         $type = $matches[1];
-//         $post_id = intval($matches[2]);
-//         $lang = null;
-
-//         $headers = $request->get_headers();
-//         if (isset($headers['x-language'][0])) {
-//             $lang = strtolower(sanitize_text_field($headers['x-language'][0]));
-//         }
-
-//         if ($lang && function_exists('pll_get_post')) {
-//             $translated_id = pll_get_post($post_id, $lang);
-//             if ($translated_id && $translated_id != $post_id) {
-//                 $controller = new WP_REST_Posts_Controller($type);
-//                 $response = $controller->get_item(['id' => $translated_id]);
-//                 if ($response && !is_wp_error($response)) {
-//                     return $response;
-//                 } else {
-//                     return new WP_Error('rest_post_not_found', __('No post found in this language.'), ['status' => 404]);
-//                 }
-//             }
-//             return new WP_Error('rest_post_not_found', __('No post found in this language.'), ['status' => 404]);
-//         }
-//     }
-//     return $result;
-// }, 10, 3);
-
 // add_filter('rest_prepare_midia', function($response, $post, $request) {
 //     $lang = null;
 //     if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
@@ -884,27 +850,60 @@ add_action('rest_api_init', 'register_languages_endpoint');
 //         $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 //         $lang = substr($langs[0], 0, 2);
 //     }
-//     if ($lang && function_exists('pll_get_post_language')) {
+
+//     if ($lang && function_exists('pll_get_post_language') && function_exists('pll_get_post_translations')) {
 //         $post_lang = pll_get_post_language($post->ID);
 //         if ($lang !== $post_lang) {
-//             $translation_id = function_exists('pll_get_post') ? pll_get_post($post->ID, $lang) : null;
-//             if (!$translation_id) {
-//                 // return new WP_REST_Response(null, 404);
-//                 $data = [
+//             $translations = pll_get_post_translations($post->ID);
+//             unset($translations[$lang]);
+//             $available = [];
+//             foreach ($translations as $code => $id) {
+//                 $available[] = [
+//                     'lang' => $code,
+//                     'post_id' => $id
+//                 ];
+//             }
+
+//             if (empty($available)) {
+//                 return new WP_REST_Response([
 //                     'error' => 'Translation not found',
 //                     'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
 //                     'lang_requested' => $lang,
-//                     'lang_available' => $post_lang,
-//                     'post_id' => $post->ID,
-//                 ];
-//                 return new WP_REST_Response($data, 404);
+//                     'available_languages' => []
+//                 ], 404);
+//             } else {
+//                 return new WP_REST_Response([
+//                     'error' => 'Translation not found',
+//                     'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
+//                     'lang_requested' => $lang,
+//                     'available_languages' => $available
+//                 ], 404);
 //             }
 //         }
 //     }
 //     return $response;
 // }, 10, 3);
 
-add_filter('rest_prepare_midia', function($response, $post, $request) {
+// 🔥 Polylang REST multilíngue universal para todos os CPTs no REST API
+
+add_action('init', function () {
+    // Busca todos os post types públicos e REST-enabled, exceto 'attachment'
+    $args = array(
+        'public'   => true,
+        '_builtin' => false,
+        'show_in_rest' => true,
+    );
+    $custom_post_types = get_post_types($args, 'names');
+    $custom_post_types[] = 'post'; // inclui posts padrão
+    $custom_post_types[] = 'page'; // inclui páginas padrão
+
+    foreach ($custom_post_types as $post_type) {
+        add_filter("rest_prepare_{$post_type}", 'bdm_polylang_rest_prepare_multilang', 10, 3);
+    }
+}, 99);
+
+function bdm_polylang_rest_prepare_multilang($response, $post, $request)
+{
     $lang = null;
     if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
         $lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
@@ -926,22 +925,13 @@ add_filter('rest_prepare_midia', function($response, $post, $request) {
                 ];
             }
 
-            if (empty($available)) {
-                return new WP_REST_Response([
-                    'error' => 'Translation not found',
-                    'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
-                    'lang_requested' => $lang,
-                    'available_languages' => []
-                ], 404);
-            } else {
-                return new WP_REST_Response([
-                    'error' => 'Translation not found',
-                    'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
-                    'lang_requested' => $lang,
-                    'available_languages' => $available
-                ], 404);
-            }
+            return new WP_REST_Response([
+                'error' => 'Translation not found',
+                'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
+                'lang_requested' => $lang,
+                'available_languages' => $available
+            ], 404);
         }
     }
     return $response;
-}, 10, 3);
+}
