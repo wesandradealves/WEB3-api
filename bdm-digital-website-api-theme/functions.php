@@ -842,60 +842,15 @@ function register_languages_endpoint() {
 }
 add_action('rest_api_init', 'register_languages_endpoint');
 
-// add_filter('rest_prepare_midia', function($response, $post, $request) {
-//     $lang = null;
-//     if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
-//         $lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
-//     } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-//         $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-//         $lang = substr($langs[0], 0, 2);
-//     }
-
-//     if ($lang && function_exists('pll_get_post_language') && function_exists('pll_get_post_translations')) {
-//         $post_lang = pll_get_post_language($post->ID);
-//         if ($lang !== $post_lang) {
-//             $translations = pll_get_post_translations($post->ID);
-//             unset($translations[$lang]);
-//             $available = [];
-//             foreach ($translations as $code => $id) {
-//                 $available[] = [
-//                     'lang' => $code,
-//                     'post_id' => $id
-//                 ];
-//             }
-
-//             if (empty($available)) {
-//                 return new WP_REST_Response([
-//                     'error' => 'Translation not found',
-//                     'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
-//                     'lang_requested' => $lang,
-//                     'available_languages' => []
-//                 ], 404);
-//             } else {
-//                 return new WP_REST_Response([
-//                     'error' => 'Translation not found',
-//                     'message' => "Nenhuma tradução encontrada para o idioma '{$lang}' neste post.",
-//                     'lang_requested' => $lang,
-//                     'available_languages' => $available
-//                 ], 404);
-//             }
-//         }
-//     }
-//     return $response;
-// }, 10, 3);
-
-// 🔥 Polylang REST multilíngue universal para todos os CPTs no REST API
-
 add_action('init', function () {
-    // Busca todos os post types públicos e REST-enabled, exceto 'attachment'
     $args = array(
         'public'   => true,
         '_builtin' => false,
         'show_in_rest' => true,
     );
     $custom_post_types = get_post_types($args, 'names');
-    $custom_post_types[] = 'post'; // inclui posts padrão
-    $custom_post_types[] = 'page'; // inclui páginas padrão
+    $custom_post_types[] = 'post'; 
+    $custom_post_types[] = 'page'; 
 
     foreach ($custom_post_types as $post_type) {
         add_filter("rest_prepare_{$post_type}", 'bdm_polylang_rest_prepare_multilang', 10, 3);
