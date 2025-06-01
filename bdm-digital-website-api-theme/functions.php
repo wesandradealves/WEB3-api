@@ -6,8 +6,10 @@ header('Content-Type: application/json; charset=utf-8');
 function wp_before_admin_bar_render()
 {
     echo '
-
         <style type="text/css">
+            a[href*="nav-menus.php?action=locations"],
+            .menu-settings,
+            .menu-settings-group { display: none !important; }
             @media only screen and (min-width: 800px) {
                 .interface-interface-skeleton__body {
                     flex-flow: column wrap !important;
@@ -35,7 +37,6 @@ function wp_before_admin_bar_render()
                 }
             }
         </style>
-
     ';
 }
 
@@ -322,7 +323,21 @@ add_filter('acf/fields/wysiwyg/toolbars', 'customize_acf_wysiwyg_toolbar');
 add_filter('rest_prepare_post', 'acf_to_rest_api', 10, 3);
 add_action('rest_api_init', 'register_settings_endpoint');
 add_action('customize_register', 'settings_form');
-add_action('rest_api_init', 'register_menu_slug_endpoint');
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/menus', array(
+        'methods' => 'GET',
+        'callback' => 'get_menu_by_slug',
+        'args' => array(
+            'slug' => array(
+                'required' => true,
+                'validate_callback' => function ($param) {
+                    return is_string($param);
+                }
+            )
+        ),
+        'permission_callback' => '__return_true',
+    ));
+}, 20);
 add_action('wp_head', 'theme_favicon');
 add_action('switch_theme', 'remove_homepage_on_deactivation');
 add_filter('show_admin_bar', '__return_false');
@@ -701,9 +716,20 @@ function ws_get_images_urls($object, $field_name, $request)
 }
 
 // Endpoint para retornar o menu por slug
+
 function get_menu_by_slug($request)
 {
     $menu_slug = $request->get_param('slug');
+    $lang = bdm_detect_request_language();
+
+    if (!function_exists('pll_current_language') || !function_exists('pll_default_language')) {
+        return null;
+    }
+
+    if($lang) {
+        $menu_slug = $menu_slug . '-' . $lang;
+    }
+
     $menu = wp_get_nav_menu_object($menu_slug);
 
     if (!$menu) {
@@ -721,7 +747,7 @@ function get_menu_by_slug($request)
 
     foreach ($menu_items as $item) {
         $item->children = [];
-        $item->acf = function_exists('get_fields') ? get_fields($item->ID) : null; // Add ACF fields
+        $item->acf = function_exists('get_fields') ? get_fields($item->ID) : null; 
         $items_by_id[$item->ID] = $item;
     }
 
@@ -738,22 +764,7 @@ function get_menu_by_slug($request)
     return rest_ensure_response($menu_tree);
 }
 
-function register_menu_slug_endpoint()
-{
-    register_rest_route('custom/v1', '/menus', array(
-        'methods' => 'GET',
-        'callback' => 'get_menu_by_slug',
-        'args' => array(
-            'slug' => array(
-                'required' => true,
-                'validate_callback' => function ($param) {
-                    return is_string($param);
-                }
-            )
-        ),
-        'permission_callback' => '__return_true',
-    ));
-}
+
 
 // Api Health
 
@@ -833,6 +844,8 @@ if (!function_exists('bdm_get_available_languages')) {
     }
 }
 
+// Registrar o endpoint para as línguas disponíveis
+
 function register_languages_endpoint() {
     register_rest_route('custom/v1', '/languages', array(
         'methods' => 'GET',
@@ -841,6 +854,8 @@ function register_languages_endpoint() {
     ));
 }
 add_action('rest_api_init', 'register_languages_endpoint');
+
+// Adicionar suporte ao Polylang na REST API para além de posts e páginas, cpts disponíveis
 
 add_action('init', function () {
     $args = array(
@@ -859,13 +874,7 @@ add_action('init', function () {
 
 function bdm_polylang_rest_prepare_multilang($response, $post, $request)
 {
-    $lang = null;
-    if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
-        $lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
-    } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-        $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        $lang = substr($langs[0], 0, 2);
-    }
+    $lang = bdm_detect_request_language();
 
     if ($lang && function_exists('pll_get_post_language') && function_exists('pll_get_post_translations')) {
         $post_lang = pll_get_post_language($post->ID);
@@ -889,4 +898,21 @@ function bdm_polylang_rest_prepare_multilang($response, $post, $request)
         }
     }
     return $response;
+}
+
+if (!function_exists('bdm_detect_request_language')) {
+    function bdm_detect_request_language(array $allowed = []) {
+        $lang = null;
+        if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
+            $lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
+        } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            $lang = substr($langs[0], 0, 2);
+        }
+        // Se quiser filtrar por idiomas suportados
+        if (!empty($allowed) && !in_array($lang, $allowed)) {
+            return null;
+        }
+        return $lang;
+    }
 }
