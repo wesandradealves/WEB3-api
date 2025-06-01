@@ -56,7 +56,7 @@ function remove_menus()
 
     // remove_menu_page( 'edit.php?post_type=page' );    //Pages
 
-    // remove_menu_page( 'edit-comments.php' );          //Comments
+    remove_menu_page( 'edit-comments.php' );          //Comments
 
     //remove_menu_page( 'themes.php' );                 //Appearance
 
@@ -69,10 +69,10 @@ function remove_menus()
     // remove_menu_page( 'options-general.php' );        //Settings
 }
 
-function prefix_add_footer_styles()
-{
-    // wp_enqueue_script('commons', get_template_directory_uri() . "/assets/js/main.js", array(), filemtime(get_template_directory() . '/assets/js/main.js'), true);
-}
+// function prefix_add_footer_styles()
+// {
+//     // wp_enqueue_script('commons', get_template_directory_uri() . "/assets/js/main.js", array(), filemtime(get_template_directory() . '/assets/js/main.js'), true);
+// }
 
 // Carregar scripts uteis para uso no tema
 
@@ -208,8 +208,10 @@ function create_homepage_on_activation() {
             flush_rewrite_rules();
         }
     }
+}
+add_action('after_switch_theme', 'create_homepage_on_activation');
 
-    // Suporte à logo/title
+add_action('after_setup_theme', function() {
     add_theme_support('custom-logo', array(
         'width' => 200,
         'height' => 100,
@@ -217,8 +219,8 @@ function create_homepage_on_activation() {
         'flex-height' => true,
     ));
     add_theme_support('title-tag');
-}
-add_action('after_switch_theme', 'create_homepage_on_activation');
+});
+
 
 // Remoção da pãgina home/swagger ao desativar o tema
 
@@ -346,7 +348,7 @@ add_theme_support("post-thumbnails");
 add_action('rest_api_init', 'ws_register_images_field');
 add_filter("nav_menu_link_attributes", "add_menu_link_class", 1, 3);
 add_filter("nav_menu_css_class", "atg_menu_classes", 1, 3);
-add_action("get_footer", "prefix_add_footer_styles");
+// add_action("get_footer", "prefix_add_footer_styles");
 add_action("init", "wpb_custom_new_menu");
 add_action("wp_enqueue_scripts", "prefix_add_header_styles");
 add_action("admin_menu", "remove_menus");
@@ -650,36 +652,34 @@ function settings()
 function acf_to_rest_api($response, $post, $request)
 {
     if (function_exists('get_fields') && isset($post->ID)) {
-        $fields = get_fields($post->ID); // Get all ACF fields for the post
-        $field_groups = acf_get_field_groups(['post_id' => $post->ID]); // Get all field groups for the post
+        $fields = get_fields($post->ID);
+        $field_groups = acf_get_field_groups(['post_id' => $post->ID]); 
 
         $grouped_fields = [];
-        $used_fields = []; // Track fields that have been grouped
+        $used_fields = []; 
 
         foreach ($field_groups as $group) {
-            $group_name = $group['title']; // Field group name
-            $group_key = $group['key'];   // Field group key
+            $group_name = $group['title']; 
+            $group_key = $group['key'];  
             $group_fields = [];
 
             foreach ($fields as $key => $value) {
-                $field = get_field_object($key); // Get field object for each field
+                $field = get_field_object($key);
                 if ($field && isset($field['group']) && $field['group'] === $group_key) {
-                    $group_fields[$key] = $value; // Add field to the group if it matches
-                    $used_fields[] = $key; // Mark the field as used
+                    $group_fields[$key] = $value; 
+                    $used_fields[] = $key; 
                 }
             }
 
             if (!empty($group_fields)) {
-                $grouped_fields[$group_name] = $group_fields; // Add non-empty groups to the response
+                $grouped_fields[$group_name] = $group_fields; 
             }
         }
 
-        // Remove fields that have already been grouped
         foreach ($used_fields as $used_field) {
             unset($fields[$used_field]);
         }
 
-        // Add grouped fields to the response
         $response->data['acf'] = $grouped_fields;
     }
 
@@ -909,7 +909,6 @@ if (!function_exists('bdm_detect_request_language')) {
             $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
             $lang = substr($langs[0], 0, 2);
         }
-        // Se quiser filtrar por idiomas suportados
         if (!empty($allowed) && !in_array($lang, $allowed)) {
             return null;
         }
