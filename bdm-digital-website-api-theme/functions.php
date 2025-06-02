@@ -339,6 +339,11 @@ add_action('rest_api_init', function () {
         ),
         'permission_callback' => '__return_true',
     ));
+    register_rest_route('custom/v1', '/menu-ids', array(
+        'methods' => 'GET',
+        'callback' => 'bdm_get_all_menu_ids',
+        'permission_callback' => '__return_true',
+    ));
 }, 20);
 add_action('wp_head', 'theme_favicon');
 add_action('switch_theme', 'remove_homepage_on_deactivation');
@@ -722,10 +727,6 @@ function get_menu_by_slug($request)
     $menu_slug = $request->get_param('slug');
     $lang = bdm_detect_request_language();
 
-    if (!function_exists('pll_current_language') || !function_exists('pll_default_language')) {
-        return null;
-    }
-
     if($lang) {
         $menu_slug = $menu_slug . '-' . $lang;
     }
@@ -764,7 +765,21 @@ function get_menu_by_slug($request)
     return rest_ensure_response($menu_tree);
 }
 
+// Endpoint para retornar todos os IDs dos menus
+function bdm_get_all_menu_ids() {
+    $menus = wp_get_nav_menus();
+    $result = [];
 
+    foreach ($menus as $menu) {
+        $result[] = [
+            'id'   => $menu->term_id,
+            'name' => $menu->name,
+            'slug' => $menu->slug,
+        ];
+    }
+
+    return rest_ensure_response($result);
+}
 
 // Api Health
 
