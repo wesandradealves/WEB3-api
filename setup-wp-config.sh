@@ -156,6 +156,13 @@ if [ -f "$HTACCESS" ]; then
   fi
 fi
 
+# Forçar SSL no admin se estiver em HML
+if [ "$ENVIRONMENT" == "hml" ]; then
+  if [ "$FORCE_SSL_ADMIN" == "false" ]; then
+    insert_define "FORCE_SSL_ADMIN" true
+  fi
+fi
+
 # 🚀 Inicializar Apache
 echo "====================================="
 echo "✅ Ambiente WordPress preparado!"

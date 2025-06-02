@@ -22,6 +22,10 @@ define('WP_ALLOW_REPAIR', getenv('WP_ALLOW_REPAIR'));
 
 define('WP_REDIS_HOST', getenv('REDIS_HOST') ?: 'redis');
 
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+
 /* That's all, stop editing! Happy publishing. */
 
 if ( ! defined( 'ABSPATH' ) ) {
