@@ -15,10 +15,12 @@ add_action('rest_api_init', function() {
     $header_lang = null;
     if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
         $header_lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
-    } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-        $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        $header_lang = substr($langs[0], 0, 2);
-    }
+    } 
+    
+    // elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+    //     $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    //     $header_lang = substr($langs[0], 0, 2);
+    // }
 
     if ($header_lang && in_array($header_lang, $available_langs, true)) {
         if (function_exists('pll_switch_lang')) {
