@@ -71,7 +71,6 @@ echo "DEBUG: TARGET_URL=$TARGET_URL"
 
 insert_define "WP_HOME" "'$TARGET_URL'"
 insert_define "WP_SITEURL" "'$TARGET_URL'"
-insert_define "WP_REDIS_HOST" "'${REDIS_HOST:-redis}'"
 
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
@@ -87,6 +86,7 @@ sed -i "s/getenv('WP_DEBUG_LOG')/${WP_DEBUG_LOG}/" "$WPCONFIG"
 sed -i "s/getenv('WP_ALLOW_REPAIR')/${WP_ALLOW_REPAIR}/" "$WPCONFIG"
 sed -i "s/getenv('FS_METHOD')/'${FS_METHOD}'/" "$WPCONFIG"
 sed -i "s/getenv('JWT_AUTH_CORS_ENABLE')/'${JWT_AUTH_CORS_ENABLE}'/" "$WPCONFIG"
+sed -i "s/getenv('WP_REDIS_HOST')/'${WP_REDIS_HOST}'/" "$WPCONFIG"
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
@@ -128,6 +128,11 @@ else
     echo "✔️ WordPress já está instalado, pulando instalação."
 fi
 
+# 🔐 Corrige permissões de wp-content (garante upload/instalação de plugin via admin)
+echo "🔐 Ajustando permissões de wp-content e plugins..."
+chown -R www-data:www-data /var/www/html/wp-content
+chmod -R 755 /var/www/html/wp-content
+
 # 🔐 Permissões
 chown www-data:www-data "$WPCONFIG"
 chmod 664 "$WPCONFIG"
@@ -148,6 +153,13 @@ if [ -f "$HTACCESS" ]; then
     else
       echo -e "RewriteEngine On\n$AUTH_RULES\n$(cat $HTACCESS)" > $HTACCESS
     fi
+  fi
+fi
+
+# Forçar SSL no admin se estiver em HML
+if [ "$ENVIRONMENT" == "hml" ]; then
+  if [ "$FORCE_SSL_ADMIN" == "false" ]; then
+    insert_define "FORCE_SSL_ADMIN" true
   fi
 fi
 
