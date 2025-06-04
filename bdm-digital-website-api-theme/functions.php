@@ -1,5 +1,6 @@
 <?php
 
+error_log('Authorization: ' . ($_SERVER['HTTP_AUTHORIZATION'] ?? 'N/A'));
 header('Content-Type: application/json; charset=utf-8');
 
 // Renderizar estilos no admin
@@ -7,9 +8,6 @@ function wp_before_admin_bar_render()
 {
     echo '
         <style type="text/css">
-            a[href*="nav-menus.php?action=locations"],
-            .menu-settings,
-            .menu-settings-group { display: none !important; }
             @media only screen and (min-width: 800px) {
                 .interface-interface-skeleton__body {
                     flex-flow: column wrap !important;
@@ -220,6 +218,7 @@ add_action('after_setup_theme', function () {
         'flex-height' => true,
     ));
     add_theme_support('title-tag');
+    add_theme_support('menus');
 });
 
 
@@ -287,7 +286,30 @@ function settings_form($wp_customize)
     }
 }
 
-// Adição de cores para o editor de texto
+// Adicionar suporte a cores personalizadas no editor Gutenberg e no ACF WYSIWYG
+
+add_theme_support( 'editor-color-palette', array(
+    array(
+        'name'  => __( 'Black', 'textdomain' ),
+        'slug'  => 'black',
+        'color' => '#000000',
+    ),
+    array(
+        'name'  => __( 'White', 'textdomain' ),
+        'slug'  => 'white',
+        'color' => '#FFFFFF',
+    ),
+    array(
+        'name'  => __( 'Yellow', 'textdomain' ),
+        'slug'  => 'yellow',
+        'color' => '#FFC700',
+    ),
+    array(
+        'name'  => __( 'Gray', 'textdomain' ),
+        'slug'  => 'gray',
+        'color' => '#A0A1A8',
+    )
+) );
 
 function customize_acf_wysiwyg_colors($init)
 {
@@ -354,11 +376,11 @@ add_action('rest_api_init', function () {
         ),
         'permission_callback' => '__return_true',
     ));
-    register_rest_route('custom/v1', '/menu-ids', array(
-        'methods' => 'GET',
-        'callback' => 'bdm_get_all_menu_ids',
-        'permission_callback' => '__return_true',
-    ));
+    // register_rest_route('custom/v1', '/menu-ids', array(
+    //     'methods' => 'GET',
+    //     'callback' => 'bdm_get_all_menu_ids',
+    //     'permission_callback' => '__return_true',
+    // ));
 }, 20);
 add_action('wp_head', 'theme_favicon');
 add_action('switch_theme', 'remove_homepage_on_deactivation');
@@ -369,7 +391,7 @@ add_action('rest_api_init', 'ws_register_images_field');
 add_filter("nav_menu_link_attributes", "add_menu_link_class", 1, 3);
 add_filter("nav_menu_css_class", "atg_menu_classes", 1, 3);
 // add_action("get_footer", "prefix_add_footer_styles");
-add_action("init", "wpb_custom_new_menu");
+// add_action("init", callback: "wpb_custom_new_menu");
 add_action("wp_enqueue_scripts", "prefix_add_header_styles");
 add_action("admin_menu", "remove_menus");
 add_action("admin_menu", "disable_default_dashboard_widgets");
@@ -749,6 +771,7 @@ function ws_get_images_urls($object, $field_name, $request)
 
 function get_menu_by_slug($request)
 {
+
     $menu_slug = $request->get_param('slug');
     $lang = bdm_detect_request_language();
 
@@ -762,11 +785,7 @@ function get_menu_by_slug($request)
         return new WP_Error('menu_not_found', 'Menu not found', array('status' => 404));
     }
 
-    $menu_items = wp_get_nav_menu_items($menu->term_id);
-
-    if (empty($menu_items)) {
-        return rest_ensure_response([]);
-    }
+    $menu_items = wp_get_nav_menu_items($menu->term_id, array('update_menu_item_cache' => false));
 
     $menu_tree = [];
     $items_by_id = [];
@@ -790,22 +809,22 @@ function get_menu_by_slug($request)
     return rest_ensure_response($menu_tree);
 }
 
-// Endpoint para retornar todos os IDs dos menus
-function bdm_get_all_menu_ids()
-{
-    $menus = wp_get_nav_menus();
-    $result = [];
+// // Endpoint para retornar todos os IDs dos menus
+// function bdm_get_all_menu_ids()
+// {
+//     $menus = wp_get_nav_menus();
+//     $result = [];
 
-    foreach ($menus as $menu) {
-        $result[] = [
-            'id' => $menu->term_id,
-            'name' => $menu->name,
-            'slug' => $menu->slug,
-        ];
-    }
+//     foreach ($menus as $menu) {
+//         $result[] = [
+//             'id' => $menu->term_id,
+//             'name' => $menu->name,
+//             'slug' => $menu->slug,
+//         ];
+//     }
 
-    return rest_ensure_response($result);
-}
+//     return rest_ensure_response($result);
+// }
 
 // Api Health
 
@@ -947,19 +966,6 @@ function bdm_polylang_rest_prepare_multilang($response, $post, $request)
 }
 
 if (!function_exists('bdm_detect_request_language')) {
-    /*function bdm_detect_request_language(array $allowed = []) {
-        $lang = null;
-        if (!empty($_SERVER['HTTP_X_LANGUAGE'])) {
-            $lang = strtolower(sanitize_text_field($_SERVER['HTTP_X_LANGUAGE']));
-        } elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            $lang = substr($langs[0], 0, 2);
-        }
-        if (!empty($allowed) && !in_array($lang, $allowed)) {
-            return null;
-        }
-        return $lang;
-    }*/
     function bdm_detect_request_language(array $allowed = [])
     {
         $lang = null;
@@ -972,3 +978,10 @@ if (!function_exists('bdm_detect_request_language')) {
         return $lang;
     }
 }
+
+// Forçar o template da página Home para 'templates/swagger.php' sempre que a página for salva/atualizada
+add_action('save_post_page', function($post_id, $post, $update) {
+    if ($post->post_title === 'Home' && get_post_meta($post_id, '_wp_page_template', true) !== 'templates/swagger.php') {
+        update_post_meta($post_id, '_wp_page_template', 'templates/swagger.php');
+    }
+}, 10, 3);

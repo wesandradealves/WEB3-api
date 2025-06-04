@@ -71,7 +71,6 @@ echo "DEBUG: TARGET_URL=$TARGET_URL"
 
 insert_define "WP_HOME" "'$TARGET_URL'"
 insert_define "WP_SITEURL" "'$TARGET_URL'"
-insert_define "WP_REDIS_HOST" "'${REDIS_HOST:-redis}'"
 
 # 🔁 Substituir getenv() pelos valores reais
 sed -i "s/getenv('WORDPRESS_DB_NAME')/'${WORDPRESS_DB_NAME}'/" "$WPCONFIG"
@@ -87,6 +86,7 @@ sed -i "s/getenv('WP_DEBUG_LOG')/${WP_DEBUG_LOG}/" "$WPCONFIG"
 sed -i "s/getenv('WP_ALLOW_REPAIR')/${WP_ALLOW_REPAIR}/" "$WPCONFIG"
 sed -i "s/getenv('FS_METHOD')/'${FS_METHOD}'/" "$WPCONFIG"
 sed -i "s/getenv('JWT_AUTH_CORS_ENABLE')/'${JWT_AUTH_CORS_ENABLE}'/" "$WPCONFIG"
+sed -i "s/getenv('WP_REDIS_HOST')/'${WP_REDIS_HOST}'/" "$WPCONFIG"
 
 if [ ! -f /var/www/html/wp-config.php ]; then
     cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
