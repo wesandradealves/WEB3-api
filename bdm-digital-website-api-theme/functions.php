@@ -1,6 +1,5 @@
 <?php
 
-error_log('Authorization: ' . ($_SERVER['HTTP_AUTHORIZATION'] ?? 'N/A'));
 header('Content-Type: application/json; charset=utf-8');
 
 // Renderizar estilos no admin
