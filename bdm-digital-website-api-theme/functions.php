@@ -8,6 +8,9 @@ function wp_before_admin_bar_render()
 {
     echo '
         <style type="text/css">
+            .editor-styles-wrapper.block-editor-writing-flow {
+                background: whitesmoke;
+            }
             @media only screen and (min-width: 800px) {
                 .interface-interface-skeleton__body {
                     flex-flow: column wrap !important;
@@ -985,3 +988,59 @@ add_action('save_post_page', function($post_id, $post, $update) {
         update_post_meta($post_id, '_wp_page_template', 'templates/swagger.php');
     }
 }, 10, 3);
+
+// Endpoint para buscar uma página pelo slug e idioma
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/post-by', array(
+        'methods' => 'GET',
+        'callback' => 'get_post_by',
+        'args' => array(
+            'slug' => array('required' => true),
+            'type' => array('required' => false, 'default' => 'page'),
+            'id' => array('required' => false, 'default' => null),
+        ),
+        'permission_callback' => '__return_true',
+    ));
+});
+
+function get_post_by($request) {
+    $type = $request->get_param('type') ?: 'page';
+    $id = $request->get_param('id');
+    $slug = $request->get_param('slug');
+    $lang = bdm_detect_request_language();
+
+    $post = null;
+
+    if ($id) {
+        $post = get_post($id);
+    } elseif ($slug) {
+        $args = array(
+            'name'        => $slug,
+            'post_type'   => $type,
+            'post_status' => 'publish',
+            'numberposts' => 1,
+        );
+        $posts = get_posts($args);
+        if ($posts) {
+            $post = $posts[0];
+        }
+    }
+
+    if ($post && function_exists('pll_get_post')) {
+        // Se $lang está definido, tenta pegar a tradução
+        if ($lang) {
+            $translated_id = pll_get_post($post->ID, $lang);
+            if ($translated_id) {
+                $post = get_post($translated_id);
+            } else {
+                return new WP_Error('not_found', 'Translation not found for this post and language', array('status' => 404));
+            }
+        }
+        $controller = new WP_REST_Posts_Controller($type);
+        $response = $controller->prepare_item_for_response($post, $request);
+        $response = apply_filters("rest_prepare_{$type}", $response, $post, $request);
+        return rest_ensure_response([ $response->get_data() ]);
+    }
+
+    return new WP_Error('not_found', 'Page not found for this id/slug/type and language', array('status' => 404));
+}
