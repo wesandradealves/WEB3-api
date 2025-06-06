@@ -1,6 +1,5 @@
 <?php
 
-error_log('Authorization: ' . ($_SERVER['HTTP_AUTHORIZATION'] ?? 'N/A'));
 header('Content-Type: application/json; charset=utf-8');
 
 // Renderizar estilos no admin
@@ -182,6 +181,12 @@ function add_menu_link_class($atts, $item, $args)
 
 // Executar ao ativar otema
 
+// Forçar o template da página Home para 'templates/swagger.php' sempre que a página for salva/atualizada
+add_action('save_post_page', function($post_id, $post, $update) {
+    if ($post->post_title === 'Home' && get_post_meta($post_id, '_wp_page_template', true) !== 'templates/swagger.php') {
+        update_post_meta($post_id, '_wp_page_template', 'templates/swagger.php');
+    }
+}, 10, 3);
 function create_homepage_on_activation()
 {
     // Checa se já existe uma página "Home"
@@ -630,6 +635,12 @@ function fill_readtime_column($column, $post_id)
 }
 add_action('manage_midia_posts_custom_column', 'fill_readtime_column', 10, 2);
 
+// Registrar a taxonomia "post_tag" para o post type "midia"
+
+add_action('init', function () {
+    register_taxonomy_for_object_type('post_tag', 'midia');
+});
+
 // Tornar a coluna "readTime" ordenável
 function make_readtime_column_sortable($columns)
 {
@@ -651,6 +662,18 @@ function sort_by_readtime_column($query)
     }
 }
 add_action('pre_get_posts', 'sort_by_readtime_column');
+
+// Limpeza de tags órfãs e duplicadas
+
+add_filter('pll_get_taxonomies', function($taxonomies) {
+    foreach (['post_tag', 'category'] as $remove) {
+        if(($key = array_search($remove, $taxonomies)) !== false) {
+            unset($taxonomies[$key]);
+        }
+    }
+    return $taxonomies;
+});
+
 
 // Rest Services
 
@@ -981,13 +1004,6 @@ if (!function_exists('bdm_detect_request_language')) {
         return $lang;
     }
 }
-
-// Forçar o template da página Home para 'templates/swagger.php' sempre que a página for salva/atualizada
-add_action('save_post_page', function($post_id, $post, $update) {
-    if ($post->post_title === 'Home' && get_post_meta($post_id, '_wp_page_template', true) !== 'templates/swagger.php') {
-        update_post_meta($post_id, '_wp_page_template', 'templates/swagger.php');
-    }
-}, 10, 3);
 
 // Endpoint para buscar uma página pelo slug e idioma
 add_action('rest_api_init', function () {
