@@ -995,14 +995,13 @@ add_action('rest_api_init', function () {
         'methods' => 'GET',
         'callback' => 'get_post_by',
         'args' => array(
-            'slug' => array('required' => true),
+            'slug' => array('required' => false), // <-- alterado para false
             'type' => array('required' => false, 'default' => 'page'),
             'id' => array('required' => false, 'default' => null),
         ),
         'permission_callback' => '__return_true',
     ));
 });
-
 function get_post_by($request) {
     $type = $request->get_param('type') ?: 'page';
     $id = $request->get_param('id');
