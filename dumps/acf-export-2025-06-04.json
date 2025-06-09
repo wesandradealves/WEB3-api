@@ -19,6 +19,7 @@
                 },
                 "message": "",
                 "default_value": 0,
+                "translations": "sync",
                 "allow_in_bindings": 0,
                 "ui_on_text": "",
                 "ui_off_text": "",
@@ -26,7 +27,7 @@
             },
             {
                 "key": "field_67e9b2079fb6f",
-                "label": "Animaçao",
+                "label": "Animação",
                 "name": "effect",
                 "aria-label": "",
                 "type": "text",
@@ -39,6 +40,7 @@
                     "id": ""
                 },
                 "default_value": "",
+                "translations": "translate",
                 "maxlength": "",
                 "allow_in_bindings": 0,
                 "placeholder": "",
@@ -51,7 +53,7 @@
                 {
                     "param": "nav_menu_item",
                     "operator": "==",
-                    "value": "3"
+                    "value": "all"
                 }
             ]
         ],
@@ -698,7 +700,7 @@
             },
             {
                 "key": "field_68012e4805a2d",
-                "label": "Ativar Integraçao",
+                "label": "Ativar Integra??ao",
                 "name": "enable_integration",
                 "aria-label": "",
                 "type": "true_false",
@@ -1018,7 +1020,7 @@
             },
             {
                 "key": "field_67eab7eb1331f",
-                "label": "Animaçao",
+                "label": "Anima??ao",
                 "name": "btnAnimation",
                 "aria-label": "",
                 "type": "text",
@@ -1332,7 +1334,7 @@
                 "name": "background",
                 "aria-label": "",
                 "type": "text",
-                "instructions": "Em caso de degradé. (ex: inserir linear-gradient(180deg, #161516 54.74%, #777777 91.02%))",
+                "instructions": "Em caso de degrad??. (ex: inserir linear-gradient(180deg, #161516 54.74%, #777777 91.02%))",
                 "required": 0,
                 "conditional_logic": 0,
                 "wrapper": {
@@ -1495,7 +1497,7 @@
             },
             {
                 "key": "field_67ec255c36e63",
-                "label": "Direção (Flex)",
+                "label": "Dire????o (Flex)",
                 "name": "direction",
                 "aria-label": "",
                 "type": "select",
@@ -1570,7 +1572,7 @@
                 "name": "gap",
                 "aria-label": "",
                 "type": "text",
-                "instructions": "Usar valores numéricos ou custom seguindo a documentaçao do Tailwind.css. (ex: pt-[240px] ou pt-20, assim como outras propriedades como m, p, px, py, pe, ps, etc.)",
+                "instructions": "Usar valores num??ricos ou custom seguindo a documenta??ao do Tailwind.css. (ex: pt-[240px] ou pt-20, assim como outras propriedades como m, p, px, py, pe, ps, etc.)",
                 "required": 0,
                 "conditional_logic": 0,
                 "wrapper": {
@@ -1705,7 +1707,7 @@
                 "choices": {
                     "media": "Media",
                     "faq": "FAQ",
-                    "opnioes": "Opniões"
+                    "opnioes": "Opni??es"
                 },
                 "default_value": [
                     "media"
@@ -1962,8 +1964,8 @@
             "new_item": "Novo Cliente",
             "parent_item_colon": "Cliente ascendente:",
             "search_items": "Pesquisar Clientes",
-            "not_found": "Não foi possível encontrar clientes",
-            "not_found_in_trash": "Não foi possível encontrar clientes na lixeira",
+            "not_found": "N??o foi poss??vel encontrar clientes",
+            "not_found_in_trash": "N??o foi poss??vel encontrar clientes na lixeira",
             "archives": "Arquivos de Cliente",
             "attributes": "Atributos de Cliente",
             "featured_image": "",
@@ -1974,7 +1976,7 @@
             "uploaded_to_this_item": "Enviado para este cliente",
             "filter_items_list": "Filtrar lista de clientes",
             "filter_by_date": "Filtrar clientes por data",
-            "items_list_navigation": "Navegação na lista de Clientes",
+            "items_list_navigation": "Navega????o na lista de Clientes",
             "items_list": "Lista de Clientes",
             "item_published": "Cliente publicado.",
             "item_published_privately": "Cliente publicado de forma privada.",
@@ -2051,8 +2053,8 @@
             "new_item": "Novo faq",
             "parent_item_colon": "faq ascendente:",
             "search_items": "Pesquisar FAQ",
-            "not_found": "Não foi possível encontrar faq",
-            "not_found_in_trash": "Não foi possível encontrar faq na lixeira",
+            "not_found": "N??o foi poss??vel encontrar faq",
+            "not_found_in_trash": "N??o foi poss??vel encontrar faq na lixeira",
             "archives": "Arquivos de faq",
             "attributes": "Atributos de faq",
             "featured_image": "",
@@ -2063,7 +2065,7 @@
             "uploaded_to_this_item": "Enviado para este faq",
             "filter_items_list": "Filtrar lista de faq",
             "filter_by_date": "Filtrar faq por data",
-            "items_list_navigation": "Navegação na lista de FAQ",
+            "items_list_navigation": "Navega????o na lista de FAQ",
             "items_list": "Lista de FAQ",
             "item_published": "faq publicado.",
             "item_published_privately": "faq publicado de forma privada.",
@@ -2138,8 +2140,8 @@
             "new_item": "Novo midia",
             "parent_item_colon": "midia ascendente:",
             "search_items": "Pesquisar Midia",
-            "not_found": "Não foi possível encontrar midia",
-            "not_found_in_trash": "Não foi possível encontrar midia na lixeira",
+            "not_found": "N??o foi poss??vel encontrar midia",
+            "not_found_in_trash": "N??o foi poss??vel encontrar midia na lixeira",
             "archives": "Arquivos de midia",
             "attributes": "Atributos de midia",
             "featured_image": "",
@@ -2150,7 +2152,7 @@
             "uploaded_to_this_item": "Enviado para este midia",
             "filter_items_list": "Filtrar lista de midia",
             "filter_by_date": "Filtrar midia por data",
-            "items_list_navigation": "Navegação na lista de Midia",
+            "items_list_navigation": "Navega????o na lista de Midia",
             "items_list": "Lista de Midia",
             "item_published": "midia publicado.",
             "item_published_privately": "midia publicado de forma privada.",
@@ -2230,9 +2232,9 @@
             "add_new": "Adicionar novo opnioes",
             "new_item": "Novo opnioes",
             "parent_item_colon": "opnioes ascendente:",
-            "search_items": "Pesquisar Opniões",
-            "not_found": "Não foi possível encontrar opniões",
-            "not_found_in_trash": "Não foi possível encontrar opniões na lixeira",
+            "search_items": "Pesquisar Opni??es",
+            "not_found": "N??o foi poss??vel encontrar opni??es",
+            "not_found_in_trash": "N??o foi poss??vel encontrar opni??es na lixeira",
             "archives": "Arquivos de opnioes",
             "attributes": "Atributos de opnioes",
             "featured_image": "",
@@ -2241,10 +2243,10 @@
             "use_featured_image": "",
             "insert_into_item": "Inserir no opnioes",
             "uploaded_to_this_item": "Enviado para este opnioes",
-            "filter_items_list": "Filtrar lista de opniões",
-            "filter_by_date": "Filtrar opniões por data",
-            "items_list_navigation": "Navegação na lista de Opniões",
-            "items_list": "Lista de Opniões",
+            "filter_items_list": "Filtrar lista de opni??es",
+            "filter_by_date": "Filtrar opni??es por data",
+            "items_list_navigation": "Navega????o na lista de Opni??es",
+            "items_list": "Lista de Opni??es",
             "item_published": "opnioes publicado.",
             "item_published_privately": "opnioes publicado de forma privada.",
             "item_reverted_to_draft": "opnioes revertido para rascunho.",
