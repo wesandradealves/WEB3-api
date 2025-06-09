@@ -18,6 +18,7 @@ services:
       - redis
     volumes:
       - /var/www/html
+      - ./wp-content:/var/www/html/wp-content    
       - ./bdm-digital-website-api-theme:/var/www/html/wp-content/themes/bdm-digital-website-api-theme
       - ./classic-editor:/var/www/html/wp-content/plugins/classic-editor
       - ./wp-rest-cache:/var/www/html/wp-content/plugins/wp-rest-cache
@@ -28,9 +29,11 @@ services:
       - ./wp-rest-api-controller:/var/www/html/wp-content/plugins/wp-rest-api-controller
       - ./bdm-firebase-bff:/var/www/html/wp-content/plugins/bdm-firebase-bff
       - ./jwt-authentication-for-wp-rest-api:/var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
+      - ./all-in-one-wp-migration-unlimited-main:/var/www/html/wp-content/plugins/all-in-one-wp-migration-unlimited-main
       - ./redis-cache:/var/www/html/wp-content/plugins/redis-cache
+      - ./polylang-pro:/var/www/html/wp-content/plugins/polylang-pro
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-      - ./wp-content:/var/www/html/wp-content    
       - ./docs:/var/www/html/docs   
   mysql:
     image: mariadb:latest

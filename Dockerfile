@@ -51,33 +51,24 @@ RUN composer require vlucas/phpdotenv && \
     composer config --global allow-plugins.johnpbloch/wordpress-core-installer true && \
     composer install --no-dev --optimize-autoloader
 
-# Ensure proper permissions on the plugin files
-#RUN chown -R www-data:www-data /var/www/html/wp-content/plugins && \
-#   chmod -R 755 /var/www/html/wp-content/plugins
-
-# Ensure proper permissions on the theme files
-#RUN chown -R www-data:www-data /var/www/html/wp-content/themes && \
-#    chmod -R 755 /var/www/html/wp-content/themes
-
 # Copy Plugins in a single command
-COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
-COPY ./acf-to-rest-api /var/www/html/wp-content/plugins/acf-to-rest-api
-COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
-COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
-COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
-COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
-COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
-COPY ./quick-featured-images /var/www/html/wp-content/plugins/quick-featured-images
-COPY ./bdm-firebase-bff /var/www/html/wp-content/plugins/bdm-firebase-bff
-COPY ./redis-cache /var/www/html/wp-content/plugins/redis-cache
-COPY ./wp-content/uploads /var/www/html/wp-content/uploads
-
-# Build SCSS do plugin
-#WORKDIR /var/www/html/wp-content/plugins/bdm-digital-payment-gateway
-#RUN npm install && npm run build
+# COPY ./classic-editor /var/www/html/wp-content/plugins/classic-editor
+# COPY ./acf-to-rest-api /var/www/html/wp-content/plugins/acf-to-rest-api
+# COPY ./advanced-custom-fields-pro /var/www/html/wp-content/plugins/advanced-custom-fields-pro
+# COPY ./wp-rest-api-controller /var/www/html/wp-content/plugins/wp-rest-api-controller
+# COPY ./wp-openapi /var/www/html/wp-content/plugins/wp-openapi
+# COPY ./jwt-authentication-for-wp-rest-api /var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
+# COPY ./wp-rest-cache /var/www/html/wp-content/plugins/wp-rest-cache
+# COPY ./quick-featured-images /var/www/html/wp-content/plugins/quick-featured-images
+# COPY ./bdm-firebase-bff /var/www/html/wp-content/plugins/bdm-firebase-bff
+# COPY ./redis-cache /var/www/html/wp-content/plugins/redis-cache
+# COPY ./polylang-pro /var/www/html/wp-content/plugins/polylang-pro
+# COPY ./polylang-rest-header/polylang-rest-header.php /var/www/html/wp-content/mu-plugins/polylang-rest-header.php
+# COPY ./wp-content/uploads /var/www/html/wp-content/uploads
+# COPY ./docs /var/www/html/docs
 
 # Permissões e limpeza
-WORKDIR /var/www/html
+RUN chown -R www-data:www-data /var/www/html
 RUN chown -R www-data:www-data wp-content/plugins && \
     chmod -R 755 wp-content/plugins && \
     rm -rf wp-content/plugins/hello.php wp-content/plugins/hello-dolly wp-content/plugins/akismet
