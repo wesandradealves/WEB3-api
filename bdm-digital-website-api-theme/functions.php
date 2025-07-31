@@ -7,6 +7,9 @@ function wp_before_admin_bar_render()
 {
     echo '
         <style type="text/css">
+            .editor-styles-wrapper.block-editor-writing-flow {
+                background: whitesmoke;
+            }
             @media only screen and (min-width: 800px) {
                 .interface-interface-skeleton__body {
                     flex-flow: column wrap !important;
@@ -178,6 +181,12 @@ function add_menu_link_class($atts, $item, $args)
 
 // Executar ao ativar otema
 
+// Forçar o template da página Home para 'templates/swagger.php' sempre que a página for salva/atualizada
+add_action('save_post_page', function($post_id, $post, $update) {
+    if ($post->post_title === 'Home' && get_post_meta($post_id, '_wp_page_template', true) !== 'templates/swagger.php') {
+        update_post_meta($post_id, '_wp_page_template', 'templates/swagger.php');
+    }
+}, 10, 3);
 function create_homepage_on_activation()
 {
     // Checa se já existe uma página "Home"
@@ -626,6 +635,12 @@ function fill_readtime_column($column, $post_id)
 }
 add_action('manage_midia_posts_custom_column', 'fill_readtime_column', 10, 2);
 
+// Registrar a taxonomia "post_tag" para o post type "midia"
+
+add_action('init', function () {
+    register_taxonomy_for_object_type('post_tag', 'midia');
+});
+
 // Tornar a coluna "readTime" ordenável
 function make_readtime_column_sortable($columns)
 {
@@ -647,6 +662,18 @@ function sort_by_readtime_column($query)
     }
 }
 add_action('pre_get_posts', 'sort_by_readtime_column');
+
+// Limpeza de tags órfãs e duplicadas
+
+add_filter('pll_get_taxonomies', function($taxonomies) {
+    foreach (['post_tag', 'category'] as $remove) {
+        if(($key = array_search($remove, $taxonomies)) !== false) {
+            unset($taxonomies[$key]);
+        }
+    }
+    return $taxonomies;
+});
+
 
 // Rest Services
 
@@ -978,9 +1005,57 @@ if (!function_exists('bdm_detect_request_language')) {
     }
 }
 
-// Forçar o template da página Home para 'templates/swagger.php' sempre que a página for salva/atualizada
-add_action('save_post_page', function($post_id, $post, $update) {
-    if ($post->post_title === 'Home' && get_post_meta($post_id, '_wp_page_template', true) !== 'templates/swagger.php') {
-        update_post_meta($post_id, '_wp_page_template', 'templates/swagger.php');
+// Endpoint para buscar uma página pelo slug e idioma
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/post-by', array(
+        'methods' => 'GET',
+        'callback' => 'get_post_by',
+        'args' => array(
+            'slug' => array('required' => false), // <-- alterado para false
+            'type' => array('required' => false, 'default' => 'page'),
+            'id' => array('required' => false, 'default' => null),
+        ),
+        'permission_callback' => '__return_true',
+    ));
+});
+function get_post_by($request) {
+    $type = $request->get_param('type') ?: 'page';
+    $id = $request->get_param('id');
+    $slug = $request->get_param('slug');
+    $lang = bdm_detect_request_language();
+
+    $post = null;
+
+    if ($id) {
+        $post = get_post($id);
+    } elseif ($slug) {
+        $args = array(
+            'name'        => $slug,
+            'post_type'   => $type,
+            'post_status' => 'publish',
+            'numberposts' => 1,
+        );
+        $posts = get_posts($args);
+        if ($posts) {
+            $post = $posts[0];
+        }
     }
-}, 10, 3);
+
+    if ($post && function_exists('pll_get_post')) {
+        // Se $lang está definido, tenta pegar a tradução
+        if ($lang) {
+            $translated_id = pll_get_post($post->ID, $lang);
+            if ($translated_id) {
+                $post = get_post($translated_id);
+            } else {
+                return new WP_Error('not_found', 'Translation not found for this post and language', array('status' => 404));
+            }
+        }
+        $controller = new WP_REST_Posts_Controller($type);
+        $response = $controller->prepare_item_for_response($post, $request);
+        $response = apply_filters("rest_prepare_{$type}", $response, $post, $request);
+        return rest_ensure_response([ $response->get_data() ]);
+    }
+
+    return new WP_Error('not_found', 'Page not found for this id/slug/type and language', array('status' => 404));
+}
