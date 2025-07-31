@@ -558,6 +558,18 @@ function my_acf_blocks_init()
                     'align' => true,
                     'jsx' => true,
                 ],
+            ],
+            (object) [
+                'name' => 'quotationChart',
+                'title' => __('Quotation Chart'),
+                'description' => __('Quotation Chart Component'),
+                'category' => 'rest-api',
+                'icon' => '',
+                'keywords' => ['quotation', 'chart', 'acf', 'rest'],
+                'supports' => [
+                    'align' => true,
+                    'jsx' => true,
+                ],
             ]
         ];
 
