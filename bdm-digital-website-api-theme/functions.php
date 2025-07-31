@@ -835,22 +835,23 @@ function get_menu_by_slug($request)
     return rest_ensure_response($menu_tree);
 }
 
-// // Endpoint para retornar todos os IDs dos menus
-// function bdm_get_all_menu_ids()
-// {
-//     $menus = wp_get_nav_menus();
-//     $result = [];
+// Endpoint para retornar css adicional
+add_action('rest_api_init', function() {
+    register_rest_route('custom/v1', '/extra-css', [
+        'methods' => 'GET',
+        'callback' => function() {
+            $theme = get_stylesheet();
+            $css_post = wp_get_custom_css_post($theme);
+            return [
+                'theme' => $theme,
+                'custom_css' => $css_post ? $css_post->post_content : ''
+            ];
+        },
+        'permission_callback' => '__return_true'
+    ]);
+});
 
-//     foreach ($menus as $menu) {
-//         $result[] = [
-//             'id' => $menu->term_id,
-//             'name' => $menu->name,
-//             'slug' => $menu->slug,
-//         ];
-//     }
 
-//     return rest_ensure_response($result);
-// }
 
 // Api Health
 
