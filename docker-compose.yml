@@ -27,7 +27,7 @@ services:
       - ./acf-to-rest-api:/var/www/html/wp-content/plugins/acf-to-rest-api
       - ./advanced-custom-fields-pro:/var/www/html/wp-content/plugins/advanced-custom-fields-pro
       - ./wp-rest-api-controller:/var/www/html/wp-content/plugins/wp-rest-api-controller
-      - ./bdm-firebase-bff:/var/www/html/wp-content/plugins/bdm-firebase-bff
+      # - ./bdm-firebase-bff:/var/www/html/wp-content/plugins/bdm-firebase-bff
       - ./jwt-authentication-for-wp-rest-api:/var/www/html/wp-content/plugins/jwt-authentication-for-wp-rest-api
       - ./all-in-one-wp-migration-unlimited-main:/var/www/html/wp-content/plugins/all-in-one-wp-migration-unlimited-main
       - ./redis-cache:/var/www/html/wp-content/plugins/redis-cache
