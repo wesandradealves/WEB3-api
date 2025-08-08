@@ -570,6 +570,18 @@ function my_acf_blocks_init()
                     'align' => true,
                     'jsx' => true,
                 ],
+            ],
+            (object) [
+                'name' => 'featuredCards',
+                'title' => __('Featured Cards'),
+                'description' => __('Featured Cards Component'),
+                'category' => 'rest-api',
+                'icon' => '',
+                'keywords' => ['featured cards', 'acf', 'rest'],
+                'supports' => [
+                    'align' => true,
+                    'jsx' => true,
+                ],
             ]
         ];
 

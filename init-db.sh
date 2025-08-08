@@ -62,14 +62,14 @@ else
 fi
 
 # Rodar composer install no plugin bdm-firebase-bff
-echo "Rodando composer install em bdm-firebase-bff..."
-cd /var/www/html/wp-content/plugins/bdm-firebase-bff
+#echo "Rodando composer install em bdm-firebase-bff..."
+#cd /var/www/html/wp-content/plugins/bdm-firebase-bff
 
-if [ -f composer.json ]; then
-  composer install --no-interaction --prefer-dist --optimize-autoloader
-else
-  echo "composer.json não encontrado em bdm-firebase-bff. Pulando..."
-fi
+#if [ -f composer.json ]; then
+#  composer install --no-interaction --prefer-dist --optimize-autoloader
+#else
+#  echo "composer.json não encontrado em bdm-firebase-bff. Pulando..."
+#fi
 
 # Verifica se o WP-CLI está instalado e atualiza os permalinks
 if command -v wp &> /dev/null; then
